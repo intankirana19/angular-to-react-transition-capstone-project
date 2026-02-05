@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { cn } from '@/lib/cn';
+import { cn } from '@/shared/lib/cn';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './Select';
 
 export interface PaginationProps {

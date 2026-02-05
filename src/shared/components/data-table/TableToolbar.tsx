@@ -1,7 +1,7 @@
 import { type Table, type Row } from '@tanstack/react-table';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/shared/ui/Button';
 import { type ReactNode } from 'react';
-import { Input } from '@/components/ui/Input';
+import { Input } from '@/shared/ui/Input';
 import { Search } from 'lucide-react';
 
 interface TableToolbarProps<TData> {

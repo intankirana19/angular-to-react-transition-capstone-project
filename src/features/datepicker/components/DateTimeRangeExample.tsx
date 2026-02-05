@@ -3,11 +3,11 @@ import {
   DateTimeRangePicker,
   DatePickerField,
   type DateTimeRange,
-} from '@/components/ui/DatePicker';
-import { CodeBlock } from '@/components/ui/CodeBlock';
+} from '@/shared/ui/DatePicker';
+import { CodeBlock } from '@/shared/ui/CodeBlock';
 
 const exampleCode = `import { useState } from 'react';
-import { DateTimeRangePicker, DatePickerField, type DateTimeRange } from '@/components/ui/DatePicker';
+import { DateTimeRangePicker, DatePickerField, type DateTimeRange } from '@/shared/ui/DatePicker';
 
 const [dateTimeRange, setDateTimeRange] = useState<DateTimeRange>();
 

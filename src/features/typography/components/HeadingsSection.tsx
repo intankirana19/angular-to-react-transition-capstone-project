@@ -1,4 +1,4 @@
-import { CodeBlock } from '@/components/ui/CodeBlock';
+import { CodeBlock } from '@/shared/ui/CodeBlock';
 
 const headingsCode = `<h1 className="text-ait-h1 text-ait-neutral-900">
   Heading 1 - Semibold

@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/shared/ui/Button';
 
 export default function HomePage() {
   return (
@@ -38,7 +38,7 @@ export default function HomePage() {
               </li>
               <li>
                 UI components live in{' '}
-                <code className="rounded bg-neutral-100 px-1">src/components/ui</code>
+                <code className="rounded bg-neutral-100 px-1">src/shared/ui</code>
               </li>
             </ul>
           </div>

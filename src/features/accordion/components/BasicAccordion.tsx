@@ -3,16 +3,16 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/Accordion';
+} from '@/shared/ui/Accordion';
 import { HelpCircle, CreditCard, Shield } from 'lucide-react';
-import { CodeBlock } from '@/components/ui/CodeBlock';
+import { CodeBlock } from '@/shared/ui/CodeBlock';
 
 const exampleCode = `import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/Accordion';
+} from '@/shared/ui/Accordion';
 import { HelpCircle } from 'lucide-react';
 
 <Accordion type="single" collapsible variant="default">

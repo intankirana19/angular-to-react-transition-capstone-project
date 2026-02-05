@@ -3,9 +3,9 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/Accordion';
+} from '@/shared/ui/Accordion';
 import { Settings, Users, FileText, HelpCircle, Shield } from 'lucide-react';
-import { CodeBlock } from '@/components/ui/CodeBlock';
+import { CodeBlock } from '@/shared/ui/CodeBlock';
 
 const lineCode = `<Accordion type="single" collapsible variant="line">
   <AccordionItem value="item-1">

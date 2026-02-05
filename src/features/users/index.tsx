@@ -1,6 +1,6 @@
 import { useGetUsers } from './api/useGetUsers';
 import { UsersTable } from './components/UsersTable';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/shared/ui/Button';
 
 export default function UsersPage() {
   const { data: users, isLoading, error } = useGetUsers();

@@ -1,4 +1,4 @@
-import { CodeBlock } from '@/components/ui/CodeBlock';
+import { CodeBlock } from '@/shared/ui/CodeBlock';
 
 interface ColorSwatchProps {
   name: string;

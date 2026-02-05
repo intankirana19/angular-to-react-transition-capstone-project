@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as SelectPrimitive from '@radix-ui/react-select';
 import { Check, ChevronDown, ChevronUp } from 'lucide-react';
 import { cva } from 'class-variance-authority';
-import { cn } from '@/lib/cn';
+import { cn } from '@/shared/lib/cn';
 
 const selectTriggerVariants = cva(
   'flex w-full items-center justify-between rounded-lg border bg-ait-white text-ait-body-md-regular transition-colors focus:outline-none focus:ring-2 focus:ring-ait-primary-500 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1',

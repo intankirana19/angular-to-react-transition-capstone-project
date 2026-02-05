@@ -1,4 +1,4 @@
-import { CodeBlock } from '@/components/ui/CodeBlock';
+import { CodeBlock } from '@/shared/ui/CodeBlock';
 
 const displayCode = `<p className="text-ait-display-sm text-ait-primary-500">
   Display Small

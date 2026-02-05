@@ -6,8 +6,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/Select';
-import { CodeBlock } from '@/components/ui/CodeBlock';
+} from '@/shared/ui/Select';
+import { CodeBlock } from '@/shared/ui/CodeBlock';
 
 const withLabelCode = `import { useState } from 'react';
 import {
@@ -17,7 +17,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/Select';
+} from '@/shared/ui/Select';
 
 const [selectedCountry, setSelectedCountry] = useState('');
 
@@ -45,7 +45,7 @@ const errorStateCode = `import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/Select';
+} from '@/shared/ui/Select';
 
 <SelectField
   label="Payment Method"
@@ -71,7 +71,7 @@ const disabledStateCode = `import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/Select';
+} from '@/shared/ui/Select';
 
 <SelectField
   label="Subscription Plan"

@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import type { ToastProps } from '@/components/ui/Toast';
+import type { ToastProps } from '@/shared/ui/Toast';
 
 type ToastInput = Omit<ToastProps, 'id' | 'onClose'>;
 

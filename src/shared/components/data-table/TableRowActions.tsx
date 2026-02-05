@@ -1,5 +1,5 @@
 import { type Row } from '@tanstack/react-table';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/shared/ui/Button';
 import { PencilLine, Trash2 } from 'lucide-react';
 import { type ReactNode, type MouseEvent } from 'react';
 

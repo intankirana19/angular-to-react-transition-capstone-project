@@ -10,7 +10,7 @@ import {
   startOfDay,
 } from 'date-fns';
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
-import { cn } from '@/lib/cn';
+import { cn } from '@/shared/lib/cn';
 
 interface SimpleDatePickerProps {
   date?: Date;

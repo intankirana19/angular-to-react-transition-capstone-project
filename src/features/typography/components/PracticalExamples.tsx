@@ -1,4 +1,4 @@
-import { CodeBlock } from '@/components/ui/CodeBlock';
+import { CodeBlock } from '@/shared/ui/CodeBlock';
 
 const productCardExample = `<div className="bg-ait-white shadow-ait-lg rounded-lg p-6 border border-ait-neutral-200">
   <h3 className="text-ait-h5-bold text-ait-neutral-900 mb-2">

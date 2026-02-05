@@ -1,4 +1,4 @@
-import { CodeBlock } from '@/components/ui/CodeBlock';
+import { CodeBlock } from '@/shared/ui/CodeBlock';
 
 const bodyTextExample = `<div className="space-y-4">
   {/* Body Large Regular */}

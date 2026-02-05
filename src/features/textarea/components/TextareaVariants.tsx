@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Textarea, TextareaField } from '@/components/ui/Textarea';
-import { CodeBlock } from '@/components/ui/CodeBlock';
+import { Textarea, TextareaField } from '@/shared/ui/Textarea';
+import { CodeBlock } from '@/shared/ui/CodeBlock';
 
 const exampleCode = `import { useState } from 'react';
-import { Textarea, TextareaField } from '@/components/ui/Textarea';
+import { Textarea, TextareaField } from '@/shared/ui/Textarea';
 
 const [dynamicValue, setDynamicValue] = useState('');
 

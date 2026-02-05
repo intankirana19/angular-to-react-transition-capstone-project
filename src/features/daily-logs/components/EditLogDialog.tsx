@@ -6,10 +6,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogBody,
-} from '@/components/ui/Dialog';
-import { SimpleDatePicker } from '@/components/ui/SimpleDatePicker';
-import { SimpleSelect } from '@/components/ui/SimpleSelect';
-import { Textarea } from '@/components/ui/Textarea';
+} from '@/shared/ui/Dialog';
+import { SimpleDatePicker } from '@/shared/ui/SimpleDatePicker';
+import { SimpleSelect } from '@/shared/ui/SimpleSelect';
+import { Textarea } from '@/shared/ui/Textarea';
 import type { DailyLog, UpdateDailyLogInput } from '../types';
 
 interface EditLogDialogProps {

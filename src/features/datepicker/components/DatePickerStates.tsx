@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { DatePicker, DatePickerField } from '@/components/ui/DatePicker';
-import { CodeBlock } from '@/components/ui/CodeBlock';
+import { DatePicker, DatePickerField } from '@/shared/ui/DatePicker';
+import { CodeBlock } from '@/shared/ui/CodeBlock';
 
 const withLabelCode = `import { useState } from 'react';
-import { DatePicker, DatePickerField } from '@/components/ui/DatePicker';
+import { DatePicker, DatePickerField } from '@/shared/ui/DatePicker';
 
 const [date, setDate] = useState<Date>();
 
@@ -20,7 +20,7 @@ const [date, setDate] = useState<Date>();
 </DatePickerField>`;
 
 const errorStateCode = `import { useState } from 'react';
-import { DatePicker, DatePickerField } from '@/components/ui/DatePicker';
+import { DatePicker, DatePickerField } from '@/shared/ui/DatePicker';
 
 const [date, setDate] = useState<Date>();
 
@@ -37,7 +37,7 @@ const [date, setDate] = useState<Date>();
   />
 </DatePickerField>`;
 
-const disabledStateCode = `import { DatePicker, DatePickerField } from '@/components/ui/DatePicker';
+const disabledStateCode = `import { DatePicker, DatePickerField } from '@/shared/ui/DatePicker';
 
 <DatePickerField
   label="Birth Date"

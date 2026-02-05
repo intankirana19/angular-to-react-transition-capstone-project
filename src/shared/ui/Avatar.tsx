@@ -1,7 +1,7 @@
 import type { HTMLAttributes } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { Building2, User } from 'lucide-react';
-import { cn } from '@/lib/cn';
+import { cn } from '@/shared/lib/cn';
 
 const avatarVariants = cva(
   'relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-lg border border-neutral-200 bg-neutral-100 text-neutral-700 transition-colors hover:border-neutral-300 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-100',

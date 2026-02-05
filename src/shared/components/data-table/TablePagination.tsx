@@ -1,6 +1,6 @@
 import { type Table } from '@tanstack/react-table';
-import { Button } from '@/components/ui/Button';
-import { cn } from '@/lib/cn';
+import { Button } from '@/shared/ui/Button';
+import { cn } from '@/shared/lib/cn';
 
 interface TablePaginationProps<TData> {
   table: Table<TData>;

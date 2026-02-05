@@ -1,7 +1,7 @@
 import { TeamTable } from './components/TeamTable';
 import { getMockTeamMembers } from './utils/mockData';
 import { type TeamMember } from './types';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/shared/ui/Button';
 import { Download, Upload } from 'lucide-react';
 
 export default function TeamPage() {

@@ -1,5 +1,5 @@
 import { flexRender, type Header, type Table } from '@tanstack/react-table';
-import { cn } from '@/lib/cn';
+import { cn } from '@/shared/lib/cn';
 import { ChevronsUpDown, ChevronUp, ChevronDown } from 'lucide-react';
 
 interface TableHeaderProps<TData> {

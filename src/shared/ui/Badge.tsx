@@ -1,6 +1,6 @@
 import { forwardRef, HTMLAttributes, ReactNode } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '@/lib/cn';
+import { cn } from '@/shared/lib/cn';
 import { Users, Circle } from 'lucide-react';
 
 const SIZES = {

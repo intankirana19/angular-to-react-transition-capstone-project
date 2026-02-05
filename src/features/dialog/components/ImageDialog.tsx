@@ -8,8 +8,8 @@ import {
   DialogTrigger,
   DialogBody,
   DialogImage,
-} from '@/components/ui/Dialog';
-import { CodeBlock } from '@/components/ui/CodeBlock';
+} from '@/shared/ui/Dialog';
+import { CodeBlock } from '@/shared/ui/CodeBlock';
 
 const exampleCode = `import { useState } from 'react';
 import {
@@ -21,7 +21,7 @@ import {
   DialogTrigger,
   DialogBody,
   DialogImage,
-} from '@/components/ui/Dialog';
+} from '@/shared/ui/Dialog';
 
 const [open, setOpen] = useState(false);
 

@@ -9,8 +9,8 @@ import {
   SelectSeparator,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/Select';
-import { CodeBlock } from '@/components/ui/CodeBlock';
+} from '@/shared/ui/Select';
+import { CodeBlock } from '@/shared/ui/CodeBlock';
 
 const exampleCode = `import { useState } from 'react';
 import {
@@ -23,7 +23,7 @@ import {
   SelectSeparator,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/Select';
+} from '@/shared/ui/Select';
 
 const [selectedFruit, setSelectedFruit] = useState('');
 

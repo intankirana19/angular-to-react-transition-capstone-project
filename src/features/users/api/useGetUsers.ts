@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { apiClient } from '@/lib/axios';
+import { apiClient } from '@/shared/lib/axios';
 import { userListSchema, type User } from '../types';
 
 export function useGetUsers() {

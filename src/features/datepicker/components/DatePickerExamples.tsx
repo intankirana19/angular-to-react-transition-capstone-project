@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { DatePicker, DatePickerField, DateRangePicker } from '@/components/ui/DatePicker';
-import { CodeBlock } from '@/components/ui/CodeBlock';
+import { DatePicker, DatePickerField, DateRangePicker } from '@/shared/ui/DatePicker';
+import { CodeBlock } from '@/shared/ui/CodeBlock';
 
 const travelBookingCode = `import { useState } from 'react';
-import { DatePicker, DatePickerField } from '@/components/ui/DatePicker';
+import { DatePicker, DatePickerField } from '@/shared/ui/DatePicker';
 
 const [checkIn, setCheckIn] = useState<Date>();
 const [checkOut, setCheckOut] = useState<Date>();
@@ -27,7 +27,7 @@ const [checkOut, setCheckOut] = useState<Date>();
 </div>`;
 
 const eventPlanningCode = `import { useState } from 'react';
-import { DateRangePicker, DatePickerField } from '@/components/ui/DatePicker';
+import { DateRangePicker, DatePickerField } from '@/shared/ui/DatePicker';
 
 const [tripRange, setTripRange] = useState<{ from?: Date; to?: Date }>();
 

@@ -3,9 +3,9 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/Accordion';
+} from '@/shared/ui/Accordion';
 import { FileText, HelpCircle, Settings, Shield, CreditCard } from 'lucide-react';
-import { CodeBlock } from '@/components/ui/CodeBlock';
+import { CodeBlock } from '@/shared/ui/CodeBlock';
 
 const flippedCode = `<Accordion type="single" collapsible variant="line" flipIcon>
   <AccordionItem value="item-1">

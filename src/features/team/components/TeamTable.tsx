@@ -1,8 +1,8 @@
 import { type ColumnDef } from '@tanstack/react-table';
-import { DataTable, TableRowActions } from '@/components/shared/data-table';
-import { Avatar } from '@/components/ui/Avatar';
-import { Badge } from '@/components/ui/Badge';
-import { Checkbox } from '@/components/ui/Checkbox';
+import { DataTable, TableRowActions } from '@/shared/components/data-table';
+import { Avatar } from '@/shared/ui/Avatar';
+import { Badge } from '@/shared/ui/Badge';
+import { Checkbox } from '@/shared/ui/Checkbox';
 import { ArrowUpDown, SlidersVertical } from 'lucide-react';
 import { type TeamMember } from '../types';
 import { useMemo } from 'react';

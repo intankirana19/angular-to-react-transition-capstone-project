@@ -1,7 +1,7 @@
-import { Textarea, TextareaField } from '@/components/ui/Textarea';
-import { CodeBlock } from '@/components/ui/CodeBlock';
+import { Textarea, TextareaField } from '@/shared/ui/Textarea';
+import { CodeBlock } from '@/shared/ui/CodeBlock';
 
-const exampleCode = `import { Textarea, TextareaField } from '@/components/ui/Textarea';
+const exampleCode = `import { Textarea, TextareaField } from '@/shared/ui/Textarea';
 
 {/* Default */}
 <TextareaField label="Default" helperText="This is a text text in help text">

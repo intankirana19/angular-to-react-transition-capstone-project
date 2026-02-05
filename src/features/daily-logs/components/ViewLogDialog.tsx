@@ -4,7 +4,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle
-} from '@/components/ui/Dialog';
+} from '@/shared/ui/Dialog';
 import { format } from 'date-fns';
 import type { DailyLog } from '../types';
 

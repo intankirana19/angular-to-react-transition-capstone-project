@@ -7,9 +7,9 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogBody,
-} from '@/components/ui/Dialog';
+} from '@/shared/ui/Dialog';
 import { User } from 'lucide-react';
-import { CodeBlock } from '@/components/ui/CodeBlock';
+import { CodeBlock } from '@/shared/ui/CodeBlock';
 
 const exampleCode = `import { useState } from 'react';
 import {
@@ -20,7 +20,7 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogBody,
-} from '@/components/ui/Dialog';
+} from '@/shared/ui/Dialog';
 
 const [open, setOpen] = useState(false);
 const [selected, setSelected] = useState<number[]>([]);

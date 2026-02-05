@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { X, CheckCircle, AlertCircle, Info, AlertTriangle } from 'lucide-react';
-import { cn } from '@/lib/cn';
+import { cn } from '@/shared/lib/cn';
 
 export interface ToastProps {
   id: string;

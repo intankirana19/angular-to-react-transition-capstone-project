@@ -5,7 +5,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from '@/components/ui/Dialog';
+} from '@/shared/ui/Dialog';
 import { AlertTriangle } from 'lucide-react';
 import type { DailyLog } from '../types';
 

@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { ChevronDown } from 'lucide-react';
 import { cva } from 'class-variance-authority';
-import { cn } from '@/lib/cn';
+import { cn } from '@/shared/lib/cn';
 
 const accordionItemVariants = cva('', {
   variants: {

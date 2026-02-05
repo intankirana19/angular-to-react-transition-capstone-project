@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Mail, AlertCircle, CheckCircle } from 'lucide-react';
-import { Input } from '@/components/ui/Input';
-import { Button } from '@/components/ui/Button';
+import { Input } from '@/shared/ui/Input';
+import { Button } from '@/shared/ui/Button';
 import { validateForgotPasswordForm } from '../utils/validation';
 import type { ForgotPasswordFormData, ValidationErrors } from '../types';
 

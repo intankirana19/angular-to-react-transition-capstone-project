@@ -1,7 +1,7 @@
-import { Pagination } from '@/components/ui/Pagination';
-import { SimpleSelect } from '@/components/ui/SimpleSelect';
-import { ToastContainer } from '@/components/ui/Toast';
-import { useToast } from '@/hooks/useToast';
+import { Pagination } from '@/shared/ui/Pagination';
+import { SimpleSelect } from '@/shared/ui/SimpleSelect';
+import { ToastContainer } from '@/shared/ui/Toast';
+import { useToast } from '@/shared/hooks/useToast';
 import { Plus, Search } from 'lucide-react';
 import { useState } from 'react';
 import { CreateLogDialog } from './components/CreateLogDialog';

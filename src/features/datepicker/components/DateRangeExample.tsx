@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { DateRangePicker } from '@/components/ui/DatePicker';
-import { CodeBlock } from '@/components/ui/CodeBlock';
+import { DateRangePicker } from '@/shared/ui/DatePicker';
+import { CodeBlock } from '@/shared/ui/CodeBlock';
 
 const exampleCode = `import { useState } from 'react';
-import { DateRangePicker } from '@/components/ui/DatePicker';
+import { DateRangePicker } from '@/shared/ui/DatePicker';
 
 const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date }>();
 
