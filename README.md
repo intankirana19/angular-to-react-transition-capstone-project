@@ -110,3 +110,10 @@ VITE_ENABLE_DEVTOOLS=true
 ## License
 
 MIT
+
+## Knowledge Sources
+Folder Structure Changes:
+- https://feature-sliced.design/docs/reference/layers
+- https://medium.com/@tejasvinavale1599/the-best-folder-structure-for-scalable-react-apps-in-2025-enterprise-recommended-4fa755b8f0c7
+
+
