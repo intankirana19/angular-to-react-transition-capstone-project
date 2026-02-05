@@ -1,8 +1,8 @@
 import { Route, Routes } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import type { ElementType } from 'react';
-import { MainLayout } from '@/layouts/MainLayout';
-import { AuthLayout } from '@/layouts/AuthLayout';
+import { MainLayout } from '@/app/layouts/MainLayout';
+import { AuthLayout } from '@/app/layouts/AuthLayout';
 
 const HomePage = lazy(() => import('@/features/home'));
 const UsersPage = lazy(() => import('@/features/users'));

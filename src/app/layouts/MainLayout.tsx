@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { Outlet } from 'react-router-dom';
-import { useUiStore } from '@/store/useUIStore';
-import { Button } from '@/components/ui/Button';
+import { useUiStore } from '@/app/store/useUIStore';
+import { Button } from '@/shared/ui/Button';
 import { Sidebar } from './Sidebar';
 
 interface MainLayoutProps {

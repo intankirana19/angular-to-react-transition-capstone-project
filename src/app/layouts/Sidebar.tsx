@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { ChevronDown, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
-import { useUiStore } from '@/store/useUIStore';
-import { Button } from '@/components/ui/Button';
-import { navigation } from '@/constants/navigation';
-import { cn } from '@/lib/cn';
+import { useUiStore } from '@/app/store/useUIStore';
+import { Button } from '@/shared/ui/Button';
+import { navigation } from '@/shared/constants/navigation';
+import { cn } from '@/shared/lib/cn';
 
 export function Sidebar() {
   const { sidebarOpen, sidebarCollapsed, toggleSidebarCollapsed, setSidebarCollapsed } =
