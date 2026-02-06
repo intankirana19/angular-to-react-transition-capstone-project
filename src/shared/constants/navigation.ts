@@ -41,6 +41,11 @@ export const navigation: NavItem[] = [
         icon: Users,
       },
       {
+        label: 'Products',
+        href: '/products',
+        icon: Package,
+      },
+      {
         label: 'Team',
         href: '/team',
         icon: UsersRound,
