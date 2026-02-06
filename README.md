@@ -111,9 +111,22 @@ VITE_ENABLE_DEVTOOLS=true
 
 MIT
 
-## Knowledge Sources
-Folder Structure Changes:
-- https://feature-sliced.design/docs/reference/layers
-- https://medium.com/@tejasvinavale1599/the-best-folder-structure-for-scalable-react-apps-in-2025-enterprise-recommended-4fa755b8f0c7
+## Architecture Notes
 
+1.  `App.tsx`, `routes.tsx`, `layouts`, dan `useUIStore.ts` dipindahkan ke folder `app` sebagai layer aplikasi. Semua yang bersifat app-level (tidak reusable) diletakkan di folder `app`. Semua yang reusable secara global dipindahkan ke folder `shared`.
+    Sources:
+    - https://feature-sliced.design/docs/reference/layers
+    - Ada non-member link nya: https://medium.com/@tejasvinavale1599/the-best-folder-structure-for-scalable-react-apps-in-2025-enterprise-recommended-4fa755b8f0c7
 
+2.  API base URL disimpan di `.env` (`VITE_API_BASE_URL`) dan bisa dipakai sebagai `baseURL` di instance Axios. Hanya pakai `.env` saja karena saat ini hanya menargetkan satu environment (local dev/mock API); jika nanti ada staging/production, baru dipisah ke `.env.development` / `.env.production`.
+    Sources:
+    - https://vite.dev/guide/env-and-mode
+    - https://axios-http.com/docs/config_defaults
+
+3.  Refer dari fitur auth dari skafold, tapi untuk fitur produk, `index.tsx` hanya dipakai sebagai entry point agar import lebih rapi (`import('@/features/products')`), bukan sebagai tempat menumpuk seluruh UI. UI utama tetap disimpan di folder `pages/` agar mudah dikembangkan untuk list/detail/create/edit sesuai kebutuhan. Mungkin bisa dihindari penggunaan wildcard exports untuk jaga bundle size (bisa jadi ada banyak yang sebenarnya tidak terpakai).
+    Source:
+    - https://www.linkedin.com/pulse/best-practices-using-indexts-files-avoiding-tree-shaking-amin-atwi-bexmf#:~:text=An%20index.,a%20cleaner%20interface%20for%20modules.
+
+4.  Refer dari fitur user, tapi untuk fitur produk, service dan custom hook dipisah. Service bisa jadi reusable misal untuk test atau prefetching.
+    Source:
+    - https://tanstack.com/query/v5/docs/framework/react/guides/prefetching
