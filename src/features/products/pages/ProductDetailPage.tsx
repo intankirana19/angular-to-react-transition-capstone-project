@@ -1,12 +1,39 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Avatar } from '@/shared/ui/Avatar';
 import { DEFAULT_PLACEHOLDER, formatCurrency, formatDate } from '@/shared/lib/formatters';
 import { useGetProductById } from '../api/useGetProductById';
+import { Button } from '@/shared/ui/Button';
 
 export default function ProductDetailPage() {
+  const navigate = useNavigate();
   const { productId } = useParams<{ productId: string }>();
 
-  const { data: product } = useGetProductById(productId);
+  const { data: product, isLoading, error, refetch, isFetching  } = useGetProductById(productId);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600" />
+      </div>
+    );
+  }
+  
+  if (error) {
+    return (
+      <div className="rounded-lg bg-danger-50 p-4 text-danger-800">
+        <p className="font-medium">Error loading products</p>
+        <p className="text-sm mt-1">{error.message}</p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Button variant="secondary" onClick={() => void refetch()} disabled={isFetching}>
+            {isFetching ? 'Retrying...' : 'Retry'}
+          </Button>
+          <Button variant="primary" onClick={() => void navigate('/products')}>
+            Back to List
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   const name = product?.name ?? DEFAULT_PLACEHOLDER;
   const material = product?.material ?? DEFAULT_PLACEHOLDER;
