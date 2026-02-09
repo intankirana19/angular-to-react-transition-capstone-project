@@ -1,6 +1,6 @@
 import type { HTMLAttributes } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { Building2, User } from 'lucide-react';
+import { Building2, Image, User } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
 
 const avatarVariants = cva(
@@ -53,6 +53,7 @@ export interface AvatarProps
   alt: string;
   fallbackText: string;
   placeholder?: boolean;
+  placeholderIcon?: 'user' | 'image';
   status?: 'online' | 'company';
   imgClassName?: string;
 }
@@ -63,6 +64,7 @@ export function Avatar({
   fallbackText,
   size,
   placeholder = false,
+  placeholderIcon = 'user',
   status,
   className,
   imgClassName,
@@ -80,7 +82,11 @@ export function Avatar({
       {src ? (
         <img src={src} alt={alt} className={cn('h-full w-full object-cover', imgClassName)} />
       ) : placeholder ? (
-        <User className={cn(fallbackIconSize[resolvedSize])} aria-hidden="true" />
+        placeholderIcon === 'image' ? (
+          <Image className={cn(fallbackIconSize[resolvedSize])} aria-hidden="true" />
+        ) : (
+          <User className={cn(fallbackIconSize[resolvedSize])} aria-hidden="true" />
+        )
       ) : (
         <span className="font-medium text-primary-700">{initial}</span>
       )}
