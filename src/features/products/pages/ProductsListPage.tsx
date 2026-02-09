@@ -1,9 +1,11 @@
 import { Button } from '@/shared/ui/Button';
+import { useNavigate } from 'react-router-dom';
 import { useGetProducts } from '../api/useGetProducts';
 import { ProductsTable } from '../components/ProductsTable';
 
 // refer user page dr skafold
 export default function ProductsListPage() {
+  const navigate = useNavigate();
   const { data: products, isLoading, error, refetch, isFetching } = useGetProducts();
 
   if (isLoading) {
@@ -38,7 +40,12 @@ export default function ProductsListPage() {
       </div>
 
       {hasProducts ? (
-        <ProductsTable products={products} />
+        <ProductsTable
+          products={products}
+          onRowClick={(product) => {
+            void navigate(`/products/${product.id}`);
+          }}
+        />
       ) : (
         <div className="rounded-lg bg-white p-8 text-center text-neutral-500 shadow-sm border border-neutral-200">
           No products found
