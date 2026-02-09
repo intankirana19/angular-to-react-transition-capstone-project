@@ -6,8 +6,10 @@ export const productSchema = z
     id: z.string(),
     name: z.string().optional(),
     price: z.coerce.number().optional(), // data price dari mock api type string jd coerce ke number biar di seluruh app bisa hitung, sort, dan format harga tanpa konversi berulang?
+    avatar: z.string().optional(),
+    material: z.string().optional(),
+    description: z.string().optional(),
     createdAt: z.string().optional(),
-    updatedAt: z.string().optional(),
   })
   // .passthrough(); // blm perlu? unknown keys behavior/ kalo ada field data baru: defaultnya strip -> (dibuang), strict() -> error, passthrough() -> field baru tetap disimpan.
   
