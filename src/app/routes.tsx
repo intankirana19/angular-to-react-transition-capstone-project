@@ -7,6 +7,7 @@ import { AuthLayout } from '@/app/layouts/AuthLayout';
 const HomePage = lazy(() => import('@/features/home'));
 const UsersPage = lazy(() => import('@/features/users'));
 const ProductsPage = lazy(() => import('@/features/products'));
+const ProductDetailPage = lazy(() => import('@/features/products/pages/ProductDetailPage'));
 const TeamPage = lazy(() => import('@/features/team'));
 const TypographyPage = lazy(() => import('@/features/typography'));
 const ColorsPage = lazy(() => import('@/features/colors'));
@@ -39,6 +40,7 @@ export function AppRoutes() {
     { index: true, Component: HomePage },
     { path: 'users', Component: UsersPage },
     { path: 'products', Component: ProductsPage },
+    { path: 'products/:productId', Component: ProductDetailPage },
     { path: 'team', Component: TeamPage },
     { path: 'typography', Component: TypographyPage },
     { path: 'colors', Component: ColorsPage },
