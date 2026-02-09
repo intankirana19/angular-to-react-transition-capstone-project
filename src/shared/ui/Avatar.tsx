@@ -80,7 +80,13 @@ export function Avatar({
       {...(!src ? { role: 'img', 'aria-label': alt } : {})}
     >
       {src ? (
-        <img src={src} alt={alt} className={cn('h-full w-full object-cover', imgClassName)} />
+        <img
+          src={src}
+          alt={alt}
+          loading="lazy" // biar gambar yang belum kelihatan di layar ga langsung ke download
+          decoding="async" // browser decode gambar di background, jd render UI ga ke block
+          className={cn('h-full w-full object-cover', imgClassName)}
+        />
       ) : placeholder ? (
         placeholderIcon === 'image' ? (
           <Image className={cn(fallbackIconSize[resolvedSize])} aria-hidden="true" />
