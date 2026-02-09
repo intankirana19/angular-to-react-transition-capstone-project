@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { DataTable, type ColumnDef } from '@/shared/components/data-table';
+import { Avatar } from '@/shared/ui/Avatar';
 import { DEFAULT_PLACEHOLDER, formatCurrency, formatDate } from '@/shared/lib/formatters';
 import { type Product } from '../types';
 
@@ -13,14 +14,26 @@ export function ProductsTable({ products, onRowClick }: ProductsTableProps) {
   const columns = useMemo<ColumnDef<Product>[]>( // memoisasi biar columns disimpan sekali aja jd referencenya stabil utk DataTable
     () => [
       {
-        header: 'ID',
-        accessorKey: 'id',
-        cell: ({ row }) => row.original.id ?? DEFAULT_PLACEHOLDER,
-      },
-      {
-        header: 'Name',
+        header: 'Product',
         accessorKey: 'name',
-        cell: ({ row }) => row.original.name ?? DEFAULT_PLACEHOLDER,
+        cell: ({ row }) => {
+          const name = row.original.name ?? DEFAULT_PLACEHOLDER;
+          const avatar = row.original.avatar;
+          return (
+            <div className="flex items-center gap-3">
+              <Avatar
+                src={avatar}
+                alt={`${name} image`}
+                fallbackText={name}
+                placeholder={!avatar}
+                placeholderIcon="image"
+                className="rounded-md"
+              />
+              <div className="font-medium text-neutral-900">{name}</div>
+            </div>
+          );
+        },
+        enableSorting: false,
       },
       {
         header: 'Price',
@@ -31,11 +44,6 @@ export function ProductsTable({ products, onRowClick }: ProductsTableProps) {
         header: 'Created',
         accessorKey: 'createdAt',
         cell: ({ row }) => formatDate(row.original.createdAt),
-      },
-      {
-        header: 'Updated',
-        accessorKey: 'updatedAt',
-        cell: ({ row }) => formatDate(row.original.updatedAt),
       },
     ],
     []
