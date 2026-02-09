@@ -3,6 +3,7 @@ import { Avatar } from '@/shared/ui/Avatar';
 import { DEFAULT_PLACEHOLDER, formatCurrency, formatDate } from '@/shared/lib/formatters';
 import { useGetProductById } from '../api/useGetProductById';
 import { Button } from '@/shared/ui/Button';
+import { ArrowLeft } from 'lucide-react';
 
 export default function ProductDetailPage() {
   const navigate = useNavigate();
@@ -43,6 +44,7 @@ export default function ProductDetailPage() {
     <div>
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
         <div className="flex items-center gap-3">
+          <ArrowLeft className="cursor-pointer" onClick={() => void navigate(-1)}/>
           <div>
             <h1 className="text-2xl font-bold text-neutral-900">{name}</h1>
             <p className="text-sm text-neutral-600">Product details</p>
