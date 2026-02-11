@@ -45,6 +45,9 @@ export default function ProductsListPage() {
           onRowClick={(product) => {
             void navigate(`/products/${product.id}`);
           }}
+          onEdit={(product) => {
+            void navigate(`/products/${product.id}/edit`);
+          }}
         />
       ) : (
         <div className="rounded-lg bg-white p-8 text-center text-neutral-500 shadow-sm border border-neutral-200">
