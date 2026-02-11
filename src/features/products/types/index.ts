@@ -16,3 +16,15 @@ export const productSchema = z
 
 export type Product = z.infer<typeof productSchema>; // tipe produk untuk dipakai di seluruh app.
 export const productListSchema = z.array(productSchema); // skema list produk (array dari product).
+
+
+export const productInputSchema = z.object({
+  name: z.string().trim().min(1, 'Name is required'),
+  price: z.coerce.number().nonnegative('Price must be a valid number'), // coerce ke number biar validasi konsisten walau input string.
+  // Opsional, cuma string bersih.
+  avatar: z.string().trim().optional(),
+  material: z.string().trim().optional(),
+  description: z.string().trim().optional(),
+});
+
+export type ProductInputValues = z.infer<typeof productInputSchema>;
