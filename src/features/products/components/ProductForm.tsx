@@ -11,6 +11,7 @@ export function ProductForm() {
     formState: { errors },
   } = useForm<ProductInputValues>({
     resolver: zodResolver(productInputSchema), // ambil validasi zod yg dischema
+    mode: 'onBlur', // munculin error saat field selesai diisi
     defaultValues: {
       name: '',
       price: 0,
