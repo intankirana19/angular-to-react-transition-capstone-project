@@ -7,10 +7,11 @@ import { type Product } from '../types';
 interface ProductsTableProps {
   products: Product[];
   onRowClick?: (product: Product) => void;
+  onEdit?: (product: Product) => void;
 }
 
 // refer ke TeamsTable dr skafold
-export function ProductsTable({ products, onRowClick }: ProductsTableProps) {
+export function ProductsTable({ products, onRowClick, onEdit }: ProductsTableProps) {
   const columns = useMemo<ColumnDef<Product>[]>( // memoisasi biar columns disimpan sekali aja jd referencenya stabil utk DataTable
     () => [
       {
@@ -45,8 +46,25 @@ export function ProductsTable({ products, onRowClick }: ProductsTableProps) {
         accessorKey: 'createdAt',
         cell: ({ row }) => formatDate(row.original.createdAt),
       },
+      {
+        header: 'Actions',
+        accessorKey: 'id',
+        cell: ({ row }) => (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation(); // biar row click gak ikut.
+              onEdit?.(row.original);
+            }}
+            className="text-ait-body-sm-semibold text-ait-primary-600 hover:text-ait-primary-700 transition-colors"
+          >
+            Edit
+          </button>
+        ),
+        enableSorting: false,
+      },
     ],
-    []
+    [onEdit]
   );
 
   return (
