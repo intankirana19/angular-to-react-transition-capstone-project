@@ -36,7 +36,7 @@ export default function ProductsListPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-neutral-900">Products</h1>
-        <Button>Add Product</Button> {/* TODO: handle add */}
+        <Button onClick={() => void navigate('/products/new')}>Add Product</Button>
       </div>
 
       {hasProducts ? (
