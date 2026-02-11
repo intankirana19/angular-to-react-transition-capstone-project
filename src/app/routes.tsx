@@ -42,6 +42,7 @@ export function AppRoutes() {
     { path: 'users', Component: UsersPage },
     { path: 'products', Component: ProductsPage },
     { path: 'products/:productId', Component: ProductDetailPage },
+    { path: 'products/:productId/edit', Component: ProductFormPage },
     { path: 'products/new', Component: ProductFormPage },
     { path: 'team', Component: TeamPage },
     { path: 'typography', Component: TypographyPage },
