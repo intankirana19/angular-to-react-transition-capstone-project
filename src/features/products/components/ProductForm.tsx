@@ -1,34 +1,54 @@
+import { useEffect } from 'react';
 import { Input } from '@/shared/ui/Input';
 import { Textarea, TextareaField } from '@/shared/ui/Textarea';
 import { productInputSchema, type ProductInputValues } from '../types';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-export function ProductForm() {
+interface ProductFormProps {
+  initialValues?: Partial<ProductInputValues>; // buat edit, isi awal diambil dari data produk.
+  onSubmit?: (data: ProductInputValues) => void;
+}
+
+const defaultValues: ProductInputValues = {
+  name: '',
+  price: 0,
+  avatar: '',
+  material: '',
+  description: '',
+};
+
+export function ProductForm({ initialValues, onSubmit }: ProductFormProps) {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<ProductInputValues>({
     resolver: zodResolver(productInputSchema), // ambil validasi zod yg dischema
     mode: 'onBlur', // munculin error saat field selesai diisi
-    defaultValues: {
-      name: '',
-      price: 0,
-      avatar: '',
-      material: '',
-      description: '',
-    },
+    defaultValues,
   });
 
-  const onSubmit = (data: ProductInputValues) => {
+  // Kalau ada data edit biar disinkronin ke form
+  useEffect(() => {
+    if (initialValues) {
+      reset({ ...defaultValues, ...initialValues });
+    }
+  }, [initialValues, reset]);
+
+  const handleValidSubmit = (data: ProductInputValues) => {
+    if (onSubmit) {
+      onSubmit(data);
+      return;
+    }
     console.log('submit product', data);
   };
 
   return (
     <form
       className="space-y-4"
-      onSubmit={(e) => {void handleSubmit(onSubmit)(e);}}
+      onSubmit={(e) => {void handleSubmit(handleValidSubmit)(e);}}
       noValidate
     >
       <Input
