@@ -1,51 +1,66 @@
-import { useState } from 'react';
 import { Input } from '@/shared/ui/Input';
-import { Textarea } from '@/shared/ui/Textarea';
-import { type ProductInputValues } from '../types';
+import { Textarea, TextareaField } from '@/shared/ui/Textarea';
+import { productInputSchema, type ProductInputValues } from '../types';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 export function ProductForm() {
-  const [values, setValues] = useState<ProductInputValues>({
-    name: '',
-    price: 0,
-    avatar: '',
-    material: '',
-    description: '',
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ProductInputValues>({
+    resolver: zodResolver(productInputSchema), // ambil validasi zod yg dischema
+    defaultValues: {
+      name: '',
+      price: 0,
+      avatar: '',
+      material: '',
+      description: '',
+    },
   });
 
+  const onSubmit = (data: ProductInputValues) => {
+    console.log('submit product', data);
+  };
+
   return (
-    <form className="space-y-4">
+    <form
+      className="space-y-4"
+      onSubmit={(e) => {void handleSubmit(onSubmit)(e);}}
+      noValidate
+    >
       <Input
         label="Name"
         placeholder="Product name"
-        required
-        value={values.name}
-        onChange={(e) => setValues((prev) => ({ ...prev, name: e.target.value }))}
+        error={errors.name?.message}
+        {...register('name')} // register ke react hook form
       />
       <Input
         label="Price"
         type="number"
         placeholder="0"
-        required
-        value={values.price}
-        onChange={(e) => setValues((prev) => ({ ...prev, price: Number(e.target.value) }))}
+        error={errors.price?.message}
+        {...register('price', {
+          valueAsNumber: true, // input number selalu string, pakai valueAsNumber biar jadi number.
+        })}
       />
       <Input
         label="Avatar URL"
         placeholder="https://..."
-        value={values.avatar}
-        onChange={(e) => setValues((prev) => ({ ...prev, avatar: e.target.value }))}
+        {...register('avatar')}
       />
       <Input
         label="Material"
         placeholder="Cotton / Wood / Metal"
-        value={values.material}
-        onChange={(e) => setValues((prev) => ({ ...prev, material: e.target.value }))}
+        {...register('material')}
       />
-      <Textarea
-        placeholder="Description"
-        value={values.description}
-        onChange={(e) => setValues((prev) => ({ ...prev, description: e.target.value }))}
-      />
+      <TextareaField label="Description" error={errors.description?.message}>
+        <Textarea
+          placeholder="Description"
+          {...register('description')}
+        />
+      </TextareaField>
 
       <button
         type="submit"
