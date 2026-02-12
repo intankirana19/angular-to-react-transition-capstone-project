@@ -46,7 +46,7 @@ export default function ProductsListPage() {
             void navigate(`/products/${product.id}`);
           }}
           onEdit={(product) => {
-            void navigate(`/products/${product.id}/edit`);
+            void navigate(`/products/edit/${product.id}`);
           }}
         />
       ) : (
