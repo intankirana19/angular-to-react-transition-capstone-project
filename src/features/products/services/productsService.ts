@@ -54,7 +54,6 @@ export async function getProductById(id: string): Promise<Product> {
 
 // MOCK CREATE API: validasi input, lalu simpan ke localStorage.
 export async function createProduct(payload: ProductInputValues): Promise<Product> {
-
   const input = productInputSchema.parse(payload);
   const products = await loadProducts();
 
@@ -68,4 +67,8 @@ export async function createProduct(payload: ProductInputValues): Promise<Produc
   persistProducts(nextProducts);
 
   return newProduct;
+
+  // kalo udah ada create api
+  // const response = await apiClient.post(API_ENDPOINTS.products, payload);
+  // return productSchema.parse(response.data);
 }
