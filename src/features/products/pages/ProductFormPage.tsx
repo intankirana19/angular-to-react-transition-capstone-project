@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/shared/ui/Button';
 import { ProductForm } from '../components/ProductForm';
-import { useGetProductById } from '../api/useGetProductById';
+import { useGetProductById } from '../api/hooks/useGetProductById';
 
 export default function ProductFormPage() {
   const navigate = useNavigate();
@@ -44,7 +44,13 @@ export default function ProductFormPage() {
       </div>
 
       <div className="rounded-lg bg-white p-6 shadow-sm border border-neutral-200">
-        <ProductForm initialValues={initialValues} />
+        <ProductForm
+          initialValues={initialValues}
+          mode={isEdit ? 'edit' : 'create'}
+          onSuccess={() => {
+            void navigate('/products');
+          }}
+        />
       </div>
     </div>
   );
