@@ -1,8 +1,11 @@
 import { apiClient } from '@/shared/lib/axios';
 import { API_ENDPOINTS } from '@/shared/api/endpoints';
 import {
+  productInputSchema,
   productListSchema,
+  productSchema,
   type Product,
+  type ProductInputValues,
 } from '../types';
 
 const PRODUCTS_STORAGE_KEY = 'mock:products';
@@ -47,4 +50,22 @@ export async function getProductById(id: string): Promise<Product> {
   // kalo ada api get detail by id
   // const response = await apiClient.get(API_ENDPOINTS.product(id));
   // return productSchema.parse(response.data);
+}
+
+// MOCK CREATE API: validasi input, lalu simpan ke localStorage.
+export async function createProduct(payload: ProductInputValues): Promise<Product> {
+
+  const input = productInputSchema.parse(payload);
+  const products = await loadProducts();
+
+  const newProduct = productSchema.parse({
+    id: crypto.randomUUID(),
+    ...input,
+    createdAt: new Date().toISOString(),
+  });
+
+  const nextProducts = [newProduct, ...products];
+  persistProducts(nextProducts);
+
+  return newProduct;
 }
