@@ -81,3 +81,36 @@ export async function createProduct(payload: ProductInputValues): Promise<Produc
   // const response = await apiClient.post(API_ENDPOINTS.products, payload);
   // return productSchema.parse(response.data);
 }
+
+// MOCK UPDATE API: validasi input, update produk berdasarkan id, lalu simpan ke localStorage.
+export async function updateProduct(id: string, payload: ProductInputValues): Promise<Product> {
+  await delay(MOCK_NETWORK_DELAY_MS);
+
+  const input = productInputSchema.parse(payload);
+  const products = await loadProducts();
+  // Cari item existing yang akan dioverwrite datanya.
+  const productIndex = products.findIndex((item) => item.id === id);
+
+  if (productIndex < 0) {
+    throw new Error('Product not found');
+  }
+
+  const currentProduct = products[productIndex];
+  // Pertahankan id/createdAt lama agar tidak berubah saat edit.
+  const updatedProduct = productSchema.parse({
+    ...currentProduct,
+    ...input,
+    id: currentProduct.id,
+    createdAt: currentProduct.createdAt ?? new Date().toISOString(),
+  });
+
+  const nextProducts = [...products];
+  nextProducts[productIndex] = updatedProduct;
+  persistProducts(nextProducts);
+
+  return updatedProduct;
+
+  // kalo udah ada update api
+  // const response = await apiClient.put(API_ENDPOINTS.product(id), payload);
+  // return productSchema.parse(response.data);
+}
