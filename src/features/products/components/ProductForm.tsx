@@ -1,13 +1,15 @@
 import { useEffect } from 'react';
 import { Input } from '@/shared/ui/Input';
 import { Textarea, TextareaField } from '@/shared/ui/Textarea';
-import { productInputSchema, type ProductInputValues } from '../types';
+import { productInputSchema, type Product, type ProductInputValues } from '../types';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useCreateProduct } from '../api/hooks/useCreateProduct';
 
 interface ProductFormProps {
   initialValues?: Partial<ProductInputValues>; // buat edit, isi awal diambil dari data produk.
-  onSubmit?: (data: ProductInputValues) => void;
+  mode?: 'create' | 'edit';
+  onSuccess?: (product: Product) => void | Promise<void>;
 }
 
 const defaultValues: ProductInputValues = {
@@ -18,7 +20,12 @@ const defaultValues: ProductInputValues = {
   description: '',
 };
 
-export function ProductForm({ initialValues, onSubmit }: ProductFormProps) {
+export function ProductForm({
+  initialValues,
+  mode = 'create',
+  onSuccess,
+}: ProductFormProps) {
+  const createProductMutation = useCreateProduct();
   const {
     register,
     handleSubmit,
@@ -37,12 +44,18 @@ export function ProductForm({ initialValues, onSubmit }: ProductFormProps) {
     }
   }, [initialValues, reset]);
 
-  const handleValidSubmit = (data: ProductInputValues) => {
-    if (onSubmit) {
-      onSubmit(data);
+  const isSubmitting = mode === 'create' ? createProductMutation.isPending : false;
+
+  const handleValidSubmit = async (data: ProductInputValues) => {
+    if (mode === 'create') {
+      const createdProduct = await createProductMutation.mutateAsync(data); // pakai mutateAsync drpd mutate karna data perlu dipakai dionSuccess
+      if (onSuccess) {
+        await onSuccess(createdProduct);
+      }
       return;
     }
-    console.log('submit product', data);
+
+    console.log('submit edit product', data);
   };
 
   return (
@@ -82,12 +95,12 @@ export function ProductForm({ initialValues, onSubmit }: ProductFormProps) {
           {...register('description')}
         />
       </TextareaField>
-
       <button
         type="submit"
+        disabled={isSubmitting}
         className="px-4 py-2.5 text-ait-body-md-semibold text-white bg-ait-primary-500 rounded-lg hover:bg-ait-primary-400 transition-colors"
       >
-        Save
+        {isSubmitting ? 'Saving...' : 'Save'}
       </button>
     </form>
   );
