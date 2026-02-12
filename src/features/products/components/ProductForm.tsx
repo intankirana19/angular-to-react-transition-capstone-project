@@ -5,8 +5,10 @@ import { productInputSchema, type Product, type ProductInputValues } from '../ty
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCreateProduct } from '../api/hooks/useCreateProduct';
+import { useUpdateProduct } from '../api/hooks/useUpdateProduct';
 
 interface ProductFormProps {
+  productId?: string;
   initialValues?: Partial<ProductInputValues>; // buat edit, isi awal diambil dari data produk.
   mode?: 'create' | 'edit';
   onSuccess?: (product: Product) => void | Promise<void>;
@@ -21,11 +23,13 @@ const defaultValues: ProductInputValues = {
 };
 
 export function ProductForm({
+  productId,
   initialValues,
   mode = 'create',
   onSuccess,
 }: ProductFormProps) {
   const createProductMutation = useCreateProduct();
+  const updateProductMutation = useUpdateProduct();
   const {
     register,
     handleSubmit,
@@ -44,7 +48,9 @@ export function ProductForm({
     }
   }, [initialValues, reset]);
 
-  const isSubmitting = mode === 'create' ? createProductMutation.isPending : false;
+  const isSubmitting = mode === 'create'
+    ? createProductMutation.isPending
+    : updateProductMutation.isPending;
 
   const handleValidSubmit = async (data: ProductInputValues) => {
     if (mode === 'create') {
@@ -55,7 +61,18 @@ export function ProductForm({
       return;
     }
 
-    console.log('submit edit product', data);
+    if (!productId) {
+      throw new Error('Product id is required for edit mode');
+    }
+
+    // mode edit: kirim id + payload untuk update yang existing.
+    const updatedProduct = await updateProductMutation.mutateAsync({
+      id: productId,
+      payload: data,
+    });
+    if (onSuccess) {
+      await onSuccess(updatedProduct);
+    }
   };
 
   return (
