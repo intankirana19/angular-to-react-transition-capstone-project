@@ -6,9 +6,16 @@ import {
   productSchema,
   type Product,
   type ProductInputValues,
-} from '../types';
+} from '../../types';
 
 const PRODUCTS_STORAGE_KEY = 'mock:products';
+const MOCK_NETWORK_DELAY_MS = 5000; // buat tes disable submit button
+
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
 
 // MOCK API: list produk sementara disimpan localStorage supaya hasil create tetap terlihat setelah refresh.
 function persistProducts(products: Product[]): void {
@@ -54,6 +61,8 @@ export async function getProductById(id: string): Promise<Product> {
 
 // MOCK CREATE API: validasi input, lalu simpan ke localStorage.
 export async function createProduct(payload: ProductInputValues): Promise<Product> {
+  await delay(MOCK_NETWORK_DELAY_MS);  // buat tes disable submit button
+
   const input = productInputSchema.parse(payload);
   const products = await loadProducts();
 
