@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { Avatar } from '@/shared/ui/Avatar';
 import { DEFAULT_PLACEHOLDER, formatCurrency, formatDate } from '@/shared/lib/formatters';
-import { useGetProductById } from '../api/useGetProductById';
+import { useGetProductById } from '../api/hooks/useGetProductById';
 import { Button } from '@/shared/ui/Button';
 import { ArrowLeft } from 'lucide-react';
 

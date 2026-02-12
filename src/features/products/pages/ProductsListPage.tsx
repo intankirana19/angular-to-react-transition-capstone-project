@@ -1,6 +1,6 @@
 import { Button } from '@/shared/ui/Button';
 import { useNavigate } from 'react-router-dom';
-import { useGetProducts } from '../api/useGetProducts';
+import { useGetProducts } from '../api/hooks/useGetProducts';
 import { ProductsTable } from '../components/ProductsTable';
 
 // refer user page dr skafold
