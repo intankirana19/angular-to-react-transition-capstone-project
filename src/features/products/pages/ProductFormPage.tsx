@@ -45,6 +45,7 @@ export default function ProductFormPage() {
 
       <div className="rounded-lg bg-white p-6 shadow-sm border border-neutral-200">
         <ProductForm
+          productId={productId}
           initialValues={initialValues}
           mode={isEdit ? 'edit' : 'create'}
           onSuccess={() => {
