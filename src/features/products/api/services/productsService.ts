@@ -114,3 +114,21 @@ export async function updateProduct(id: string, payload: ProductInputValues): Pr
   // const response = await apiClient.put(API_ENDPOINTS.product(id), payload);
   // return productSchema.parse(response.data);
 }
+
+// MOCK DELETE API: hapus produk berdasarkan id lalu simpan ulang ke localStorage.
+export async function deleteProduct(id: string): Promise<void> {
+  await delay(MOCK_NETWORK_DELAY_MS);
+
+  const products = await loadProducts();
+
+  const nextProducts = products.filter((item) => item.id !== id); // Hapus item by id; array baru biar approach immutable/ update data tanpa langsung ubah yg lama biar mudah dilacak dan aman untuk state sync.
+
+  if (nextProducts.length === products.length) {
+    throw new Error('Product not found');
+  }
+
+  persistProducts(nextProducts); // persist ulang buat update list dilocalhost
+
+  // kalo udah ada delete api
+  // await apiClient.delete(API_ENDPOINTS.product(id));
+}
