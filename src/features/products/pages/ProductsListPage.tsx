@@ -1,12 +1,21 @@
-import { Button } from '@/shared/ui/Button';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Button } from '@/shared/ui/Button';
 import { useGetProducts } from '../api/hooks/useGetProducts';
+import { ProductFormDialog } from '../components/ProductFormDialog';
 import { ProductsTable } from '../components/ProductsTable';
 
 // refer user page dr skafold
 export default function ProductsListPage() {
   const navigate = useNavigate();
   const { data: products, isLoading, error, refetch, isFetching } = useGetProducts();
+  const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
+  const [editingProductId, setEditingProductId] = useState<string | null>(null);
+
+  const editingProduct = useMemo(
+    () => products?.find((product) => product.id === editingProductId),
+    [products, editingProductId]
+  );
 
   if (isLoading) {
     return (
@@ -36,7 +45,14 @@ export default function ProductsListPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-neutral-900">Products</h1>
-        <Button onClick={() => void navigate('/products/new')}>Add Product</Button>
+        <Button
+          onClick={() => {
+            void navigate('/products/new');
+            // setCreateDialogOpen(true);
+          }}
+        >
+          Add Product
+        </Button>
       </div>
 
       {hasProducts ? (
@@ -46,7 +62,8 @@ export default function ProductsListPage() {
             void navigate(`/products/${product.id}`);
           }}
           onEdit={(product) => {
-            void navigate(`/products/edit/${product.id}`);
+            setEditingProductId(product.id);
+            // void navigate(`/products/edit/${product.id}`);
           }}
         />
       ) : (
@@ -54,6 +71,23 @@ export default function ProductsListPage() {
           No products found
         </div>
       )}
+
+      <ProductFormDialog
+        open={isCreateDialogOpen}
+        onOpenChange={setCreateDialogOpen}
+        mode="create"
+      />
+
+      <ProductFormDialog
+        open={Boolean(editingProductId)}
+        onOpenChange={(open) => {
+          if (!open) {
+            setEditingProductId(null);
+          }
+        }}
+        mode="edit"
+        product={editingProduct}
+      />
     </div>
   );
 }
