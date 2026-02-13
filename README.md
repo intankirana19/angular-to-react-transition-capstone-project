@@ -130,3 +130,20 @@ MIT
 4.  Refer dari fitur user, tapi untuk fitur produk, service dan custom hook dipisah. Service bisa jadi reusable misal untuk test atau prefetching.
     Source:
     - https://tanstack.com/query/v5/docs/framework/react/guides/prefetching
+
+5.  Detail produk (mock karena real api hanya daftar produk awal):
+    - Service (`productsService.ts`): `getProductById` tidak call endpoint detail terpisah, tapi ambil dari `getProducts()` lalu `find` by `id`. Keputusan ini dipakai supaya sumber data detail sama dengan list yang sudah dipersist lokal; hasil create/edit mock langsung kebaca di halaman detail tanpa mismatch. Nantinya jika sudah ada API detail produk, logic "ambil dari list lalu find by id" ini tidak terpakai lagi, dan diganti dengan request ke endpoint detail langsung lalu parse response seperti biasa.
+    - Hook (`useGetProductById.ts`): query key dipisah (`['products', productId]`) dan query hanya jalan saat `productId` ada (`enabled: Boolean(productId)`), jadi cache detail tetap stabil walau source-nya masih dari list.
+    - Page (`ProductDetailPage.tsx`): tetap konsumsi hook detail seperti flow final API, termasuk loading/error/retry, supaya nanti migrasi ke endpoint detail cukup ubah service.
+
+6.  Tambah produk (mock karena real api hanya daftar produk awal):
+    - Service (`productsService.ts`): `createProduct` validasi payload pakai `productInputSchema`, generate `id` (`crypto.randomUUID`) + `createdAt`, lalu prepend (produk baru diletakkan di index 0/awal list) ke list dan simpan pakai `persistProducts` karena belum ada api create sehingga api list belum update dengan data produk baru, jadi list harus dihandle secara lokal supaya hasil create produk langsung terlihat dan tetap ada setelah refresh. Nantinya jika sudah ada API create produk, logic "generate id + prepend list + persist local storage" ini tidak terpakai lagi, dan diganti dengan request ke endpoint create lalu parse response seperti biasa.
+    - Hook (`useCreateProduct.ts`): setelah mutation sukses, invalidate query `['products']` agar list refetch dari source lokal terbaru (yang sudah diupdate service).
+    - Component (`ProductForm.tsx`): mode `create` pakai `createProductMutation.mutateAsync`, submit state terkontrol (`isPending`) dan callback `onSuccess` menerima produk hasil create.
+    - Page (`ProductFormPage.tsx`): mode create diarahkan ke `ProductForm`, lalu setelah sukses navigasi kembali ke `/products` sehingga user langsung lihat item baru di list.
+
+7.  Edit produk (mock karena real api hanya daftar produk awal):
+    - Service (`productsService.ts`): `updateProduct` validasi payload, cari produk yang mau diedit, update datanya, lalu simpan lagi ke local storage. Karena mock, untuk data `id` dan `createdAt` ambil dari data existing supaya produknya tetap dianggap item yang sama. Nantinya jika sudah ada API update produk, logic "cari + update + simpan ke local storage" ini tidak terpakai lagi, dan diganti dengan request ke endpoint update lalu parse response seperti biasa.
+    - Hook (`useUpdateProduct.ts`): setelah sukses, invalidate query `['products']` (list) dan `['products', id]` (detail) supaya dua page itu nanti ikut sinkron/terupdate setelah edit.
+    - Component (`ProductForm.tsx`): mode `edit` kirim `{ id, payload }` ke mutation update, dan tetap pakai alur submit yang sama dengan create.
+    - Page (`ProductFormPage.tsx`): ambil data awal edit dari hook `useGetProductById(productId)`, mapping ke `initialValues`, lalu `ProductForm` di `reset` biar isi form langsung ikut sinkron/terupdate sesuai data edit yang baru didapat.

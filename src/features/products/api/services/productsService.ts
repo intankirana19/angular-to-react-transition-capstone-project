@@ -72,7 +72,7 @@ export async function createProduct(payload: ProductInputValues): Promise<Produc
     createdAt: new Date().toISOString(),
   });
 
-  const nextProducts = [newProduct, ...products];
+  const nextProducts = [newProduct, ...products]; // MOCK CREATE API: diprepend biar produk baru ada di index 0/awal list, tinggal ubah kalo mau diappend
   persistProducts(nextProducts);
 
   return newProduct;
