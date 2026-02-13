@@ -8,10 +8,11 @@ interface ProductsTableProps {
   products: Product[];
   onRowClick?: (product: Product) => void;
   onEdit?: (product: Product) => void;
+  onDelete?: (product: Product) => void;
 }
 
 // refer ke TeamsTable dr skafold
-export function ProductsTable({ products, onRowClick, onEdit }: ProductsTableProps) {
+export function ProductsTable({ products, onRowClick, onEdit, onDelete }: ProductsTableProps) {
   const columns = useMemo<ColumnDef<Product>[]>( // memoisasi biar columns disimpan sekali aja jd referencenya stabil utk DataTable
     () => [
       {
@@ -50,21 +51,33 @@ export function ProductsTable({ products, onRowClick, onEdit }: ProductsTablePro
         header: 'Actions',
         accessorKey: 'id',
         cell: ({ row }) => (
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation(); // biar row click gak ikut.
-              onEdit?.(row.original);
-            }}
-            className="text-ait-body-sm-semibold text-ait-primary-600 hover:text-ait-primary-700 transition-colors"
-          >
-            Edit
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation(); // biar row click gak ikut.
+                onEdit?.(row.original);
+              }}
+              className="text-ait-body-sm-semibold text-ait-primary-600 hover:text-ait-primary-700 transition-colors"
+            >
+              Edit
+            </button>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation(); // supaya ga trigger row navigation saat klik delete.
+                onDelete?.(row.original);
+              }}
+              className="text-ait-body-sm-semibold text-danger-600 hover:text-danger-700 transition-colors"
+            >
+              Delete
+            </button>
+          </div>
         ),
         enableSorting: false,
       },
     ],
-    [onEdit]
+    [onDelete, onEdit]
   );
 
   return (

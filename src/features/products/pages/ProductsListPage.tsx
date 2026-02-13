@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/shared/ui/Button';
 import { useGetProducts } from '../api/hooks/useGetProducts';
+import { DeleteProductDialog } from '../components/DeleteProductDialog';
 import { ProductFormDialog } from '../components/ProductFormDialog';
 import { ProductsTable } from '../components/ProductsTable';
 
@@ -11,10 +12,15 @@ export default function ProductsListPage() {
   const { data: products, isLoading, error, refetch, isFetching } = useGetProducts();
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
+  const [deletingProductId, setDeletingProductId] = useState<string | null>(null);
 
   const editingProduct = useMemo(
     () => products?.find((product) => product.id === editingProductId),
     [products, editingProductId]
+  );
+  const deletingProduct = useMemo(
+    () => products?.find((product) => product.id === deletingProductId) ?? null,
+    [deletingProductId, products]
   );
 
   if (isLoading) {
@@ -65,6 +71,9 @@ export default function ProductsListPage() {
             setEditingProductId(product.id);
             // void navigate(`/products/edit/${product.id}`);
           }}
+          onDelete={(product) => {
+            setDeletingProductId(product.id);
+          }}
         />
       ) : (
         <div className="rounded-lg bg-white p-8 text-center text-neutral-500 shadow-sm border border-neutral-200">
@@ -87,6 +96,16 @@ export default function ProductsListPage() {
         }}
         mode="edit"
         product={editingProduct}
+      />
+
+      <DeleteProductDialog
+        open={Boolean(deletingProductId)}
+        onOpenChange={(open) => {
+          if (!open) {
+            setDeletingProductId(null);
+          }
+        }}
+        product={deletingProduct}
       />
     </div>
   );
