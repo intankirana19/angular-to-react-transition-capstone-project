@@ -1,6 +1,5 @@
 import { Pagination } from '@/shared/ui/Pagination';
 import { SimpleSelect } from '@/shared/ui/SimpleSelect';
-import { ToastContainer } from '@/shared/ui/Toast';
 import { useToast } from '@/shared/hooks/useToast';
 import { Plus, Search } from 'lucide-react';
 import { useState } from 'react';
@@ -24,7 +23,7 @@ export default function DailyLogsPage() {
   const [itemsPerPage, setItemsPerPage] = useState(5);
 
   // Toast notifications
-  const { toasts, success, error } = useToast();
+  const { success, error } = useToast();
 
   // Dialog states
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
@@ -278,9 +277,6 @@ export default function DailyLogsPage() {
         log={selectedLog}
         onConfirm={handleConfirmDelete}
       />
-
-      {/* Toast Notifications */}
-      <ToastContainer toasts={toasts} />
     </div>
   );
 }
