@@ -147,3 +147,8 @@ MIT
     - Hook (`useUpdateProduct.ts`): setelah sukses, invalidate query `['products']` (list) dan `['products', id]` (detail) supaya dua page itu nanti ikut sinkron/terupdate setelah edit.
     - Component (`ProductForm.tsx`): mode `edit` kirim `{ id, payload }` ke mutation update, dan tetap pakai alur submit yang sama dengan create.
     - Page (`ProductFormPage.tsx`): ambil data awal edit dari hook `useGetProductById(productId)`, mapping ke `initialValues`, lalu `ProductForm` di `reset` biar isi form langsung ikut sinkron/terupdate sesuai data edit yang baru didapat.
+
+8.  Toast notification diubah dari state lokal per halaman ke store global `zustand` dan `ToastContainer` dirender sekali di `App.tsx` supaya notifikasi tetap muncul saat pindah halaman, karena data toast disimpan satu tempat di level app dan tetap dipakai bersama oleh semua halaman lewat `useToast` tanpa mengubah cara pakainya di feature.
+    Sources:
+    - https://zustand.docs.pmnd.rs/getting-started/introduction
+    - https://zustand.docs.pmnd.rs/apis/create
