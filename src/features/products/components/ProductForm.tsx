@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCreateProduct } from '../api/hooks/useCreateProduct';
 import { useUpdateProduct } from '../api/hooks/useUpdateProduct';
+import { useToast } from '@/shared/hooks/useToast';
 
 interface ProductFormProps {
   productId?: string;
@@ -30,6 +31,7 @@ export function ProductForm({
 }: ProductFormProps) {
   const createProductMutation = useCreateProduct();
   const updateProductMutation = useUpdateProduct();
+  const { addToast } = useToast();
   const {
     register,
     handleSubmit,
@@ -55,6 +57,13 @@ export function ProductForm({
   const handleValidSubmit = async (data: ProductInputValues) => {
     if (mode === 'create') {
       const createdProduct = await createProductMutation.mutateAsync(data); // pakai mutateAsync drpd mutate karna data perlu dipakai dionSuccess
+      // Tampilkan toast dulu, lalu lanjut callback/navigate.
+      addToast({
+        type: 'success',
+        title: 'Product Created Successfully',
+        message: `"${createdProduct.name ?? 'Product'}" was created successfully.`,
+        duration: 6000,
+      });
       if (onSuccess) {
         await onSuccess(createdProduct);
       }
@@ -69,6 +78,13 @@ export function ProductForm({
     const updatedProduct = await updateProductMutation.mutateAsync({
       id: productId,
       payload: data,
+    });
+    // Sama seperti create: toast tampil dulu.
+    addToast({
+      type: 'success',
+      title: 'Product Updated Successfully',
+      message: `"${updatedProduct.name ?? 'Product'}" was updated successfully.`,
+      duration: 6000,
     });
     if (onSuccess) {
       await onSuccess(updatedProduct);
