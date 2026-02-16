@@ -34,7 +34,7 @@ export function ProductForm({
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitting: isFormSubmitting },
   } = useForm<ProductInputValues>({
     resolver: zodResolver(productInputSchema), // ambil validasi zod yg dischema
     mode: 'onBlur', // munculin error saat field selesai diisi
@@ -48,9 +48,9 @@ export function ProductForm({
     }
   }, [initialValues, reset]);
 
-  const isSubmitting = mode === 'create'
+  const isSubmitting = isFormSubmitting || (mode === 'create'
     ? createProductMutation.isPending
-    : updateProductMutation.isPending;
+    : updateProductMutation.isPending);
 
   const handleValidSubmit = async (data: ProductInputValues) => {
     if (mode === 'create') {
@@ -85,6 +85,7 @@ export function ProductForm({
         label="Name"
         placeholder="Product name"
         error={errors.name?.message}
+        disabled={isSubmitting}
         {...register('name')} // register ke react hook form
       />
       <Input
@@ -92,6 +93,7 @@ export function ProductForm({
         type="number"
         placeholder="0"
         error={errors.price?.message}
+        disabled={isSubmitting}
         {...register('price', {
           valueAsNumber: true, // input number selalu string, pakai valueAsNumber biar jadi number.
         })}
@@ -99,23 +101,26 @@ export function ProductForm({
       <Input
         label="Avatar URL"
         placeholder="https://..."
+        disabled={isSubmitting}
         {...register('avatar')}
       />
       <Input
         label="Material"
         placeholder="Cotton / Wood / Metal"
+        disabled={isSubmitting}
         {...register('material')}
       />
       <TextareaField label="Description" error={errors.description?.message}>
         <Textarea
           placeholder="Description"
+          disabled={isSubmitting}
           {...register('description')}
         />
       </TextareaField>
       <button
         type="submit"
         disabled={isSubmitting}
-        className="px-4 py-2.5 text-ait-body-md-semibold text-white bg-ait-primary-500 rounded-lg hover:bg-ait-primary-400 transition-colors"
+        className="px-4 py-2.5 text-ait-body-md-semibold text-white bg-ait-primary-500 rounded-lg transition-colors enabled:hover:bg-ait-primary-400 disabled:bg-disabled disabled:text-white/70 disabled:opacity-60 disabled:cursor-not-allowed disabled:pointer-events-none"
       >
         {isSubmitting ? 'Saving...' : 'Save'}
       </button>
