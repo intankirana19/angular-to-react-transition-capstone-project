@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { DataTable, type ColumnDef } from '@/shared/components/data-table';
 import { Avatar } from '@/shared/ui/Avatar';
 import { DEFAULT_PLACEHOLDER, formatCurrency, formatDate } from '@/shared/lib/formatters';
+import { Edit, Trash2 } from 'lucide-react';
 import { type Product } from '../types';
 
 interface ProductsTableProps {
@@ -51,16 +52,18 @@ export function ProductsTable({ products, onRowClick, onEdit, onDelete }: Produc
         header: 'Actions',
         accessorKey: 'id',
         cell: ({ row }) => (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1">
             <button
               type="button"
               onClick={(e) => {
                 e.stopPropagation(); // biar row click gak ikut.
                 onEdit?.(row.original);
               }}
-              className="text-ait-body-sm-semibold text-ait-primary-600 hover:text-ait-primary-700 transition-colors"
+              className="p-2 text-ait-neutral-500 hover:text-ait-primary-600 hover:bg-ait-primary-50 rounded-lg transition-all duration-200 hover:shadow-sm"
+              title="Edit product"
+              aria-label="Edit product"
             >
-              Edit
+              <Edit className="w-4 h-4" />
             </button>
             <button
               type="button"
@@ -68,9 +71,11 @@ export function ProductsTable({ products, onRowClick, onEdit, onDelete }: Produc
                 e.stopPropagation(); // supaya ga trigger row navigation saat klik delete.
                 onDelete?.(row.original);
               }}
-              className="text-ait-body-sm-semibold text-danger-600 hover:text-danger-700 transition-colors"
+              className="p-2 text-ait-neutral-500 hover:text-ait-danger-600 hover:bg-ait-danger-50 rounded-lg transition-all duration-200 hover:shadow-sm"
+              title="Delete product"
+              aria-label="Delete product"
             >
-              Delete
+              <Trash2 className="w-4 h-4" />
             </button>
           </div>
         ),
