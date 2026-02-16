@@ -37,16 +37,29 @@ export function DeleteProductDialog({ open, onOpenChange, product }: DeleteProdu
       return;
     }
 
-    await deleteProductMutation.mutateAsync(product.id);
+    try {
+      await deleteProductMutation.mutateAsync(product.id);
 
-    addToast({ // feedback sukses setelah API delete berhasil.
-      type: 'success',
-      title: 'Delete Product',
-      message: `"${product.name ?? 'Product'}" was deleted successfully.`,
-      duration: 6000, // durasi lebih lama biar user sempat baca?
-    }); 
+      addToast({ // feedback sukses setelah API delete berhasil.
+        type: 'success',
+        title: 'Product Deleted Successfully',
+        message: `"${product.name ?? 'Product'}" was deleted successfully.`,
+        duration: 6000, // durasi lebih lama biar user sempat baca?
+      }); 
 
-    onOpenChange(false); // tutup dialog hanya jika mutate sukses
+      onOpenChange(false); // tutup dialog hanya jika mutate sukses
+      
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Please try again in a few moments.';
+
+      addToast({ // feedback gagal
+        type: 'error',
+        title: 'Failed to delete product',
+        message: errorMessage,
+        duration: 7000,
+      });
+    }
   };
 
   return (

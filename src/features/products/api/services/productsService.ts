@@ -119,6 +119,9 @@ export async function updateProduct(id: string, payload: ProductInputValues): Pr
 export async function deleteProduct(id: string): Promise<void> {
   await delay(MOCK_NETWORK_DELAY_MS);
 
+  // buat test negative/failure feedback
+  // throw new Error('Mock delete failed. Please try again.');
+
   const products = await loadProducts();
 
   const nextProducts = products.filter((item) => item.id !== id); // Hapus item by id; array baru biar approach immutable/ update data tanpa langsung ubah yg lama biar mudah dilacak dan aman untuk state sync.
