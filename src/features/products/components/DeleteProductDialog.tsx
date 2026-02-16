@@ -19,6 +19,15 @@ interface DeleteProductDialogProps {
 
 export function DeleteProductDialog({ open, onOpenChange, product }: DeleteProductDialogProps) {
   const deleteProductMutation = useDeleteProduct();
+  const isDeleting = deleteProductMutation.isPending;
+
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (isDeleting && !nextOpen) {
+      return;
+    }
+
+    onOpenChange(nextOpen);
+  };
 
   const handleConfirm = async () => {
     if (!product) { // guard untuk validasi saat dialog terbuka tanpa target produk.
@@ -31,8 +40,8 @@ export function DeleteProductDialog({ open, onOpenChange, product }: DeleteProdu
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent size="sm">
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent size="sm" showClose={!isDeleting}>
         <DialogHeader>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-danger-100 flex items-center justify-center flex-shrink-0">
@@ -49,8 +58,8 @@ export function DeleteProductDialog({ open, onOpenChange, product }: DeleteProdu
         <DialogFooter>
           <Button
             variant="secondary"
-            onClick={() => onOpenChange(false)}
-            disabled={deleteProductMutation.isPending}   // disabled saat proses delete berjalan utk mencegah double submit.
+            onClick={() => handleOpenChange(false)}
+            disabled={isDeleting}   // disabled saat proses delete berjalan utk mencegah double submit.
           >
             Cancel
           </Button>
@@ -59,9 +68,9 @@ export function DeleteProductDialog({ open, onOpenChange, product }: DeleteProdu
             onClick={() => {
               void handleConfirm();
             }}
-            disabled={!product || deleteProductMutation.isPending}
+            disabled={!product || isDeleting}
           >
-            {deleteProductMutation.isPending ? 'Deleting...' : 'Delete Product'}
+            {isDeleting ? 'Deleting...' : 'Delete Product'}
           </Button>
         </DialogFooter>
       </DialogContent>
