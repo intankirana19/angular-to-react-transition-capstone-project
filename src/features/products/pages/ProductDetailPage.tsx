@@ -4,6 +4,7 @@ import { DEFAULT_PLACEHOLDER, formatCurrency, formatDate } from '@/shared/lib/fo
 import { useGetProductById } from '../api/hooks/useGetProductById';
 import { Button } from '@/shared/ui/Button';
 import { ArrowLeft } from 'lucide-react';
+import { LoadingState } from '@/shared/ui/LoadingState';
 
 export default function ProductDetailPage() {
   const navigate = useNavigate();
@@ -25,12 +26,8 @@ export default function ProductDetailPage() {
     );
   }
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600" />
-      </div>
-    );
+  if (isLoading) { // TODO: ubah error handler pakai errorboundary biar bisa ikut pakai fallback Suspense di level route.
+    return <LoadingState label="Loading product..." />;
   }
   
   if (error) {
