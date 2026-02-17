@@ -1,6 +1,7 @@
-import { ReactNode } from 'react';
-import { Outlet } from 'react-router-dom';
+import { ReactNode, Suspense } from 'react';
+import { Outlet, useLocation } from 'react-router-dom';
 import { useUiStore } from '@/app/store/useUIStore';
+import { LoadingState } from '@/shared/ui/LoadingState';
 import { Button } from '@/shared/ui/Button';
 import { Sidebar } from './Sidebar';
 
@@ -9,6 +10,7 @@ interface MainLayoutProps {
 }
 
 export function MainLayout({ children }: MainLayoutProps) {
+  const location = useLocation();
   const { sidebarOpen, toggleSidebar } = useUiStore();
 
   return (
@@ -28,7 +30,12 @@ export function MainLayout({ children }: MainLayoutProps) {
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-6">{children ?? <Outlet />}</main>
+        <main className="flex-1 overflow-y-auto p-6">
+          {/* suspense khusus outlet biar loader ga full page (atau untuk handle fallback react query jika ada yg pakai useSuspenseQuery), `location.key` reset boundary tiap navigasi biar fallback muncul per perpindahan route (ga freeze dipage asal) */}
+          <Suspense key={location.key} fallback={<LoadingState label="Loading page..." />}>
+            {children ?? <Outlet />}
+          </Suspense>
+        </main>
       </div>
     </div>
   );

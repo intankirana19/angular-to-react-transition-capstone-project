@@ -46,7 +46,7 @@ export function AppRoutes() {
   ];
 
   return (
-    <Suspense fallback={<LoadingState fullScreen/>}> {/* suspense dipakai untuk module route yang di-load dengan lazy() (loading chunk kode) bukan loading data api, tapi UI jadi komponen reusable 'LoadingState' untuk standarisasi */}
+    <Suspense fallback={<LoadingState fullScreen />}>  {/* // global fallback utk initial lazy load route tree, fallback per navigasi ada di MainLayout utk Outlet */}
       <Routes>
         {/* Auth Routes (without sidebar) */}
         <Route element={<AuthLayout />}>
