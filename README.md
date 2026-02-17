@@ -158,3 +158,9 @@ MIT
 10. Suspense dipisah antara level global (`routes.tsx`) dan level konten route (`MainLayout.tsx`). Di `routes.tsx`, secara global dipakai sebagai fallback saat initial lazy-load route tree untuk loading chunk code dari `lazy()`. Di `MainLayout.tsx`, suspense "membungkus" `Outlet` supaya saat route berganti yang loading hanya area konten utama sehingga layout sidebar (atau kalau ada header) tetap tampil dan `key={location.key}` dipakai agar fallback di-remount setiap navigasi, jadi fallback (loader) bisa muncul lagi setiap pindah halaman (tidak freeze dihalaman asal saat navigasi).
     Sources:
     - https://react.dev/reference/react/Suspense
+
+11. Custom hook untuk api daftar `user` dan `product` diubah dari pakai `useQuery` jadi pakai `useSuspenseQuery` untuk menyatukan loading awal halaman ke `<Suspense fallback>` (route-level), jadi page tidak perlu branch `isLoading` manual. Jika butuh UI/UX berbeda per komponen (bukan route-level), bisa tetap pakai `useQuery` + `isLoading` lokal.
+    Sources:
+    - https://tanstack.com/query/v5/docs/framework/react/reference/useSuspenseQuery
+    - https://tanstack.com/query/v5/docs/framework/react/guides/suspense
+    - https://tanstack.com/query/v5/docs/framework/react/reference/useQuery

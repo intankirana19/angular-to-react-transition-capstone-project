@@ -9,7 +9,7 @@ import { ProductsTable } from '../components/ProductsTable';
 // refer user page dr skafold
 export default function ProductsListPage() {
   const navigate = useNavigate();
-  const { data: products, isLoading, error, refetch, isFetching } = useGetProducts();
+  const { data: products, error, refetch, isFetching } = useGetProducts();
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
   const [deletingProductId, setDeletingProductId] = useState<string | null>(null);
@@ -22,14 +22,6 @@ export default function ProductsListPage() {
     () => products?.find((product) => product.id === deletingProductId) ?? null,
     [deletingProductId, products]
   );
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600" />
-      </div>
-    );
-  }
 
   if (error) {
     return (

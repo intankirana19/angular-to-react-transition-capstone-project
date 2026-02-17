@@ -3,15 +3,7 @@ import { UsersTable } from './components/UsersTable';
 import { Button } from '@/shared/ui/Button';
 
 export default function UsersPage() {
-  const { data: users, isLoading, error } = useGetUsers();
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600" />
-      </div>
-    );
-  }
+  const { data: users, error } = useGetUsers();
 
   if (error) {
     return (
