@@ -3,6 +3,7 @@ import { lazy, Suspense } from 'react';
 import type { ElementType } from 'react';
 import { MainLayout } from '@/app/layouts/MainLayout';
 import { AuthLayout } from '@/app/layouts/AuthLayout';
+import { LoadingState } from '@/shared/ui/LoadingState';
 
 const HomePage = lazy(() => import('@/features/home'));
 const UsersPage = lazy(() => import('@/features/users'));
@@ -20,17 +21,6 @@ const DialogPage = lazy(() => import('@/features/dialog'));
 const DailyLogsPage = lazy(() => import('@/features/daily-logs'));
 const LoginPage = lazy(() => import('@/features/auth/pages/LoginPage'));
 const ForgotPasswordPage = lazy(() => import('@/features/auth/pages/ForgotPasswordPage'));
-
-function LoadingFallback() {
-  return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4" />
-        <p className="text-neutral-600">Loading...</p>
-      </div>
-    </div>
-  );
-}
 
 export function AppRoutes() {
   type AppRoute =
@@ -56,7 +46,7 @@ export function AppRoutes() {
   ];
 
   return (
-    <Suspense fallback={<LoadingFallback />}>
+    <Suspense fallback={<LoadingState fullScreen/>}> {/* suspense dipakai untuk module route yang di-load dengan lazy() (loading chunk kode) bukan loading data api, tapi UI jadi komponen reusable 'LoadingState' untuk standarisasi */}
       <Routes>
         {/* Auth Routes (without sidebar) */}
         <Route element={<AuthLayout />}>

@@ -152,3 +152,5 @@ MIT
     Sources:
     - https://zustand.docs.pmnd.rs/getting-started/introduction
     - https://zustand.docs.pmnd.rs/apis/create
+
+9.  UI loading distandarisai ke komponen reusable `src/shared/ui/LoadingState.tsx` baik untuk fallback suspense route-level maupun komponen lain supaya tampilannya konsisten dan maintenance lebih ringan.
