@@ -17,9 +17,15 @@ interface DeleteProductDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   product: Product | null;
+  onDeleted?: () => void; // tambah callback opsional ini karena penambahan action delete di page detail (misal utk navigate ke list setelah delete success)
 }
 
-export function DeleteProductDialog({ open, onOpenChange, product }: DeleteProductDialogProps) {
+export function DeleteProductDialog({
+  open,
+  onOpenChange,
+  product,
+  onDeleted,
+}: DeleteProductDialogProps) {
   const deleteProductMutation = useDeleteProduct();
   const isDeleting = deleteProductMutation.isPending;
   const { addToast } = useToast();
@@ -47,6 +53,8 @@ export function DeleteProductDialog({ open, onOpenChange, product }: DeleteProdu
         duration: 6000, // durasi lebih lama biar user sempat baca?
       }); 
 
+      onDeleted?.(); // `?.()` berarti panggil callback kalau ada, kalau gaada skip tanpa error
+      
       onOpenChange(false); // tutup dialog hanya jika mutate sukses
       
     } catch (error) {

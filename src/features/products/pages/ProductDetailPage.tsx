@@ -1,12 +1,16 @@
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { ArrowLeft, Edit } from 'lucide-react';
 import { Avatar } from '@/shared/ui/Avatar';
+import { Button } from '@/shared/ui/Button';
 import { DEFAULT_PLACEHOLDER, formatCurrency, formatDate } from '@/shared/lib/formatters';
 import { useGetProductById } from '../api/hooks/useGetProductById';
-import { ArrowLeft } from 'lucide-react';
+import { DeleteProductDialog } from '../components/DeleteProductDialog';
 
 export default function ProductDetailPage() {
   const navigate = useNavigate();
   const { productId } = useParams<{ productId: string }>();
+  const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   if (!productId) {
     throw new Error('Product ID is required'); // sebelumnya error pakai UI lokal, sekarang dilempar ke ErrorBoundary untuk standarisai.
@@ -27,6 +31,26 @@ export default function ProductDetailPage() {
             <h1 className="text-2xl font-bold text-neutral-900">{name}</h1>
             <p className="text-sm text-neutral-600">Product details</p>
           </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Button
+            variant="secondary"
+            onClick={() => {
+              void navigate(`/products/edit/${productId}`);
+            }}
+          >
+            <Edit className="h-4 w-4" />
+            Edit
+          </Button>
+          <Button
+            variant="destructive-secondary"
+            onClick={() => {
+              setDeleteDialogOpen(true);
+            }}
+          >
+            Delete
+          </Button>
         </div>
       </div>
 
@@ -74,6 +98,15 @@ export default function ProductDetailPage() {
           </div>
         </div>
       </div>
+
+      <DeleteProductDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        onDeleted={() => {
+          void navigate('/products');
+        }}
+        product={product ?? null}
+      />
     </div>
   );
 }
