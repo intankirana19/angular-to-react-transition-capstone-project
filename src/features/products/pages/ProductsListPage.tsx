@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useInfiniteScroll } from '@/shared/hooks/useInfiniteScroll';
 import { Button } from '@/shared/ui/Button';
 import { useGetProducts } from '../api/hooks/useGetProducts';
 import { DeleteProductDialog } from '../components/DeleteProductDialog';
@@ -8,14 +9,16 @@ import { ProductsTable } from '../components/ProductsTable';
 
 // refer user page dr skafold
 export default function ProductsListPage() {
+  const PAGE_SIZE = 10; // INFINITE[1]: Sekali nambah, ambil 10 item
   const navigate = useNavigate();
 
-  // loading + error dihandle suspense + ErrorBoundary di level app/layout.
+  // loading + error dihandle suspense + ErrorBoundary di level app/layout
   const { data: products } = useGetProducts();
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
   const [deletingProductId, setDeletingProductId] = useState<string | null>(null);
+  const [page, setPage] = useState(1); // INFINITE[2]: Penanda sudah buka batch ke berapa
 
   const editingProduct = useMemo(
     () => products?.find((product) => product.id === editingProductId),
@@ -26,7 +29,28 @@ export default function ProductsListPage() {
     [deletingProductId, products]
   );
 
-  const hasProducts = products && products.length > 0;
+  const hasProducts = products.length > 0;
+  const totalPages = Math.max(1, Math.ceil(products.length / PAGE_SIZE));
+  const hasMore = page < totalPages;
+  const visibleProducts = useMemo(
+    () => products.slice(0, page * PAGE_SIZE),
+    [products, page, PAGE_SIZE]
+  ); // INFINITE[3]: Yang ditampilin sekarang cuma sampai batas page ini
+
+  useEffect(() => {
+    setPage(1);
+  }, [products.length]); // INFINITE[4]: Kalau datanya berubah, mulai lagi dari batch pertama
+
+  useInfiniteScroll({
+    enabled: hasProducts && hasMore,
+    hasMore,
+    scrollContainerId: 'app-main-scroll',
+    threshold: 200,
+    debounceMs: 300,
+    onLoadMore: () => {
+      setPage((prevPage) => Math.min(prevPage + 1, totalPages)); // INFINITE[13]: Kalau diminta load lagi, page naik 1
+    },
+  }); // INFINITE[5]: Halaman ini konfigurasi ke hook infinite scroll
 
   return (
     <div>
@@ -44,7 +68,7 @@ export default function ProductsListPage() {
 
       {hasProducts ? (
         <ProductsTable
-          products={products}
+          products={visibleProducts}
           onRowClick={(product) => {
             void navigate(`/products/${product.id}`);
           }}

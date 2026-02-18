@@ -179,3 +179,23 @@ MIT
 17. Tambah ErrorBoundary di `MainLayout` level konten (`Outlet`) dengan fallback `ErrorState` non-fullscreen, jadi saat error feature-level sidebar/header tetap tampil dan user masih bisa pindah menu. `Retry` di boundary konten pakai `onRetry` + `queryClient.resetQueries()` supaya error state query ikut di-reset lalu refetch, tanpa hard refresh seluruh app.
 
 18. Logic submit di `ProductForm` dipindah ke custom hook `useProductFormSubmission` (`src/features/products/hooks/useProductFormSubmission.ts`) supaya komponen `ProductForm` fokus ke render + binding form field saja. Alur create/edit, toast sukses/gagal, dan inline submit error sekarang di hook biar lebih gampang untuk maintenance & testing.
+
+19. Infinite scroll dijadikan custom hook reusable `useInfiniteScroll` (`src/shared/hooks/useInfiniteScroll.ts`) supaya bisa dipakai ulang di list lain. 
+    - Flow:
+    1. Data yang tampil per batch ditentuin dipage konsumer:
+       Di `src/features/products/pages/ProductsListPage.tsx`, `page` + `PAGE_SIZE` dipakai untuk membentuk `visibleProducts = products.slice(0, page * PAGE_SIZE)`.
+    2. Panggil hook dengan parameter yang jelas:
+       Di `src/features/products/pages/ProductsListPage.tsx`, hook dipanggil dengan `enabled`, `hasMore`, `scrollContainerId`, `threshold`, `debounceMs`, dan `onLoadMore`.
+    3. Hook pasang listener scroll ke target yang sesuai:
+       Di `src/shared/hooks/useInfiniteScroll.ts`, target diambil dari `scrollContainerId` (kalau ada), fallback ke `window`.
+    4. Event scroll tidak langsung memuat data:
+       Di `src/shared/hooks/useInfiniteScroll.ts`, listener hanya menaikkan `scrollTick`, lalu `scrollTick` diproses lewat `useDebounce` untuk mengurangi trigger berlebihan.
+    5. Saat posisi scroll sudah dekat bawah, hook panggil callback:
+       Di `src/shared/hooks/useInfiniteScroll.ts`, perhitungan near-bottom pakai `threshold`, lalu `onLoadMore()` dipanggil jika kondisi terpenuhi.
+    6. Konsumer tentuin next actionnya:
+       Di `src/features/products/pages/ProductsListPage.tsx`, `onLoadMore` meng-update `page` (`setPage(...)`) sampai batas `totalPages`.
+    7. Container scroll dibuat stabil di level layout.
+       Di `src/app/layouts/MainLayout.tsx`, elemen `main` diberi `id=\"app-main-scroll\"` jadi hook selalu attach ke container yang benar.
+    8. Hook otomatis aman dipakai dari awal sampai selesai.
+       Di `src/shared/hooks/useInfiniteScroll.ts` (effect pertama): `target.addEventListener('scroll', handleScroll)`, `handleScroll()` (initial check), dan cleanup `target.removeEventListener('scroll', handleScroll)`.
+    - Source: https://blog.logrocket.com/react-infinite-scroll/

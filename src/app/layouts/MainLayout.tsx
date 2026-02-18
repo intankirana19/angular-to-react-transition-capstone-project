@@ -33,7 +33,8 @@ export function MainLayout({ children }: MainLayoutProps) {
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-6">
+        {/* INFINITE[6]: id ini tandai area scroll utama yang dipantau hook */}
+        <main id="app-main-scroll" className="flex-1 overflow-y-auto p-6">
           {/* boundary di level konten: kalau page error, sidebar/header tetap tampil */}
           <ErrorBoundary
             key={location.key}
@@ -42,7 +43,7 @@ export function MainLayout({ children }: MainLayoutProps) {
             message="Failed to load this page. Try reloading or open another menu."
             reloadLabel="Retry"
             onRetry={async () => {
-              await queryClient.resetQueries(); // retry konten aja, reset state error query trus refetch query aktif.
+              await queryClient.resetQueries(); // retry konten aja, reset state error query trus refetch query aktif
             }}
           >
             {/* suspense khusus outlet biar loader ga full page (atau untuk handle fallback react query jika ada yg pakai useSuspenseQuery), `location.key` reset boundary tiap navigasi biar fallback muncul per perpindahan route (ga freeze dipage asal) */}

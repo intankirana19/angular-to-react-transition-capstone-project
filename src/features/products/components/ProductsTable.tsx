@@ -56,7 +56,7 @@ export function ProductsTable({ products, onRowClick, onEdit, onDelete }: Produc
             <button
               type="button"
               onClick={(e) => {
-                e.stopPropagation(); // biar row click gak ikut.
+                e.stopPropagation(); // biar row click gak ikut
                 onEdit?.(row.original);
               }}
               className="p-2 text-ait-neutral-500 hover:text-ait-primary-600 hover:bg-ait-primary-50 rounded-lg transition-all duration-200 hover:shadow-sm"
@@ -68,7 +68,7 @@ export function ProductsTable({ products, onRowClick, onEdit, onDelete }: Produc
             <button
               type="button"
               onClick={(e) => {
-                e.stopPropagation(); // supaya ga trigger row navigation saat klik delete.
+                e.stopPropagation(); // supaya ga trigger row navigation saat klik delete
                 onDelete?.(row.original);
               }}
               className="p-2 text-ait-neutral-500 hover:text-ait-danger-600 hover:bg-ait-danger-50 rounded-lg transition-all duration-200 hover:shadow-sm"
@@ -89,8 +89,9 @@ export function ProductsTable({ products, onRowClick, onEdit, onDelete }: Produc
     <DataTable
       data={products}
       columns={columns}
-      enablePagination
-      pageSize={10}
+      enablePagination={false}
+      // enablePagination
+      // pageSize={10}
       enableSorting
       enableFiltering
       searchPlaceholder="Search products..."
