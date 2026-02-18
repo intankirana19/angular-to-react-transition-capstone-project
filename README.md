@@ -177,3 +177,5 @@ MIT
 16. Loading/error handler dipage `users`, `products list`, dan `product detail` dihapus supaya fokus ke state sukses karena loading/error sudah dihandle di level layout/app dengan Suspense + ErrorBoundary.
 
 17. Tambah ErrorBoundary di `MainLayout` level konten (`Outlet`) dengan fallback `ErrorState` non-fullscreen, jadi saat error feature-level sidebar/header tetap tampil dan user masih bisa pindah menu. `Retry` di boundary konten pakai `onRetry` + `queryClient.resetQueries()` supaya error state query ikut di-reset lalu refetch, tanpa hard refresh seluruh app.
+
+18. Logic submit di `ProductForm` dipindah ke custom hook `useProductFormSubmission` (`src/features/products/hooks/useProductFormSubmission.ts`) supaya komponen `ProductForm` fokus ke render + binding form field saja. Alur create/edit, toast sukses/gagal, dan inline submit error sekarang di hook biar lebih gampang untuk maintenance & testing.

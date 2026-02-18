@@ -1,13 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Input } from '@/shared/ui/Input';
 import { Textarea, TextareaField } from '@/shared/ui/Textarea';
 import { productInputSchema, type Product, type ProductInputValues } from '../types';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useCreateProduct } from '../api/hooks/useCreateProduct';
-import { useUpdateProduct } from '../api/hooks/useUpdateProduct';
-import { useToast } from '@/shared/hooks/useToast';
-import { getErrorMessage } from '@/shared/lib/error';
+import { useProductFormSubmission } from '../hooks/useProductFormSubmission';
 
 interface ProductFormProps {
   productId?: string;
@@ -30,10 +27,13 @@ export function ProductForm({
   mode = 'create',
   onSuccess,
 }: ProductFormProps) {
-  const createProductMutation = useCreateProduct();
-  const updateProductMutation = useUpdateProduct();
-  const { addToast } = useToast();
-  const [submitError, setSubmitError] = useState<string | null>(null);
+  
+  const { isMutationPending, submitError, submitProduct } = useProductFormSubmission({
+    mode,
+    productId,
+    onSuccess,
+  });
+
   const {
     register,
     handleSubmit,
@@ -52,68 +52,12 @@ export function ProductForm({
     }
   }, [initialValues, reset]);
 
-  const isSubmitting = isFormSubmitting || (mode === 'create'
-    ? createProductMutation.isPending
-    : updateProductMutation.isPending);
-
-  const handleValidSubmit = async (data: ProductInputValues) => {
-    // reset error lama sebelum submit baru
-    setSubmitError(null);
-
-    try {
-      if (mode === 'create') {
-        const createdProduct = await createProductMutation.mutateAsync(data); // pakai mutateAsync drpd mutate karna data perlu dipakai dionSuccess
-        // Tampilkan toast dulu, lalu lanjut callback/navigate.
-        addToast({
-          type: 'success',
-          title: 'Product Created Successfully',
-          message: `"${createdProduct.name ?? 'Product'}" was created successfully.`,
-          duration: 6000,
-        });
-        if (onSuccess) {
-          await onSuccess(createdProduct);
-        }
-        return;
-      }
-
-      if (!productId) {
-        throw new Error('Product id is required for edit mode');
-      }
-
-      // mode edit: kirim id + payload untuk update yang existing.
-      const updatedProduct = await updateProductMutation.mutateAsync({
-        id: productId,
-        payload: data,
-      });
-      // Sama seperti create: toast tampil dulu.
-      addToast({
-        type: 'success',
-        title: 'Product Updated Successfully',
-        message: `"${updatedProduct.name ?? 'Product'}" was updated successfully.`,
-        duration: 6000,
-      });
-      if (onSuccess) {
-        await onSuccess(updatedProduct);
-      }
-    } catch (error) {
-      const message = getErrorMessage(error);
-
-      setSubmitError(message); // buat set inline error message juga biar user lihat langsung di form
-
-      // kalau gagal, kasih tau user lewat toast biar ga silent failure
-      addToast({
-        type: 'error',
-        title: mode === 'create' ? 'Failed to create product' : 'Failed to update product',
-        message,
-        duration: 7000,
-      });
-    }
-  };
+  const isSubmitting = isFormSubmitting || isMutationPending;
 
   return (
     <form
       className="space-y-4"
-      onSubmit={(e) => {void handleSubmit(handleValidSubmit)(e);}}
+      onSubmit={(e) => {void handleSubmit(submitProduct)(e);}}
       noValidate
     >
       <Input
