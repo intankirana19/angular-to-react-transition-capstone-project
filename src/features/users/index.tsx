@@ -2,16 +2,17 @@ import { useGetUsers } from './api/useGetUsers';
 import { UsersTable } from './components/UsersTable';
 import { Button } from '@/shared/ui/Button';
 import { getErrorMessage } from '@/shared/lib/error';
+import { ErrorState } from '@/shared/ui/ErrorState';
 
 export default function UsersPage() {
   const { data: users, error } = useGetUsers();
 
   if (error) {
     return (
-      <div className="rounded-lg bg-danger-50 p-4 text-danger-800">
-        <p className="font-medium">Error loading users</p>
-        <p className="text-sm mt-1">{getErrorMessage(error)}</p>
-      </div>
+      <ErrorState
+        title="Error loading users"
+        message={getErrorMessage(error)}
+      />
     );
   }
 
