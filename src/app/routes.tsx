@@ -9,7 +9,8 @@ const HomePage = lazy(() => import('@/features/home'));
 const UsersPage = lazy(() => import('@/features/users'));
 const ProductsPage = lazy(() => import('@/features/products'));
 const ProductDetailPage = lazy(() => import('@/features/products/pages/ProductDetailPage'));
-const ProductFormPage = lazy(() => import('@/features/products/pages/ProductFormPage'));
+const CreateProductPage = lazy(() => import('@/features/products/pages/CreateProductPage'));
+const EditProductPage = lazy(() => import('@/features/products/pages/EditProductPage'));
 const TeamPage = lazy(() => import('@/features/team'));
 const TypographyPage = lazy(() => import('@/features/typography'));
 const ColorsPage = lazy(() => import('@/features/colors'));
@@ -32,8 +33,8 @@ export function AppRoutes() {
     { path: 'users', Component: UsersPage },
     { path: 'products', Component: ProductsPage },
     { path: 'products/:productId', Component: ProductDetailPage },
-    { path: 'products/edit/:productId', Component: ProductFormPage },
-    { path: 'products/new', Component: ProductFormPage },
+    { path: 'products/edit/:productId', Component: EditProductPage },
+    { path: 'products/new', Component: CreateProductPage },
     { path: 'team', Component: TeamPage },
     { path: 'typography', Component: TypographyPage },
     { path: 'colors', Component: ColorsPage },

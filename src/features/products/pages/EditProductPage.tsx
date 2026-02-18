@@ -2,12 +2,16 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/shared/ui/Button';
 import { ProductForm } from '../components/ProductForm';
 import { useGetProductById } from '../api/hooks/useGetProductById';
+import { type ProductInputValues } from '../types';
 
-// Deprecated page: route sudah dipisah ke CreateProductPage & EditProductPage
-export default function ProductFormPage() {
+export default function EditProductPage() {
   const navigate = useNavigate();
-  const { productId } = useParams<{ productId?: string }>();
-  const isEdit = Boolean(productId);
+  const { productId } = useParams<{ productId: string }>();
+
+  if (!productId) {
+    throw new Error('Product ID is required');
+  }
+
   const { data: product } = useGetProductById(productId);
 
   const handleBack = () => {
@@ -18,26 +22,20 @@ export default function ProductFormPage() {
     void navigate('/products');
   };
 
-  const initialValues = isEdit
-    ? {
-        name: product?.name ?? '',
-        price: product?.price ?? 0,
-        avatar: product?.avatar ?? '',
-        material: product?.material ?? '',
-        description: product?.description ?? '',
-      }
-    : undefined;
+  const initialValues: Partial<ProductInputValues> = {
+    name: product?.name ?? '',
+    price: product?.price ?? 0,
+    avatar: product?.avatar ?? '',
+    material: product?.material ?? '',
+    description: product?.description ?? '',
+  };
 
   return (
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900">
-            {isEdit ? 'Edit Product' : 'New Product'}
-          </h1>
-          <p className="text-sm text-neutral-600">
-            {isEdit ? 'Update product details' : 'Fill the form to add a product'}
-          </p>
+          <h1 className="text-2xl font-bold text-neutral-900">Edit Product</h1>
+          <p className="text-sm text-neutral-600">Update product details</p>
         </div>
         <Button variant="secondary" onClick={handleBack}>
           Cancel
@@ -48,7 +46,7 @@ export default function ProductFormPage() {
         <ProductForm
           productId={productId}
           initialValues={initialValues}
-          mode={isEdit ? 'edit' : 'create'}
+          mode="edit"
           onSuccess={() => {
             void navigate('/products');
           }}
