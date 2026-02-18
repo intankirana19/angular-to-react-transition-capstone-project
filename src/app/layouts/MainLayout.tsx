@@ -1,5 +1,6 @@
 import { ReactNode, Suspense } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { useUiStore } from '@/app/store/useUIStore';
 import { ErrorBoundary } from '@/shared/components/ErrorBoundary';
 import { LoadingState } from '@/shared/ui/LoadingState';
@@ -12,6 +13,7 @@ interface MainLayoutProps {
 
 export function MainLayout({ children }: MainLayoutProps) {
   const location = useLocation();
+  const queryClient = useQueryClient();
   const { sidebarOpen, toggleSidebar } = useUiStore();
 
   return (
@@ -38,7 +40,10 @@ export function MainLayout({ children }: MainLayoutProps) {
             fullScreen={false}
             title="Something went wrong"
             message="Failed to load this page. Try reloading or open another menu."
-            reloadLabel="Reload Page"
+            reloadLabel="Retry"
+            onRetry={async () => {
+              await queryClient.resetQueries(); // retry konten aja, reset state error query trus refetch query aktif.
+            }}
           >
             {/* suspense khusus outlet biar loader ga full page (atau untuk handle fallback react query jika ada yg pakai useSuspenseQuery), `location.key` reset boundary tiap navigasi biar fallback muncul per perpindahan route (ga freeze dipage asal) */}
             <Suspense key={location.key} fallback={<LoadingState label="Loading page..." />}>

@@ -9,6 +9,7 @@ interface Props {
   title?: string;
   message?: string;
   reloadLabel?: string;
+  onRetry?: () => void | Promise<unknown>;
 }
 
 interface State {
@@ -30,6 +31,19 @@ export class ErrorBoundary extends Component<Props, State> {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
   }
 
+  private readonly handleRetry = () => {
+    this.setState({ hasError: false, error: null }); // reset boundary dulu biar subtree bisa render ulang
+
+    // guard utk pakai kalau ada handler custom (misal invalidate query)
+    if (this.props.onRetry) {
+      void this.props.onRetry();
+      return;
+    }
+
+    // kalau tidak ada baru fallback ke hard refresh.
+    window.location.reload();
+  };
+
   render() {
     if (this.state.hasError) {
       return (
@@ -42,7 +56,7 @@ export class ErrorBoundary extends Component<Props, State> {
             actions={[
               {
                 label: this.props.reloadLabel ?? 'Reload Page',
-                onClick: () => window.location.reload(),
+                onClick: this.handleRetry,
                 variant: 'primary',
               },
             ]}
