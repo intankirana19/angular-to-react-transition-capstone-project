@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useCreateProduct } from '../api/hooks/useCreateProduct';
 import { useUpdateProduct } from '../api/hooks/useUpdateProduct';
 import { useToast } from '@/shared/hooks/useToast';
+import { getErrorMessage } from '@/shared/lib/error';
 
 interface ProductFormProps {
   productId?: string;
@@ -55,39 +56,49 @@ export function ProductForm({
     : updateProductMutation.isPending);
 
   const handleValidSubmit = async (data: ProductInputValues) => {
-    if (mode === 'create') {
-      const createdProduct = await createProductMutation.mutateAsync(data); // pakai mutateAsync drpd mutate karna data perlu dipakai dionSuccess
-      // Tampilkan toast dulu, lalu lanjut callback/navigate.
+    try {
+      if (mode === 'create') {
+        const createdProduct = await createProductMutation.mutateAsync(data); // pakai mutateAsync drpd mutate karna data perlu dipakai dionSuccess
+        // Tampilkan toast dulu, lalu lanjut callback/navigate.
+        addToast({
+          type: 'success',
+          title: 'Product Created Successfully',
+          message: `"${createdProduct.name ?? 'Product'}" was created successfully.`,
+          duration: 6000,
+        });
+        if (onSuccess) {
+          await onSuccess(createdProduct);
+        }
+        return;
+      }
+
+      if (!productId) {
+        throw new Error('Product id is required for edit mode');
+      }
+
+      // mode edit: kirim id + payload untuk update yang existing.
+      const updatedProduct = await updateProductMutation.mutateAsync({
+        id: productId,
+        payload: data,
+      });
+      // Sama seperti create: toast tampil dulu.
       addToast({
         type: 'success',
-        title: 'Product Created Successfully',
-        message: `"${createdProduct.name ?? 'Product'}" was created successfully.`,
+        title: 'Product Updated Successfully',
+        message: `"${updatedProduct.name ?? 'Product'}" was updated successfully.`,
         duration: 6000,
       });
       if (onSuccess) {
-        await onSuccess(createdProduct);
+        await onSuccess(updatedProduct);
       }
-      return;
-    }
-
-    if (!productId) {
-      throw new Error('Product id is required for edit mode');
-    }
-
-    // mode edit: kirim id + payload untuk update yang existing.
-    const updatedProduct = await updateProductMutation.mutateAsync({
-      id: productId,
-      payload: data,
-    });
-    // Sama seperti create: toast tampil dulu.
-    addToast({
-      type: 'success',
-      title: 'Product Updated Successfully',
-      message: `"${updatedProduct.name ?? 'Product'}" was updated successfully.`,
-      duration: 6000,
-    });
-    if (onSuccess) {
-      await onSuccess(updatedProduct);
+    } catch (error) {
+      // kalau gagal, kasih tau user lewat toast biar ga silent failure
+      addToast({
+        type: 'error',
+        title: mode === 'create' ? 'Failed to create product' : 'Failed to update product',
+        message: getErrorMessage(error),
+        duration: 7000,
+      });
     }
   };
 

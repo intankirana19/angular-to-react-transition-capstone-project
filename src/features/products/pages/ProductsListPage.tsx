@@ -5,6 +5,7 @@ import { useGetProducts } from '../api/hooks/useGetProducts';
 import { DeleteProductDialog } from '../components/DeleteProductDialog';
 import { ProductFormDialog } from '../components/ProductFormDialog';
 import { ProductsTable } from '../components/ProductsTable';
+import { getErrorMessage } from '@/shared/lib/error';
 
 // refer user page dr skafold
 export default function ProductsListPage() {
@@ -27,7 +28,7 @@ export default function ProductsListPage() {
     return (
       <div className="rounded-lg bg-danger-50 p-4 text-danger-800">
         <p className="font-medium">Error loading products</p>
-        <p className="text-sm mt-1">{error.message}</p>
+        <p className="text-sm mt-1">{getErrorMessage(error)}</p>
         <div className="mt-4">
           <Button variant="secondary" onClick={() => void refetch()} disabled={isFetching}>
             {isFetching ? 'Retrying...' : 'Retry'}

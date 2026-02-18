@@ -164,3 +164,7 @@ MIT
     - https://tanstack.com/query/v5/docs/framework/react/reference/useSuspenseQuery
     - https://tanstack.com/query/v5/docs/framework/react/guides/suspense
     - https://tanstack.com/query/v5/docs/framework/react/reference/useQuery
+
+12. Error message distandarisasi dengan helper `getErrorMessage` di `src/shared/lib/error.ts` supaya pesan dari `Error`, `AxiosError`, dan payload API bisa ditampilkan konsisten ke user. Pemakaian awal diterapkan di fallback `ErrorBoundary`, halaman list/detail, dan feedback submit/delete form agar tidak ada silent failure. 
+
+13. Fallback `ErrorBoundary` ditambah reset boundary state sebelum opsi hard refresh.

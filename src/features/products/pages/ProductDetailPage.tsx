@@ -5,6 +5,7 @@ import { useGetProductById } from '../api/hooks/useGetProductById';
 import { Button } from '@/shared/ui/Button';
 import { ArrowLeft } from 'lucide-react';
 import { LoadingState } from '@/shared/ui/LoadingState';
+import { getErrorMessage } from '@/shared/lib/error';
 
 export default function ProductDetailPage() {
   const navigate = useNavigate();
@@ -31,7 +32,8 @@ export default function ProductDetailPage() {
   }
   
   if (error) {
-    const isProductNotFound = error.message === 'Product not found';
+    const errorMessage = getErrorMessage(error);
+    const isProductNotFound = errorMessage === 'Product not found';
 
     return (
       <div className={`rounded-lg p-4 ${isProductNotFound ? 'bg-warning-50 text-warning-800' : 'bg-danger-50 text-danger-800'}`}>
@@ -39,7 +41,7 @@ export default function ProductDetailPage() {
         <p className="text-sm mt-1">
           {isProductNotFound
             ? 'The product ID is invalid or the product no longer exists.'
-            : error.message}
+            : getErrorMessage(error)}
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
           {isProductNotFound ? null : (

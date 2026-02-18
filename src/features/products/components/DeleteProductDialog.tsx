@@ -11,6 +11,7 @@ import { AlertTriangle } from 'lucide-react';
 import { useToast } from '@/shared/hooks/useToast';
 import { useDeleteProduct } from '../api/hooks/useDeleteProduct';
 import { type Product } from '../types';
+import { getErrorMessage } from '@/shared/lib/error';
 
 interface DeleteProductDialogProps {
   open: boolean;
@@ -49,13 +50,10 @@ export function DeleteProductDialog({ open, onOpenChange, product }: DeleteProdu
       onOpenChange(false); // tutup dialog hanya jika mutate sukses
       
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Please try again in a few moments.';
-
       addToast({ // feedback gagal
         type: 'error',
         title: 'Failed to delete product',
-        message: errorMessage,
+        message: getErrorMessage(error, 'Please try again in a few moments.'),
         duration: 7000,
       });
     }
