@@ -4,7 +4,7 @@ import { Building2, Image, User } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
 
 const avatarVariants = cva(
-  'relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-lg border border-neutral-200 bg-neutral-100 text-neutral-700 transition-colors hover:border-neutral-300 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-100',
+  'relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-lg border border-neutral-400 bg-neutral-200 text-neutral-800 shadow-sm transition-colors hover:border-primary-500 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-100',
   {
     variants: {
       size: {
@@ -22,7 +22,7 @@ const avatarVariants = cva(
   }
 );
 
-const statusVariants = cva('absolute bottom-0 right-0 rounded-full ring-2 ring-white', {
+const statusVariants = cva('absolute bottom-0 right-0 rounded-full ring-2 ring-neutral-100', {
   variants: {
     size: {
       xs: 'h-2 w-2',
@@ -108,7 +108,7 @@ export function Avatar({
         <span
           className={cn(
             statusVariants({ size: resolvedSize }),
-            'flex items-center justify-center border border-neutral-200 bg-white text-primary-500'
+            'flex items-center justify-center border border-neutral-400 bg-neutral-100 text-primary-600'
           )}
           aria-hidden="true"
         >

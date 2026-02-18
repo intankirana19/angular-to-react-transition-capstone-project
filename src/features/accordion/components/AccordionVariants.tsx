@@ -34,13 +34,13 @@ export function AccordionVariants() {
     <>
       {/* Line Style */}
       <section className="space-y-4">
-        <h2 className="text-ait-h2-bold text-ait-neutral-900 border-b border-ait-neutral-200 pb-2">
+        <h2 className="text-ait-h2-bold text-neutral-900 border-b border-neutral-200 pb-2">
           Line Style
         </h2>
-        <p className="text-ait-body-md-regular text-ait-neutral-600 mb-4">
+        <p className="text-ait-body-md-regular text-neutral-600 mb-4">
           Accordion with bottom border separators
         </p>
-        <div className="bg-ait-white p-6 rounded-lg border border-ait-neutral-200">
+        <div className="bg-white p-6 rounded-lg border border-neutral-200">
           <Accordion type="single" collapsible variant="line">
             <AccordionItem value="item-1">
               <AccordionTrigger icon={<Settings size={20} />}>Account Settings</AccordionTrigger>
@@ -67,20 +67,20 @@ export function AccordionVariants() {
           </Accordion>
         </div>
         <div className="mt-4">
-          <h3 className="text-ait-body-lg-semibold text-ait-neutral-900 mb-2">Code Example</h3>
+          <h3 className="text-ait-body-lg-semibold text-neutral-900 mb-2">Code Example</h3>
           <CodeBlock code={lineCode} />
         </div>
       </section>
 
       {/* Border Style */}
       <section className="space-y-4">
-        <h2 className="text-ait-h2-bold text-ait-neutral-900 border-b border-ait-neutral-200 pb-2">
+        <h2 className="text-ait-h2-bold text-neutral-900 border-b border-neutral-200 pb-2">
           Border Style
         </h2>
-        <p className="text-ait-body-md-regular text-ait-neutral-600 mb-4">
+        <p className="text-ait-body-md-regular text-neutral-600 mb-4">
           Accordion with individual bordered cards
         </p>
-        <div className="bg-ait-neutral-50 p-6 rounded-lg">
+        <div className="bg-neutral-50 p-6 rounded-lg">
           <Accordion type="single" collapsible variant="border">
             <AccordionItem value="item-1">
               <AccordionTrigger icon={<HelpCircle size={20} />}>Getting Started</AccordionTrigger>
@@ -107,7 +107,7 @@ export function AccordionVariants() {
           </Accordion>
         </div>
         <div className="mt-4">
-          <h3 className="text-ait-body-lg-semibold text-ait-neutral-900 mb-2">Code Example</h3>
+          <h3 className="text-ait-body-lg-semibold text-neutral-900 mb-2">Code Example</h3>
           <CodeBlock code={borderCode} />
         </div>
       </section>

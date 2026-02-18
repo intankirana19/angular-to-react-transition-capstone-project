@@ -71,27 +71,27 @@ export default function LoginPage() {
     <div className="w-full max-w-md">
       {/* Decorative Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-ait-primary-100 rounded-full opacity-20 blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-ait-primary-200 rounded-full opacity-20 blur-3xl" />
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary-100 rounded-full opacity-20 blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-primary-200 rounded-full opacity-20 blur-3xl" />
       </div>
 
-      <div className="relative bg-white rounded-2xl shadow-ait-xl p-8 border border-ait-neutral-100">
+      <div className="relative bg-white rounded-2xl shadow-ait-xl p-8 border border-neutral-100">
         {/* Logo/Brand */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-20 h-20 mb-4">
             <img src="/assets/logo.webp" alt="Logo" className="w-full h-full object-contain" />
           </div>
-          <h1 className="text-ait-h2-bold text-ait-neutral-900 mb-2">Welcome Back</h1>
-          <p className="text-ait-body-md-regular text-ait-neutral-600">
+          <h1 className="text-ait-h2-bold text-neutral-900 mb-2">Welcome Back</h1>
+          <p className="text-ait-body-md-regular text-neutral-600">
             Sign in to your account to continue
           </p>
         </div>
 
         {/* Server Error */}
         {serverError && (
-          <div className="mb-6 p-4 bg-ait-danger-50 border border-ait-danger-200 rounded-lg flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-ait-danger-600 flex-shrink-0 mt-0.5" />
-            <p className="text-ait-body-md-regular text-ait-danger-700">{serverError}</p>
+          <div className="mb-6 p-4 bg-danger-50 border border-danger-200 rounded-lg flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-danger-600 flex-shrink-0 mt-0.5" />
+            <p className="text-ait-body-md-regular text-danger-700">{serverError}</p>
           </div>
         )}
 
@@ -99,11 +99,11 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Email Field */}
           <div className="space-y-2">
-            <label htmlFor="email" className="block text-ait-body-md-semibold text-ait-neutral-900">
+            <label htmlFor="email" className="block text-ait-body-md-semibold text-neutral-900">
               Email Address
             </label>
             <div className="relative">
-              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-ait-neutral-400">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400">
                 <Mail className="w-5 h-5" />
               </div>
               <Input
@@ -118,7 +118,7 @@ export default function LoginPage() {
               />
             </div>
             {errors.email && (
-              <p className="text-ait-caption-md-regular text-ait-danger-500 flex items-center gap-1">
+              <p className="text-ait-caption-md-regular text-danger-500 flex items-center gap-1">
                 <AlertCircle className="w-3 h-3" />
                 {errors.email}
               </p>
@@ -129,12 +129,12 @@ export default function LoginPage() {
           <div className="space-y-2">
             <label
               htmlFor="password"
-              className="block text-ait-body-md-semibold text-ait-neutral-900"
+              className="block text-ait-body-md-semibold text-neutral-900"
             >
               Password
             </label>
             <div className="relative">
-              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-ait-neutral-400">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400">
                 <Lock className="w-5 h-5" />
               </div>
               <Input
@@ -149,7 +149,7 @@ export default function LoginPage() {
               />
             </div>
             {errors.password && (
-              <p className="text-ait-caption-md-regular text-ait-danger-500 flex items-center gap-1">
+              <p className="text-ait-caption-md-regular text-danger-500 flex items-center gap-1">
                 <AlertCircle className="w-3 h-3" />
                 {errors.password}
               </p>
@@ -164,15 +164,15 @@ export default function LoginPage() {
                 checked={formData.rememberMe}
                 onChange={handleChange('rememberMe')}
                 disabled={isSubmitting}
-                className="w-4 h-4 rounded border-ait-neutral-300 text-ait-primary-500 focus:ring-2 focus:ring-ait-primary-500 focus:ring-offset-0 cursor-pointer"
+                className="w-4 h-4 rounded border-neutral-300 text-primary-500 focus:ring-2 focus:ring-primary-500 focus:ring-offset-0 cursor-pointer"
               />
-              <span className="text-ait-body-sm-regular text-ait-neutral-700 group-hover:text-ait-neutral-900 transition-colors">
+              <span className="text-ait-body-sm-regular text-neutral-700 group-hover:text-neutral-900 transition-colors">
                 Remember me
               </span>
             </label>
             <Link
               to="/forgot-password"
-              className="text-ait-body-sm-semibold text-ait-primary-500 hover:text-ait-primary-600 transition-colors hover:underline"
+              className="text-ait-body-sm-semibold text-primary-500 hover:text-primary-600 transition-colors hover:underline"
             >
               Forgot password?
             </Link>
@@ -182,7 +182,7 @@ export default function LoginPage() {
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="w-full h-12 text-ait-body-md-semibold shadow-lg hover:shadow-xl transition-all bg-ait-primary-500 hover:bg-ait-primary-600 text-white"
+            className="w-full h-12 text-ait-body-md-semibold shadow-lg hover:shadow-xl transition-all bg-primary-500 hover:bg-primary-600 text-white"
           >
             {isSubmitting ? (
               <span className="flex items-center justify-center gap-2">
@@ -198,10 +198,10 @@ export default function LoginPage() {
         {/* Divider */}
         <div className="relative my-8">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-ait-neutral-200" />
+            <div className="w-full border-t border-neutral-200" />
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-4 bg-white text-ait-neutral-500 text-ait-body-sm-regular">
+            <span className="px-4 bg-white text-neutral-500 text-ait-body-sm-regular">
               New to our platform?
             </span>
           </div>
@@ -211,7 +211,7 @@ export default function LoginPage() {
         <div className="text-center">
           <Link
             to="/signup"
-            className="inline-flex items-center justify-center w-full h-11 px-6 py-2.5 text-ait-body-md-semibold text-ait-primary-600 bg-ait-primary-50 hover:bg-ait-primary-100 border border-ait-primary-200 rounded-lg transition-all hover:shadow-md"
+            className="inline-flex items-center justify-center w-full h-11 px-6 py-2.5 text-ait-body-md-semibold text-primary-600 bg-primary-50 hover:bg-primary-100 border border-primary-200 rounded-lg transition-all hover:shadow-md"
           >
             Create an account
           </Link>

@@ -19,17 +19,17 @@ const icons = {
 };
 
 const styles = {
-  success: 'bg-ait-success-50 border-ait-success-200 text-ait-success-700',
-  error: 'bg-ait-danger-50 border-ait-danger-200 text-ait-danger-700',
-  info: 'bg-ait-info-50 border-ait-info-700 text-ait-info-700',
-  warning: 'bg-ait-warning-50 border-ait-warning-200 text-ait-warning-700',
+  success: 'bg-success-50 border-success-200 text-success-700',
+  error: 'bg-danger-50 border-danger-200 text-danger-700',
+  info: 'bg-info-50 border-info-700 text-info-700',
+  warning: 'bg-warning-50 border-warning-200 text-warning-700',
 };
 
 const iconStyles = {
-  success: 'text-ait-success-500',
-  error: 'text-ait-danger-500',
-  info: 'text-ait-info-700',
-  warning: 'text-ait-warning-700',
+  success: 'text-success-500',
+  error: 'text-danger-500',
+  info: 'text-info-700',
+  warning: 'text-warning-700',
 };
 
 export function Toast({ id, type, title, message, duration = 3000, onClose }: ToastProps) {

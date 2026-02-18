@@ -136,7 +136,7 @@ function CalendarGrid({
   return (
     <div className="flex flex-col gap-3 p-6">
       <div className="flex items-center justify-between w-[280px]">
-        <p className="text-ait-body-lg-semibold text-ait-neutral-900">
+        <p className="text-ait-body-lg-semibold text-neutral-900">
           {format(month, 'MMMM yyyy')}
         </p>
       </div>
@@ -145,7 +145,7 @@ function CalendarGrid({
         <div className="flex">
           {['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sat', 'Su'].map((day) => (
             <div key={day} className="w-10 h-10 flex items-center justify-center">
-              <p className="text-ait-body-md-semibold text-ait-neutral-900 text-sm">{day}</p>
+              <p className="text-ait-body-md-semibold text-neutral-900 text-sm">{day}</p>
             </div>
           ))}
         </div>
@@ -160,7 +160,7 @@ function CalendarGrid({
 
               return (
                 <div key={dateIdx} className="relative w-10 h-10">
-                  {inRange && <div className="absolute inset-0 bg-[#c6eff8]" />}
+                  {inRange && <div className="absolute inset-0 bg-primary-100" />}
                   <button
                     type="button"
                     onClick={() => onDateClick(date)}
@@ -168,14 +168,14 @@ function CalendarGrid({
                     onMouseLeave={() => onDateHover(null)}
                     className={cn(
                       'relative w-10 h-10 rounded-full flex items-center justify-center text-sm transition-colors',
-                      outside && 'text-ait-neutral-400',
+                      outside && 'text-neutral-400',
                       !outside &&
                         !isStart &&
                         !isEnd &&
                         !inRange &&
-                        'text-ait-neutral-700 hover:bg-ait-neutral-100',
-                      (isStart || isEnd) && 'bg-[#00487a] text-white hover:bg-[#00487a]',
-                      inRange && 'text-[#00487a]'
+                        'text-neutral-700 hover:bg-neutral-100',
+                      (isStart || isEnd) && 'bg-primary-500 text-white hover:bg-primary-500',
+                      inRange && 'text-primary-500'
                     )}
                   >
                     {format(date, 'd')}
@@ -206,7 +206,7 @@ function TimeInput({
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
       maxLength={2}
-      className="w-12 h-10 text-center border border-ait-neutral-300 rounded-lg text-ait-body-md-regular text-ait-neutral-900 focus:outline-none focus:ring-2 focus:ring-ait-primary-500 focus:border-transparent"
+      className="w-12 h-10 text-center border border-neutral-300 rounded-lg text-ait-body-md-regular text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
     />
   );
 }
@@ -343,7 +343,7 @@ export function DateTimeRangePicker({
     <div
       ref={dropdownRef}
       data-portal="datepicker"
-      className="fixed z-[100] rounded-lg border border-ait-neutral-200 bg-ait-white shadow-ait-lg flex flex-col max-h-[90vh] max-w-[95vw]"
+      className="fixed z-[100] rounded-lg border border-neutral-200 bg-white shadow-ait-lg flex flex-col max-h-[90vh] max-w-[95vw]"
       style={{
         top: `${dropdownPosition.top}px`,
         left: `${dropdownPosition.left}px`,
@@ -363,15 +363,15 @@ export function DateTimeRangePicker({
                   className={cn(
                     'px-4 py-2.5 rounded-md text-left text-ait-body-md-regular transition-colors',
                     selectedFilter === filter.value
-                      ? 'bg-[#e3fafc] text-[#003768] font-medium'
-                      : 'bg-white text-ait-neutral-900 hover:bg-ait-neutral-50'
+                      ? 'bg-primary-100 text-primary-600 font-medium'
+                      : 'bg-white text-neutral-900 hover:bg-neutral-50'
                   )}
                 >
                   {filter.label}
                 </button>
               ))}
             </div>
-            <div className="w-px bg-ait-neutral-200" />
+            <div className="w-px bg-neutral-200" />
           </>
         )}
 
@@ -383,9 +383,9 @@ export function DateTimeRangePicker({
               <button
                 type="button"
                 onClick={handlePrevMonth1}
-                className="absolute left-6 top-6 z-10 p-2.5 hover:bg-ait-neutral-100 rounded-lg transition-colors"
+                className="absolute left-6 top-6 z-10 p-2.5 hover:bg-neutral-100 rounded-lg transition-colors"
               >
-                <ChevronLeft className="w-4 h-4 text-ait-neutral-700" />
+                <ChevronLeft className="w-4 h-4 text-neutral-700" />
               </button>
               <CalendarGrid
                 month={currentMonth1}
@@ -396,7 +396,7 @@ export function DateTimeRangePicker({
               {showTimePicker && (
                 <div className="px-6 pb-6 flex items-center gap-2 justify-center">
                   <TimeInput value={fromHour} onChange={setFromHour} placeholder="08" />
-                  <span className="text-ait-neutral-500">:</span>
+                  <span className="text-neutral-500">:</span>
                   <TimeInput value={fromMinute} onChange={setFromMinute} placeholder="00" />
                 </div>
               )}
@@ -407,9 +407,9 @@ export function DateTimeRangePicker({
               <button
                 type="button"
                 onClick={handleNextMonth2}
-                className="absolute right-6 top-6 z-10 p-2.5 hover:bg-ait-neutral-100 rounded-lg transition-colors"
+                className="absolute right-6 top-6 z-10 p-2.5 hover:bg-neutral-100 rounded-lg transition-colors"
               >
-                <ChevronRight className="w-4 h-4 text-ait-neutral-700" />
+                <ChevronRight className="w-4 h-4 text-neutral-700" />
               </button>
               <CalendarGrid
                 month={currentMonth2}
@@ -420,7 +420,7 @@ export function DateTimeRangePicker({
               {showTimePicker && (
                 <div className="px-6 pb-6 flex items-center gap-2 justify-center">
                   <TimeInput value={toHour} onChange={setToHour} placeholder="08" />
-                  <span className="text-ait-neutral-500">:</span>
+                  <span className="text-neutral-500">:</span>
                   <TimeInput value={toMinute} onChange={setToMinute} placeholder="00" />
                 </div>
               )}
@@ -430,9 +430,9 @@ export function DateTimeRangePicker({
       </div>
 
       {/* Footer - Outside scrollable area */}
-      <div className="border-t border-ait-neutral-200 px-6 py-4 bg-ait-white rounded-b-lg flex-shrink-0">
+      <div className="border-t border-neutral-200 px-6 py-4 bg-white rounded-b-lg flex-shrink-0">
         <div className="flex items-center justify-between gap-4 flex-wrap">
-          <p className="text-ait-body-md-regular text-ait-neutral-700 flex-1 min-w-0 truncate">
+          <p className="text-ait-body-md-regular text-neutral-700 flex-1 min-w-0 truncate">
             {tempRange && (
               <>
                 {format(tempRange.from, showTimePicker ? 'MMM d, yyyy, HH:mm' : 'MMM d, yyyy')}
@@ -445,7 +445,7 @@ export function DateTimeRangePicker({
             <button
               type="button"
               onClick={handleCancel}
-              className="px-4 py-2.5 text-ait-body-md-semibold text-[#56b1d7] border border-[#56b1d7] rounded-lg hover:bg-[#e3fafc] transition-colors whitespace-nowrap"
+              className="px-4 py-2.5 text-ait-body-md-semibold text-primary-600 border border-primary-600 rounded-lg hover:bg-primary-100 transition-colors whitespace-nowrap"
             >
               Cancel
             </button>
@@ -453,7 +453,7 @@ export function DateTimeRangePicker({
               type="button"
               onClick={handleApply}
               disabled={!tempRange}
-              className="px-4 py-2.5 text-ait-body-md-semibold text-white bg-[#00487a] rounded-lg hover:bg-[#003768] disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
+              className="px-4 py-2.5 text-ait-body-md-semibold text-white bg-primary-500 rounded-lg hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
             >
               Apply
             </button>
@@ -471,13 +471,13 @@ export function DateTimeRangePicker({
         disabled={disabled}
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          'flex h-11 w-full items-center justify-between rounded-lg border bg-ait-white px-4 py-2.5 text-ait-body-md-regular transition-colors focus-within:outline-none focus-within:ring-2 focus-within:ring-ait-primary-500 focus-within:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 text-left',
-          variant === 'default' && 'border-ait-neutral-300 hover:border-ait-neutral-400',
-          variant === 'error' && 'border-ait-danger-500 focus-within:ring-ait-danger-500'
+          'flex h-11 w-full items-center justify-between rounded-lg border bg-white px-4 py-2.5 text-ait-body-md-regular transition-colors focus-within:outline-none focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 text-left',
+          variant === 'default' && 'border-neutral-300 hover:border-neutral-400',
+          variant === 'error' && 'border-danger-500 focus-within:ring-danger-500'
         )}
       >
-        <span className={cn(!value && 'text-ait-neutral-500')}>{formatRange()}</span>
-        <CalendarIcon className="h-4 w-4 text-ait-neutral-500" />
+        <span className={cn(!value && 'text-neutral-500')}>{formatRange()}</span>
+        <CalendarIcon className="h-4 w-4 text-neutral-500" />
       </button>
 
       {dropdownContent && createPortal(dropdownContent, document.body)}
@@ -565,9 +565,9 @@ export function DatePickerField({
   return (
     <div className="space-y-2">
       {label && (
-        <label className="text-ait-body-md-bold text-ait-neutral-900">
+        <label className="text-ait-body-md-bold text-neutral-900">
           {label}
-          {required && <span className="text-ait-danger-500 ml-1">*</span>}
+          {required && <span className="text-danger-500 ml-1">*</span>}
         </label>
       )}
       {children}
@@ -575,7 +575,7 @@ export function DatePickerField({
         <p
           className={cn(
             'text-ait-caption-md-regular',
-            error ? 'text-ait-danger-500' : 'text-ait-neutral-500'
+            error ? 'text-danger-500' : 'text-neutral-500'
           )}
         >
           {error || helperText}

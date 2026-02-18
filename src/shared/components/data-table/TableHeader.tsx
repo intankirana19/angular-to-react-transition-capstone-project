@@ -8,14 +8,14 @@ interface TableHeaderProps<TData> {
 
 export function TableHeader<TData>({ table }: TableHeaderProps<TData>) {
   return (
-    <thead className="bg-neutral-50">
+    <thead className="bg-neutral-200/70">
       {table.getHeaderGroups().map((headerGroup) => (
         <tr key={headerGroup.id}>
           {headerGroup.headers.map((header) => (
             <th
               key={header.id}
               className={cn(
-                'px-4 py-3 text-left text-xs font-semibold text-neutral-600',
+                'px-4 py-3 text-left text-xs font-semibold text-neutral-700',
                 header.column.getCanSort() && 'cursor-pointer select-none'
               )}
               onClick={header.column.getToggleSortingHandler()}
@@ -38,7 +38,7 @@ function SortIndicator<TData>({ header }: { header: Header<TData, unknown> }) {
   const sortDirection = header.column.getIsSorted();
 
   if (!sortDirection) {
-    return <ChevronsUpDown className="w-4 h-4 text-neutral-400" />;
+    return <ChevronsUpDown className="w-4 h-4 text-neutral-600" />;
   }
 
   if (sortDirection === 'asc') {

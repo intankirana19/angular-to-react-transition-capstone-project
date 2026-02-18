@@ -8,8 +8,8 @@ const accordionItemVariants = cva('', {
   variants: {
     variant: {
       default: '',
-      line: 'border-b border-ait-neutral-200',
-      border: 'border border-ait-neutral-300 rounded-lg mb-2 overflow-hidden',
+      line: 'border-b border-neutral-200',
+      border: 'border border-neutral-300 rounded-lg mb-2 overflow-hidden',
     },
   },
   defaultVariants: {
@@ -18,7 +18,7 @@ const accordionItemVariants = cva('', {
 });
 
 const accordionTriggerVariants = cva(
-  'flex w-full items-center justify-between py-4 text-left transition-all hover:bg-ait-neutral-50 disabled:cursor-not-allowed disabled:opacity-50 [&[data-state=open]>svg]:rotate-180',
+  'flex w-full items-center justify-between py-4 text-left transition-all hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-50 [&[data-state=open]>svg]:rotate-180',
   {
     variants: {
       variant: {
@@ -108,27 +108,27 @@ const AccordionTrigger = React.forwardRef<
       >
         {flipIcon ? (
           <>
-            <ChevronDown className="h-5 w-5 shrink-0 text-ait-neutral-600 transition-transform duration-200" />
+            <ChevronDown className="h-5 w-5 shrink-0 text-neutral-600 transition-transform duration-200" />
             <div className="flex flex-1 items-center gap-3 ml-3">
               {icon && (
-                <div className="flex h-6 w-6 items-center justify-center text-ait-primary-500">
+                <div className="flex h-6 w-6 items-center justify-center text-primary-500">
                   {icon}
                 </div>
               )}
-              <span className="text-ait-body-lg-semibold text-ait-neutral-900">{children}</span>
+              <span className="text-ait-body-lg-semibold text-neutral-900">{children}</span>
             </div>
           </>
         ) : (
           <>
             <div className="flex flex-1 items-center gap-3">
               {icon && (
-                <div className="flex h-6 w-6 items-center justify-center text-ait-primary-500">
+                <div className="flex h-6 w-6 items-center justify-center text-primary-500">
                   {icon}
                 </div>
               )}
-              <span className="text-ait-body-lg-semibold text-ait-neutral-900">{children}</span>
+              <span className="text-ait-body-lg-semibold text-neutral-900">{children}</span>
             </div>
-            <ChevronDown className="h-5 w-5 shrink-0 text-ait-neutral-600 transition-transform duration-200" />
+            <ChevronDown className="h-5 w-5 shrink-0 text-neutral-600 transition-transform duration-200" />
           </>
         )}
       </AccordionPrimitive.Trigger>
@@ -148,7 +148,7 @@ const AccordionContent = React.forwardRef<
       className={cn(accordionContentVariants({ variant }), className)}
       {...props}
     >
-      <div className="text-ait-body-md-regular text-ait-neutral-700">{children}</div>
+      <div className="text-ait-body-md-regular text-neutral-700">{children}</div>
     </AccordionPrimitive.Content>
   );
 });

@@ -58,7 +58,7 @@ export function Pagination({
   return (
     <div
       className={cn(
-        'flex items-center justify-between border-t border-ait-neutral-200 pt-5 pb-6 px-6',
+        'flex items-center justify-between border-t border-neutral-200 pt-5 pb-6 px-6',
         className
       )}
     >
@@ -79,7 +79,7 @@ export function Pagination({
               <SelectItem value="50">50</SelectItem>
             </SelectContent>
           </Select>
-          <p className="text-ait-body-md-regular text-ait-neutral-700">Rows per page</p>
+          <p className="text-ait-body-md-regular text-neutral-700">Rows per page</p>
         </div>
       )}
 
@@ -92,8 +92,8 @@ export function Pagination({
           className={cn(
             'flex items-center justify-center w-10 h-10 p-2.5 rounded-bl-lg rounded-tl-lg transition-colors',
             currentPage === 1
-              ? 'text-ait-neutral-400 cursor-not-allowed'
-              : 'text-ait-neutral-700 hover:bg-ait-neutral-100'
+              ? 'text-neutral-400 cursor-not-allowed'
+              : 'text-neutral-700 hover:bg-neutral-100'
           )}
         >
           <ChevronLeft className="w-5 h-5" />
@@ -109,10 +109,10 @@ export function Pagination({
               className={cn(
                 'w-10 h-10 flex items-center justify-center p-3 rounded-lg font-medium text-sm leading-5 transition-colors',
                 page === currentPage
-                  ? 'bg-[#00487a] text-white'
+                  ? 'bg-primary-500 text-white'
                   : page === '...'
-                    ? 'text-ait-neutral-500 cursor-default'
-                    : 'text-ait-neutral-500 hover:bg-ait-neutral-100'
+                    ? 'text-neutral-500 cursor-default'
+                    : 'text-neutral-500 hover:bg-neutral-100'
               )}
               style={{ fontFamily: 'Roboto, sans-serif', fontVariationSettings: "'wdth' 100" }}
             >
@@ -128,8 +128,8 @@ export function Pagination({
           className={cn(
             'flex items-center justify-center w-10 h-10 p-2.5 rounded-br-lg rounded-tr-lg transition-colors',
             currentPage === totalPages
-              ? 'text-ait-neutral-400 cursor-not-allowed'
-              : 'text-ait-neutral-700 hover:bg-ait-neutral-100'
+              ? 'text-neutral-400 cursor-not-allowed'
+              : 'text-neutral-700 hover:bg-neutral-100'
           )}
         >
           <ChevronRight className="w-5 h-5" />

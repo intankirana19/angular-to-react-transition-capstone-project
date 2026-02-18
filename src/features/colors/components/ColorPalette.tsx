@@ -7,14 +7,14 @@ interface ColorSwatchProps {
 
 function ColorSwatch({ name, value }: ColorSwatchProps) {
   return (
-    <div className="flex items-center gap-3 p-3 rounded-lg border border-ait-neutral-200 bg-white hover:shadow-sm transition-shadow">
+    <div className="flex items-center gap-3 p-3 rounded-lg border border-neutral-200 bg-white hover:shadow-sm transition-shadow">
       <div
-        className="w-12 h-12 rounded-lg border border-ait-neutral-200 flex-shrink-0"
+        className="w-12 h-12 rounded-lg border border-neutral-200 flex-shrink-0"
         style={{ backgroundColor: value }}
       />
       <div className="flex-1 min-w-0">
-        <p className="text-ait-body-md-semibold text-ait-neutral-900">{name}</p>
-        <p className="text-ait-caption-md-regular text-ait-neutral-500 uppercase">{value}</p>
+        <p className="text-ait-body-md-semibold text-neutral-900">{name}</p>
+        <p className="text-ait-caption-md-regular text-neutral-500 uppercase">{value}</p>
       </div>
     </div>
   );
@@ -31,11 +31,11 @@ function ColorGroup({ title, description, colors, codeExample }: ColorGroupProps
   return (
     <section className="space-y-4">
       <div>
-        <h2 className="text-ait-h2-bold text-ait-neutral-900 border-b border-ait-neutral-200 pb-2">
+        <h2 className="text-ait-h2-bold text-neutral-900 border-b border-neutral-200 pb-2">
           {title}
         </h2>
         {description && (
-          <p className="text-ait-body-md-regular text-ait-neutral-600 mt-2">{description}</p>
+          <p className="text-ait-body-md-regular text-neutral-600 mt-2">{description}</p>
         )}
       </div>
 
@@ -47,7 +47,7 @@ function ColorGroup({ title, description, colors, codeExample }: ColorGroupProps
 
       {codeExample && (
         <div className="mt-4">
-          <h3 className="text-ait-body-lg-semibold text-ait-neutral-900 mb-2">Usage Example</h3>
+          <h3 className="text-ait-body-lg-semibold text-neutral-900 mb-2">Usage Example</h3>
           <CodeBlock code={codeExample} />
         </div>
       )}
@@ -62,7 +62,7 @@ export function ColorPalette() {
     { name: 'Primary 200', value: '#99D3EF' },
     { name: 'Primary 400', value: '#2B80AF' },
     { name: 'Primary 500', value: '#00487A' },
-    { name: 'Primary 600', value: '#003768' },
+    { name: 'Primary 600', value: '#c66a80' },
   ];
 
   const aitSuccessColors = [
@@ -115,28 +115,28 @@ export function ColorPalette() {
   ];
 
   const primaryExample = `// Using Primary colors
-<button className="bg-ait-primary-500 hover:bg-ait-primary-600 text-white">
+<button className="bg-primary-500 hover:bg-primary-600 text-white">
   Primary Button
 </button>
 
-<div className="bg-ait-primary-50 border border-ait-primary-200">
+<div className="bg-primary-50 border border-primary-200">
   Primary background
 </div>`;
 
   const successExample = `// Using Success colors
-<div className="bg-ait-success-50 border border-ait-success-200 text-ait-success-700">
+<div className="bg-success-50 border border-success-200 text-success-700">
   Success message
 </div>`;
 
   const dangerExample = `// Using Danger colors
-<div className="bg-ait-danger-50 border border-ait-danger-200 text-ait-danger-700">
+<div className="bg-danger-50 border border-danger-200 text-danger-700">
   Error message
 </div>`;
 
   const neutralExample = `// Using Neutral colors
-<div className="bg-ait-neutral-50 border border-ait-neutral-200">
-  <h3 className="text-ait-neutral-900">Heading</h3>
-  <p className="text-ait-neutral-600">Description text</p>
+<div className="bg-neutral-50 border border-neutral-200">
+  <h3 className="text-neutral-900">Heading</h3>
+  <p className="text-neutral-600">Description text</p>
 </div>`;
 
   return (

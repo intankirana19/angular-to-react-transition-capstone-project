@@ -49,15 +49,15 @@ const exampleCode = `import {
 export function SelectSizes() {
   return (
     <section className="space-y-4">
-      <h2 className="text-ait-h2-bold text-ait-neutral-900 border-b border-ait-neutral-200 pb-2">
+      <h2 className="text-ait-h2-bold text-neutral-900 border-b border-neutral-200 pb-2">
         Sizes
       </h2>
-      <p className="text-ait-body-md-regular text-ait-neutral-600 mb-4">
+      <p className="text-ait-body-md-regular text-neutral-600 mb-4">
         Three size variants: small, medium, and large
       </p>
-      <div className="bg-ait-white p-6 rounded-lg border border-ait-neutral-200 space-y-4">
+      <div className="bg-white p-6 rounded-lg border border-neutral-200 space-y-4">
         <div>
-          <p className="text-ait-caption-md-bold text-ait-neutral-700 mb-2">Small</p>
+          <p className="text-ait-caption-md-bold text-neutral-700 mb-2">Small</p>
           <Select>
             <SelectTrigger size="sm">
               <SelectValue placeholder="Select option" />
@@ -71,7 +71,7 @@ export function SelectSizes() {
         </div>
 
         <div>
-          <p className="text-ait-caption-md-bold text-ait-neutral-700 mb-2">Medium (Default)</p>
+          <p className="text-ait-caption-md-bold text-neutral-700 mb-2">Medium (Default)</p>
           <Select>
             <SelectTrigger size="md">
               <SelectValue placeholder="Select option" />
@@ -85,7 +85,7 @@ export function SelectSizes() {
         </div>
 
         <div>
-          <p className="text-ait-caption-md-bold text-ait-neutral-700 mb-2">Large</p>
+          <p className="text-ait-caption-md-bold text-neutral-700 mb-2">Large</p>
           <Select>
             <SelectTrigger size="lg">
               <SelectValue placeholder="Select option" />
@@ -100,7 +100,7 @@ export function SelectSizes() {
       </div>
 
       <div className="mt-4">
-        <h3 className="text-ait-body-lg-semibold text-ait-neutral-900 mb-2">Code Example</h3>
+        <h3 className="text-ait-body-lg-semibold text-neutral-900 mb-2">Code Example</h3>
         <CodeBlock code={exampleCode} />
       </div>
     </section>

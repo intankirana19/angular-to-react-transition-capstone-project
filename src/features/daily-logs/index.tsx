@@ -121,26 +121,26 @@ export default function DailyLogsPage() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-ait-h1 text-ait-neutral-900 mb-2">Daily Logs</h1>
-        <p className="text-ait-body-lg-regular text-ait-neutral-600">
+        <h1 className="text-ait-h1 text-neutral-900 mb-2">Daily Logs</h1>
+        <p className="text-ait-body-lg-regular text-neutral-600">
           Track and manage your daily activities, tasks, and notes
         </p>
       </div>
 
       {/* Filters and Actions */}
-      <div className="bg-white rounded-xl border border-ait-neutral-200 p-6 shadow-sm">
+      <div className="bg-white rounded-xl border border-neutral-200 p-6 shadow-sm">
         <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
           {/* Search and Filters */}
           <div className="flex flex-col sm:flex-row gap-3 flex-1 w-full lg:w-auto">
             {/* Search */}
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-ait-neutral-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => handleSearchChange(e.target.value)}
                 placeholder="Search logs..."
-                className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-ait-neutral-300 text-ait-body-md-regular placeholder:text-ait-neutral-500 focus:outline-none focus:ring-2 focus:ring-ait-primary-500 focus:border-transparent transition-colors bg-white"
+                className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-neutral-300 text-ait-body-md-regular placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors bg-white"
               />
             </div>
 
@@ -207,7 +207,7 @@ export default function DailyLogsPage() {
           {/* Create Button */}
           <button
             onClick={() => setCreateDialogOpen(true)}
-            className="flex items-center gap-2 px-5 py-2.5 text-ait-body-md-semibold text-white bg-ait-primary-500 rounded-lg hover:bg-ait-primary-600 transition-all shadow-md hover:shadow-lg whitespace-nowrap"
+            className="flex items-center gap-2 px-5 py-2.5 text-ait-body-md-semibold text-white bg-primary-500 rounded-lg hover:bg-primary-600 transition-all shadow-md hover:shadow-lg whitespace-nowrap"
           >
             <Plus className="w-5 h-5" />
             Create Log
@@ -216,9 +216,9 @@ export default function DailyLogsPage() {
 
         {/* Results count */}
         {(searchQuery || filters.category || filters.priority || filters.status) && (
-          <div className="flex items-center justify-between px-4 py-3 mt-4 bg-ait-primary-50 rounded-lg border border-ait-primary-200">
-            <p className="text-ait-body-md-regular text-ait-neutral-700">
-              <span className="font-semibold text-ait-primary-600">{sortedLogs.length}</span> of{' '}
+          <div className="flex items-center justify-between px-4 py-3 mt-4 bg-primary-50 rounded-lg border border-primary-200">
+            <p className="text-ait-body-md-regular text-neutral-700">
+              <span className="font-semibold text-primary-600">{sortedLogs.length}</span> of{' '}
               {logs.length} logs found
             </p>
             <button
@@ -226,7 +226,7 @@ export default function DailyLogsPage() {
                 handleSearchChange('');
                 handleFilterChange({});
               }}
-              className="text-ait-body-md-semibold text-ait-primary-600 hover:text-ait-primary-700 transition-colors underline"
+              className="text-ait-body-md-semibold text-primary-600 hover:text-primary-700 transition-colors underline"
             >
               Clear filters
             </button>
@@ -235,7 +235,7 @@ export default function DailyLogsPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl border border-ait-neutral-200 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-xl border border-neutral-200 shadow-sm overflow-hidden">
         <DailyLogsTable logs={paginatedLogs} onEdit={handleEdit} onDelete={handleDelete} onView={handleView} />
 
         {/* Pagination */}

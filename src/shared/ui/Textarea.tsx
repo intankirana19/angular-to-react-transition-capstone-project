@@ -3,20 +3,20 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/shared/lib/cn';
 
 const textareaVariants = cva(
-  'w-full rounded-lg text-ait-body-md-regular text-ait-neutral-900 placeholder:text-ait-neutral-500 transition-colors disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none',
+  'w-full rounded-lg text-ait-body-md-regular text-neutral-900 placeholder:text-neutral-500 transition-colors disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none',
   {
     variants: {
       variant: {
         outlined: [
           'border bg-transparent',
-          'border-ait-neutral-300',
-          'hover:border-ait-neutral-400',
-          'focus:border-ait-primary-500 focus:ring-2 focus:ring-ait-primary-500 focus:ring-offset-1',
+          'border-neutral-300',
+          'hover:border-neutral-400',
+          'focus:border-primary-500 focus:ring-2 focus:ring-primary-500 focus:ring-offset-1',
         ],
         box: [
-          'border-0 bg-ait-neutral-50',
-          'hover:bg-ait-neutral-100',
-          'focus:bg-white focus:ring-2 focus:ring-ait-primary-500 focus:ring-offset-1',
+          'border-0 bg-neutral-50',
+          'hover:bg-neutral-100',
+          'focus:bg-white focus:ring-2 focus:ring-primary-500 focus:ring-offset-1',
         ],
       },
       inputSize: {
@@ -33,12 +33,12 @@ const textareaVariants = cva(
       {
         variant: 'outlined',
         hasError: true,
-        className: 'border-ait-danger-500 focus:border-ait-danger-500 focus:ring-ait-danger-500',
+        className: 'border-danger-500 focus:border-danger-500 focus:ring-danger-500',
       },
       {
         variant: 'box',
         hasError: true,
-        className: 'bg-ait-danger-50 focus:bg-ait-danger-50 focus:ring-ait-danger-500',
+        className: 'bg-danger-50 focus:bg-danger-50 focus:ring-danger-500',
       },
     ],
     defaultVariants: {
@@ -120,7 +120,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           {...props}
         />
         {showCount && maxLength && (
-          <div className="absolute bottom-2 right-3 text-ait-caption-md-regular text-ait-neutral-500">
+          <div className="absolute bottom-2 right-3 text-ait-caption-md-regular text-neutral-500">
             {charCount}/{maxLength}
           </div>
         )}
@@ -152,9 +152,9 @@ export function TextareaField({
     return (
       <div className="flex gap-4 items-start">
         {label && (
-          <label className="text-ait-body-md-bold text-ait-neutral-900 min-w-[120px] pt-2.5">
+          <label className="text-ait-body-md-bold text-neutral-900 min-w-[120px] pt-2.5">
             {label}
-            {required && <span className="text-ait-danger-500 ml-1">*</span>}
+            {required && <span className="text-danger-500 ml-1">*</span>}
           </label>
         )}
         <div className="flex-1 space-y-2">
@@ -163,7 +163,7 @@ export function TextareaField({
             <p
               className={cn(
                 'text-ait-caption-md-regular',
-                error ? 'text-ait-danger-500' : 'text-ait-neutral-500'
+                error ? 'text-danger-500' : 'text-neutral-500'
               )}
             >
               {error || helperText}
@@ -177,9 +177,9 @@ export function TextareaField({
   return (
     <div className="space-y-2">
       {label && (
-        <label className="text-ait-body-md-bold text-ait-neutral-900">
+        <label className="text-ait-body-md-bold text-neutral-900">
           {label}
-          {required && <span className="text-ait-danger-500 ml-1">*</span>}
+          {required && <span className="text-danger-500 ml-1">*</span>}
         </label>
       )}
       {children}
@@ -187,7 +187,7 @@ export function TextareaField({
         <p
           className={cn(
             'text-ait-caption-md-regular',
-            error ? 'text-ait-danger-500' : 'text-ait-neutral-500'
+            error ? 'text-danger-500' : 'text-neutral-500'
           )}
         >
           {error || helperText}

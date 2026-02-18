@@ -9,42 +9,50 @@
     sans-serif;
 }
 
+html,
+body,
+#root {
+  margin: 0;
+  background-color: var(--color-neutral-50);
+  color: var(--color-neutral-900);
+}
+
 @theme {
-  --color-primary-25: oklch(0.984 0.016 206);
-  --color-primary-50: oklch(0.962 0.028 206);
-  --color-primary-100: oklch(0.913 0.052 206);
-  --color-primary-200: oklch(0.827 0.089 206);
-  --color-primary-300: oklch(0.725 0.117 228);
-  --color-primary-400: oklch(0.605 0.119 233);
-  --color-primary-500: oklch(0.381 0.125 248);
-  --color-primary-600: oklch(0.323 0.108 253);
-  --color-primary-700: oklch(0.267 0.091 258);
-  --color-primary-800: oklch(0.222 0.077 263);
-  --color-primary-900: oklch(0.179 0.065 268);
+  --color-primary-25: oklch(0.17 0.045 8);
+  --color-primary-50: oklch(0.22 0.05 10);
+  --color-primary-100: oklch(0.27 0.058 14);
+  --color-primary-200: oklch(0.33 0.07 18);
+  --color-primary-300: oklch(0.4 0.085 20);
+  --color-primary-400: oklch(0.47 0.1 22);
+  --color-primary-500: oklch(0.54 0.115 24);
+  --color-primary-600: oklch(0.61 0.11 22);
+  --color-primary-700: oklch(0.69 0.09 18);
+  --color-primary-800: oklch(0.78 0.07 16);
+  --color-primary-900: oklch(0.86 0.05 14);
 
-  --color-secondary-25: oklch(0.988 0.01 190);
-  --color-secondary-50: oklch(0.975 0.025 170);
-  --color-secondary-100: oklch(0.945 0.058 165);
-  --color-secondary-200: oklch(0.9 0.095 162);
-  --color-secondary-300: oklch(0.85 0.125 170);
-  --color-secondary-400: oklch(0.79 0.145 175);
-  --color-secondary-500: oklch(0.718 0.155 181);
-  --color-secondary-600: oklch(0.63 0.125 185);
-  --color-secondary-700: oklch(0.53 0.095 195);
-  --color-secondary-800: oklch(0.44 0.075 205);
-  --color-secondary-900: oklch(0.352 0.06 220);
+  --color-secondary-25: oklch(0.18 0.04 332);
+  --color-secondary-50: oklch(0.23 0.045 330);
+  --color-secondary-100: oklch(0.29 0.055 329);
+  --color-secondary-200: oklch(0.36 0.07 326);
+  --color-secondary-300: oklch(0.44 0.085 323);
+  --color-secondary-400: oklch(0.52 0.095 320);
+  --color-secondary-500: oklch(0.6 0.1 316);
+  --color-secondary-600: oklch(0.68 0.09 314);
+  --color-secondary-700: oklch(0.76 0.075 312);
+  --color-secondary-800: oklch(0.84 0.055 310);
+  --color-secondary-900: oklch(0.91 0.03 308);
 
-  --color-tertiary-25: oklch(0.985 0.015 195);
-  --color-tertiary-50: oklch(0.97 0.03 195);
-  --color-tertiary-100: oklch(0.935 0.06 195);
-  --color-tertiary-200: oklch(0.91 0.08 195);
-  --color-tertiary-300: oklch(0.88 0.1 195);
-  --color-tertiary-400: oklch(0.82 0.12 200);
-  --color-tertiary-500: oklch(0.685 0.138 210);
-  --color-tertiary-600: oklch(0.58 0.11 215);
-  --color-tertiary-700: oklch(0.48 0.09 220);
-  --color-tertiary-800: oklch(0.38 0.07 230);
-  --color-tertiary-900: oklch(0.295 0.055 240);
+  --color-tertiary-25: oklch(0.18 0.03 50);
+  --color-tertiary-50: oklch(0.23 0.035 52);
+  --color-tertiary-100: oklch(0.29 0.045 55);
+  --color-tertiary-200: oklch(0.36 0.055 57);
+  --color-tertiary-300: oklch(0.43 0.065 58);
+  --color-tertiary-400: oklch(0.51 0.075 60);
+  --color-tertiary-500: oklch(0.58 0.085 62);
+  --color-tertiary-600: oklch(0.66 0.08 64);
+  --color-tertiary-700: oklch(0.74 0.065 66);
+  --color-tertiary-800: oklch(0.83 0.045 68);
+  --color-tertiary-900: oklch(0.9 0.025 70);
 
   --color-success-25: oklch(0.985 0.015 142);
   --color-success-50: oklch(0.965 0.035 142);
@@ -94,17 +102,17 @@
   --color-danger-800: oklch(0.26 0.1 26);
   --color-danger-900: oklch(0.2 0.08 25);
 
-  --color-neutral-25: oklch(0.99 0.002 260);
-  --color-neutral-50: oklch(0.98 0.005 260);
-  --color-neutral-100: oklch(0.96 0.01 260);
-  --color-neutral-200: oklch(0.92 0.015 260);
-  --color-neutral-300: oklch(0.86 0.02 260);
-  --color-neutral-400: oklch(0.7 0.025 260);
-  --color-neutral-500: oklch(0.556 0.031 257);
-  --color-neutral-600: oklch(0.42 0.032 260);
-  --color-neutral-700: oklch(0.3 0.033 262);
-  --color-neutral-800: oklch(0.22 0.034 264);
-  --color-neutral-900: oklch(0.18 0.034 266);
+  --color-neutral-25: oklch(0.13 0.01 350);
+  --color-neutral-50: oklch(0.17 0.012 350);
+  --color-neutral-100: oklch(0.21 0.013 350);
+  --color-neutral-200: oklch(0.27 0.015 350);
+  --color-neutral-300: oklch(0.35 0.018 350);
+  --color-neutral-400: oklch(0.46 0.02 350);
+  --color-neutral-500: oklch(0.58 0.024 350);
+  --color-neutral-600: oklch(0.69 0.022 350);
+  --color-neutral-700: oklch(0.79 0.018 350);
+  --color-neutral-800: oklch(0.88 0.014 350);
+  --color-neutral-900: oklch(0.94 0.01 350);
 
   --color-black: oklch(0 0 0);
   --color-white: oklch(1 0 0);
@@ -169,6 +177,16 @@
   /* AIT Drop Shadow */
   --shadow-ait-lg: 0 4px 6px -2px rgba(16, 24, 40, 0.03), 0 12px 16px -4px rgba(16, 24, 40, 0.08);
   --shadow-ait-xl: 0 8px 8px -4px rgba(16, 24, 40, 0.03), 0 20px 24px -4px rgba(16, 24, 40, 0.08);
+}
+
+@layer utilities {
+  .bg-white {
+    background-color: var(--color-neutral-100);
+  }
+
+  .ring-offset-white {
+    --tw-ring-offset-color: var(--color-neutral-100);
+  }
 }
 
 @utility text-display-lg {

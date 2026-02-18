@@ -41,10 +41,10 @@ const exampleCode = `import { Textarea, TextareaField } from '@/shared/ui/Textar
 export function TextareaStates() {
   return (
     <section className="space-y-4">
-      <h2 className="text-ait-h2-bold text-ait-neutral-900 border-b border-ait-neutral-200 pb-2">
+      <h2 className="text-ait-h2-bold text-neutral-900 border-b border-neutral-200 pb-2">
         Textarea States
       </h2>
-      <p className="text-ait-body-md-regular text-ait-neutral-600 mb-4">
+      <p className="text-ait-body-md-regular text-neutral-600 mb-4">
         Different states of the textarea component
       </p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -81,7 +81,7 @@ export function TextareaStates() {
       </div>
 
       <div className="mt-4">
-        <h3 className="text-ait-body-lg-semibold text-ait-neutral-900 mb-2">Code Example</h3>
+        <h3 className="text-ait-body-lg-semibold text-neutral-900 mb-2">Code Example</h3>
         <CodeBlock code={exampleCode} />
       </div>
     </section>

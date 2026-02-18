@@ -70,7 +70,7 @@ function CalendarGrid({
         <div className="grid grid-cols-7 gap-0 mb-2">
           {['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'].map((day) => (
             <div key={day} className="h-8 flex items-center justify-center">
-              <p className="text-ait-body-sm-semibold text-ait-neutral-600 text-xs">{day}</p>
+              <p className="text-ait-body-sm-semibold text-neutral-600 text-xs">{day}</p>
             </div>
           ))}
         </div>
@@ -89,10 +89,10 @@ function CalendarGrid({
                     onClick={() => onDateClick(date)}
                     className={cn(
                       'w-9 h-9 rounded-full flex items-center justify-center text-sm font-medium transition-colors',
-                      outside && 'text-ait-neutral-400',
-                      !outside && !selected && 'text-ait-neutral-700 hover:bg-ait-neutral-100',
-                      selected && 'bg-ait-primary-500 text-white hover:bg-ait-primary-600',
-                      today && !selected && 'ring-2 ring-ait-primary-500 ring-inset'
+                      outside && 'text-neutral-400',
+                      !outside && !selected && 'text-neutral-700 hover:bg-neutral-100',
+                      selected && 'bg-primary-500 text-white hover:bg-primary-600',
+                      today && !selected && 'ring-2 ring-primary-500 ring-inset'
                     )}
                   >
                     {format(date, 'd')}
@@ -183,7 +183,7 @@ export function SingleDatePicker({
     <div
       ref={dropdownRef}
       data-portal="datepicker"
-      className="fixed z-[100] rounded-lg border border-ait-neutral-200 bg-white shadow-ait-xl"
+      className="fixed z-[100] rounded-lg border border-neutral-200 bg-white shadow-ait-xl"
       style={{
         top: `${dropdownPosition.top}px`,
         left: `${dropdownPosition.left}px`,
@@ -191,23 +191,23 @@ export function SingleDatePicker({
       }}
     >
       {/* Header with month/year navigation */}
-      <div className="flex items-center justify-between p-4 border-b border-ait-neutral-200">
+      <div className="flex items-center justify-between p-4 border-b border-neutral-200">
         <button
           type="button"
           onClick={handlePrevMonth}
-          className="p-1 rounded-md hover:bg-ait-neutral-100 transition-colors"
+          className="p-1 rounded-md hover:bg-neutral-100 transition-colors"
         >
-          <ChevronLeft className="w-5 h-5 text-ait-neutral-700" />
+          <ChevronLeft className="w-5 h-5 text-neutral-700" />
         </button>
-        <p className="text-ait-body-md-semibold text-ait-neutral-900">
+        <p className="text-ait-body-md-semibold text-neutral-900">
           {format(currentMonth, 'MMMM yyyy')}
         </p>
         <button
           type="button"
           onClick={handleNextMonth}
-          className="p-1 rounded-md hover:bg-ait-neutral-100 transition-colors"
+          className="p-1 rounded-md hover:bg-neutral-100 transition-colors"
         >
-          <ChevronRight className="w-5 h-5 text-ait-neutral-700" />
+          <ChevronRight className="w-5 h-5 text-neutral-700" />
         </button>
       </div>
 
@@ -230,17 +230,17 @@ export function SingleDatePicker({
         className={cn(
           'w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-lg border text-ait-body-md-regular transition-colors bg-white',
           variant === 'default' &&
-            'border-ait-neutral-300 focus:outline-none focus:ring-2 focus:ring-ait-primary-500 focus:border-transparent',
+            'border-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent',
           variant === 'error' &&
-            'border-ait-danger-500 focus:outline-none focus:ring-2 focus:ring-ait-danger-500 focus:border-transparent',
-          disabled && 'opacity-50 cursor-not-allowed bg-ait-neutral-50',
-          !disabled && 'hover:border-ait-neutral-400'
+            'border-danger-500 focus:outline-none focus:ring-2 focus:ring-danger-500 focus:border-transparent',
+          disabled && 'opacity-50 cursor-not-allowed bg-neutral-50',
+          !disabled && 'hover:border-neutral-400'
         )}
       >
-        <span className={cn(!date && 'text-ait-neutral-500')}>
+        <span className={cn(!date && 'text-neutral-500')}>
           {date ? format(date, 'MMM d, yyyy') : placeholder}
         </span>
-        <CalendarIcon className="h-4 w-4 text-ait-neutral-500 flex-shrink-0" />
+        <CalendarIcon className="h-4 w-4 text-neutral-500 flex-shrink-0" />
       </button>
 
       {dropdownContent && createPortal(dropdownContent, document.body)}

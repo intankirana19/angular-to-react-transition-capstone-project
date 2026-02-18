@@ -14,7 +14,8 @@ interface MainLayoutProps {
 export function MainLayout({ children }: MainLayoutProps) {
   const location = useLocation();
   const queryClient = useQueryClient();
-  const { sidebarOpen, toggleSidebar } = useUiStore();
+  const { sidebarOpen, sidebarCollapsed, toggleSidebar } = useUiStore();
+  const showHeaderTitle = !sidebarOpen || sidebarCollapsed;
 
   return (
     <div className="flex h-screen bg-neutral-50">
@@ -28,7 +29,12 @@ export function MainLayout({ children }: MainLayoutProps) {
                 ☰
               </Button>
             )}
-            <h1 className="text-xl font-semibold">AIT React Scaffold</h1>
+            <h1
+              className={`text-xl font-semibold ${showHeaderTitle ? 'visible' : 'invisible'}`}
+              aria-hidden={!showHeaderTitle}
+            >
+              INTAN CMS
+            </h1>
             <div />
           </div>
         </header>

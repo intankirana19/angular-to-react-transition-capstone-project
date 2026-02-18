@@ -60,18 +60,18 @@ export function getStatusLabel(status: DailyLog['status']): string {
 
 export function getPriorityColor(priority: DailyLog['priority']): string {
   const colors: Record<DailyLog['priority'], string> = {
-    low: 'bg-ait-success-50 text-ait-success-700 border-ait-success-200',
-    medium: 'bg-ait-warning-50 text-ait-warning-700 border-ait-warning-200',
-    high: 'bg-ait-danger-50 text-ait-danger-700 border-ait-danger-200',
+    low: 'bg-success-50 text-success-700 border-success-200',
+    medium: 'bg-warning-50 text-warning-700 border-warning-200',
+    high: 'bg-danger-50 text-danger-700 border-danger-200',
   };
   return colors[priority];
 }
 
 export function getStatusColor(status: DailyLog['status']): string {
   const colors: Record<DailyLog['status'], string> = {
-    pending: 'bg-ait-neutral-50 text-ait-neutral-700 border-ait-neutral-200',
-    'in-progress': 'bg-ait-info-50 text-ait-info-700 border-ait-info-200',
-    completed: 'bg-ait-success-50 text-ait-success-700 border-ait-success-200',
+    pending: 'bg-neutral-50 text-neutral-700 border-neutral-200',
+    'in-progress': 'bg-info-50 text-info-700 border-info-200',
+    completed: 'bg-success-50 text-success-700 border-success-200',
   };
   return colors[status];
 }

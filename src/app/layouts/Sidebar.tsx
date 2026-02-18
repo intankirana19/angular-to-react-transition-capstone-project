@@ -59,7 +59,7 @@ export function Sidebar() {
       >
         {!sidebarCollapsed && (
           <div className="min-w-0">
-            <h2 className="truncate text-base font-semibold text-neutral-900">AIT Scaffold</h2>
+            <h2 className="truncate text-base font-semibold text-neutral-900">INTAN CMS</h2>
           </div>
         )}
 

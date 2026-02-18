@@ -1,4 +1,4 @@
-# AIT React Scaffold
+# INTAN CMS
 
 A production-ready React scaffold with modern tools and sensible defaults.
 

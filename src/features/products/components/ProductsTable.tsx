@@ -59,7 +59,7 @@ export function ProductsTable({ products, onRowClick, onEdit, onDelete }: Produc
                 e.stopPropagation(); // biar row click gak ikut
                 onEdit?.(row.original);
               }}
-              className="p-2 text-ait-neutral-500 hover:text-ait-primary-600 hover:bg-ait-primary-50 rounded-lg transition-all duration-200 hover:shadow-sm"
+              className="p-2 text-neutral-500 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all duration-200 hover:shadow-sm"
               title="Edit product"
               aria-label="Edit product"
             >
@@ -71,7 +71,7 @@ export function ProductsTable({ products, onRowClick, onEdit, onDelete }: Produc
                 e.stopPropagation(); // supaya ga trigger row navigation saat klik delete
                 onDelete?.(row.original);
               }}
-              className="p-2 text-ait-neutral-500 hover:text-ait-danger-600 hover:bg-ait-danger-50 rounded-lg transition-all duration-200 hover:shadow-sm"
+              className="p-2 text-neutral-500 hover:text-danger-600 hover:bg-danger-50 rounded-lg transition-all duration-200 hover:shadow-sm"
               title="Delete product"
               aria-label="Delete product"
             >

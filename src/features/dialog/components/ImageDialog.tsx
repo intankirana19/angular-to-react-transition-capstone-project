@@ -46,7 +46,7 @@ const [open, setOpen] = useState(false);
             <input type="text" placeholder="Enter name" />
           </div>
           <div className="space-y-2">
-            <label>Email <span className="text-ait-danger-500">*</span></label>
+            <label>Email <span className="text-danger-500">*</span></label>
             <input type="email" placeholder="Enter your email" />
           </div>
         </div>
@@ -64,16 +64,16 @@ export function ImageDialog() {
 
   return (
     <section className="space-y-4">
-      <h2 className="text-ait-h2-bold text-ait-neutral-900 border-b border-ait-neutral-200 pb-2">
+      <h2 className="text-ait-h2-bold text-neutral-900 border-b border-neutral-200 pb-2">
         Image Dialog
       </h2>
-      <p className="text-ait-body-md-regular text-ait-neutral-600 mb-4">
+      <p className="text-ait-body-md-regular text-neutral-600 mb-4">
         Dialog with an image banner and form fields
       </p>
       <div className="flex gap-4">
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <button className="px-4 py-2.5 text-ait-body-md-semibold text-white bg-ait-primary-500 rounded-lg hover:bg-ait-primary-400 transition-colors">
+            <button className="px-4 py-2.5 text-ait-body-md-semibold text-white bg-primary-500 rounded-lg hover:bg-primary-400 transition-colors">
               Open Image Dialog
             </button>
           </DialogTrigger>
@@ -91,33 +91,33 @@ export function ImageDialog() {
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-ait-body-md-bold text-ait-neutral-900">Name</label>
+                      <label className="text-ait-body-md-bold text-neutral-900">Name</label>
                       <input
                         type="text"
                         placeholder="Enter name"
-                        className="w-full px-4 py-2.5 rounded-lg border border-ait-neutral-300 text-ait-body-md-regular placeholder:text-ait-neutral-500 focus:outline-none focus:ring-2 focus:ring-ait-primary-500 focus:border-transparent"
+                        className="w-full px-4 py-2.5 rounded-lg border border-neutral-300 text-ait-body-md-regular placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-ait-body-md-bold text-ait-neutral-900">Phone</label>
+                      <label className="text-ait-body-md-bold text-neutral-900">Phone</label>
                       <input
                         type="tel"
                         placeholder="Enter phone"
-                        className="w-full px-4 py-2.5 rounded-lg border border-ait-neutral-300 text-ait-body-md-regular placeholder:text-ait-neutral-500 focus:outline-none focus:ring-2 focus:ring-ait-primary-500 focus:border-transparent"
+                        className="w-full px-4 py-2.5 rounded-lg border border-neutral-300 text-ait-body-md-regular placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                       />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-ait-body-md-bold text-ait-neutral-900">
+                    <label className="text-ait-body-md-bold text-neutral-900">
                       Email
-                      <span className="text-ait-danger-500 ml-1">*</span>
+                      <span className="text-danger-500 ml-1">*</span>
                     </label>
                     <input
                       type="email"
                       placeholder="Enter your email"
-                      className="w-full px-4 py-2.5 rounded-lg border border-ait-neutral-300 text-ait-body-md-regular placeholder:text-ait-neutral-500 focus:outline-none focus:ring-2 focus:ring-ait-primary-500 focus:border-transparent"
+                      className="w-full px-4 py-2.5 rounded-lg border border-neutral-300 text-ait-body-md-regular placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     />
-                    <p className="text-ait-caption-md-regular text-ait-neutral-500">
+                    <p className="text-ait-caption-md-regular text-neutral-500">
                       We'll never share your email.
                     </p>
                   </div>
@@ -126,13 +126,13 @@ export function ImageDialog() {
               <DialogFooter className="p-0">
                 <button
                   onClick={() => setOpen(false)}
-                  className="px-4 py-2.5 text-ait-body-md-semibold text-ait-neutral-700 border border-ait-neutral-300 rounded-lg hover:bg-ait-neutral-50 transition-colors"
+                  className="px-4 py-2.5 text-ait-body-md-semibold text-neutral-700 border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={() => setOpen(false)}
-                  className="px-4 py-2.5 text-ait-body-md-semibold text-white bg-[#00487a] rounded-lg hover:bg-[#003768] transition-colors"
+                  className="px-4 py-2.5 text-ait-body-md-semibold text-white bg-primary-500 rounded-lg hover:bg-primary-600 transition-colors"
                 >
                   Submit
                 </button>
@@ -143,7 +143,7 @@ export function ImageDialog() {
       </div>
 
       <div className="mt-4">
-        <h3 className="text-ait-body-lg-semibold text-ait-neutral-900 mb-2">Code Example</h3>
+        <h3 className="text-ait-body-lg-semibold text-neutral-900 mb-2">Code Example</h3>
         <CodeBlock code={exampleCode} />
       </div>
     </section>

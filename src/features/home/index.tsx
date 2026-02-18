@@ -4,7 +4,7 @@ export default function HomePage() {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="bg-white rounded-lg shadow-lg p-8">
-        <h1 className="text-3xl font-bold text-neutral-900">AIT React Scaffold</h1>
+        <h1 className="text-3xl font-bold text-neutral-900">INTAN CMS</h1>
 
         <p className="mt-2 text-neutral-600">
           A feature-first scaffold with modern tooling and sensible defaults.

@@ -96,8 +96,8 @@ export function CreateLogDialog({ open, onOpenChange, onSubmit }: CreateLogDialo
           <div className="space-y-4">
             {/* Date Picker */}
             <div className="space-y-2">
-              <label className="text-ait-body-md-bold text-ait-neutral-900">
-                Date <span className="text-ait-danger-500">*</span>
+              <label className="text-ait-body-md-bold text-neutral-900">
+                Date <span className="text-danger-500">*</span>
               </label>
               <SimpleDatePicker
                 date={formData.date}
@@ -110,8 +110,8 @@ export function CreateLogDialog({ open, onOpenChange, onSubmit }: CreateLogDialo
 
             {/* Title */}
             <div className="space-y-2">
-              <label className="text-ait-body-md-bold text-ait-neutral-900">
-                Title <span className="text-ait-danger-500">*</span>
+              <label className="text-ait-body-md-bold text-neutral-900">
+                Title <span className="text-danger-500">*</span>
               </label>
               <input
                 type="text"
@@ -125,20 +125,20 @@ export function CreateLogDialog({ open, onOpenChange, onSubmit }: CreateLogDialo
                 placeholder="Enter log title"
                 className={`w-full px-4 py-2.5 rounded-lg border ${
                   errors.title
-                    ? 'border-ait-danger-500 focus:ring-ait-danger-500'
-                    : 'border-ait-neutral-300 focus:ring-ait-primary-500'
-                } text-ait-body-md-regular placeholder:text-ait-neutral-500 focus:outline-none focus:ring-2 focus:border-transparent transition-colors`}
+                    ? 'border-danger-500 focus:ring-danger-500'
+                    : 'border-neutral-300 focus:ring-primary-500'
+                } text-ait-body-md-regular placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:border-transparent transition-colors`}
               />
               {errors.title && (
-                <p className="text-ait-caption-md-regular text-ait-danger-500">{errors.title}</p>
+                <p className="text-ait-caption-md-regular text-danger-500">{errors.title}</p>
               )}
             </div>
 
             {/* Category and Priority */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-ait-body-md-bold text-ait-neutral-900">
-                  Category <span className="text-ait-danger-500">*</span>
+                <label className="text-ait-body-md-bold text-neutral-900">
+                  Category <span className="text-danger-500">*</span>
                 </label>
                 <SimpleSelect
                   value={formData.category}
@@ -150,8 +150,8 @@ export function CreateLogDialog({ open, onOpenChange, onSubmit }: CreateLogDialo
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-ait-body-md-bold text-ait-neutral-900">
-                  Priority <span className="text-ait-danger-500">*</span>
+                <label className="text-ait-body-md-bold text-neutral-900">
+                  Priority <span className="text-danger-500">*</span>
                 </label>
                 <SimpleSelect
                   value={formData.priority}
@@ -166,8 +166,8 @@ export function CreateLogDialog({ open, onOpenChange, onSubmit }: CreateLogDialo
 
             {/* Status */}
             <div className="space-y-2">
-              <label className="text-ait-body-md-bold text-ait-neutral-900">
-                Status <span className="text-ait-danger-500">*</span>
+              <label className="text-ait-body-md-bold text-neutral-900">
+                Status <span className="text-danger-500">*</span>
               </label>
               <SimpleSelect
                 value={formData.status}
@@ -181,8 +181,8 @@ export function CreateLogDialog({ open, onOpenChange, onSubmit }: CreateLogDialo
 
             {/* Description */}
             <div className="space-y-2">
-              <label className="text-ait-body-md-bold text-ait-neutral-900">
-                Description <span className="text-ait-danger-500">*</span>
+              <label className="text-ait-body-md-bold text-neutral-900">
+                Description <span className="text-danger-500">*</span>
               </label>
               <Textarea
                 value={formData.description}
@@ -197,7 +197,7 @@ export function CreateLogDialog({ open, onOpenChange, onSubmit }: CreateLogDialo
                 error={!!errors.description}
               />
               {errors.description && (
-                <p className="text-ait-caption-md-regular text-ait-danger-500">
+                <p className="text-ait-caption-md-regular text-danger-500">
                   {errors.description}
                 </p>
               )}
@@ -207,13 +207,13 @@ export function CreateLogDialog({ open, onOpenChange, onSubmit }: CreateLogDialo
         <DialogFooter>
           <button
             onClick={handleCancel}
-            className="px-4 py-2.5 text-ait-body-md-semibold text-ait-neutral-700 border border-ait-neutral-300 rounded-lg hover:bg-ait-neutral-50 transition-colors"
+            className="px-4 py-2.5 text-ait-body-md-semibold text-neutral-700 border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors"
           >
             Cancel
           </button>
           <button
             onClick={handleSubmit}
-            className="px-4 py-2.5 text-ait-body-md-semibold text-white bg-[#00487a] rounded-lg hover:bg-[#003768] transition-colors"
+            className="px-4 py-2.5 text-ait-body-md-semibold text-white bg-primary-500 rounded-lg hover:bg-primary-600 transition-colors"
           >
             Create Log
           </button>

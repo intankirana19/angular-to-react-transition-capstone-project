@@ -15,7 +15,7 @@ export function TableBody<TData>({ table, onRowClick }: TableBodyProps<TData>) {
         <tr>
           <td
             colSpan={table.getAllColumns().length}
-            className="px-4 py-12 text-center text-neutral-500"
+            className="px-4 py-12 text-center text-neutral-700"
           >
             No data available
           </td>
@@ -25,15 +25,15 @@ export function TableBody<TData>({ table, onRowClick }: TableBodyProps<TData>) {
   }
 
   return (
-    <tbody className="bg-white divide-y divide-neutral-200">
+    <tbody className="bg-neutral-100 divide-y divide-neutral-300">
       {rows.map((row) => (
         <tr
           key={row.id}
           onClick={() => onRowClick?.(row)}
-          className={cn('hover:bg-neutral-50 transition-colors', onRowClick && 'cursor-pointer')}
+          className={cn('transition-colors hover:bg-neutral-200/70', onRowClick && 'cursor-pointer')}
         >
           {row.getVisibleCells().map((cell) => (
-            <td key={cell.id} className="px-4 py-4 whitespace-nowrap text-sm text-neutral-900">
+            <td key={cell.id} className="px-4 py-4 whitespace-nowrap text-sm text-neutral-800">
               {flexRender(cell.column.columnDef.cell, cell.getContext())}
             </td>
           ))}
