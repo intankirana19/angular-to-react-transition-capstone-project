@@ -5,13 +5,32 @@ import { useGetProducts } from '../api/hooks/useGetProducts';
 import { DeleteProductDialog } from '../components/DeleteProductDialog';
 import { ProductFormDialog } from '../components/ProductFormDialog';
 import { ProductsTable } from '../components/ProductsTable';
-import { getErrorMessage } from '@/shared/lib/error';
-import { ErrorState } from '@/shared/ui/ErrorState';
 
 // refer user page dr skafold
 export default function ProductsListPage() {
   const navigate = useNavigate();
-  const { data: products, error, refetch, isFetching } = useGetProducts();
+
+  // loading + error dihandle suspense + ErrorBoundary di level app/layout.
+  const { data: products } = useGetProducts();
+
+  // kalau custom error UI, pakai manual `if (error)` lagi.
+  // const { data: products, error, refetch, isFetching } = useGetProducts();
+  //  if (error) {
+  //     return (
+  //       <ErrorState
+  //         title="Error loading products"
+  //         message={getErrorMessage(error)}
+  //         actions={[
+  //           {
+  //             label: isFetching ? 'Retrying...' : 'Retry',
+  //             onClick: () => refetch(),
+  //             disabled: isFetching,
+  //           },
+  //         ]}
+  //       />
+  //     );
+  //   }
+
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
   const [deletingProductId, setDeletingProductId] = useState<string | null>(null);
@@ -24,22 +43,6 @@ export default function ProductsListPage() {
     () => products?.find((product) => product.id === deletingProductId) ?? null,
     [deletingProductId, products]
   );
-
-  if (error) {
-    return (
-      <ErrorState
-        title="Error loading products"
-        message={getErrorMessage(error)}
-        actions={[
-          {
-            label: isFetching ? 'Retrying...' : 'Retry',
-            onClick: () => refetch(),
-            disabled: isFetching,
-          },
-        ]}
-      />
-    );
-  }
 
   const hasProducts = products && products.length > 0;
 

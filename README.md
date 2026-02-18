@@ -172,3 +172,5 @@ MIT
 14. Tampilan error di page `users` dan `products` dirapikan pakai komponen reusable `ErrorState` (`src/shared/ui/ErrorState.tsx`) supaya fallback UI konsisten dan maintenance lebih mudah.
 
 15. `ErrorBoundary` sekarang pakai `ErrorState` sebagai UI fallback (mode `fullScreen`) supaya tampilan error global dan error di level halaman tetap satu pola.
+
+16. Loading/error handler dipage `users`, `products list`, dan `product detail` dihapus supaya fokus ke state sukses karena loading/error sudah dihandle di level layout/app dengan Suspense + ErrorBoundary. Kalau butuh title/message/button error yang custom per halaman, bisa manual (`useQuery` + `if (error) return <ErrorState ... />`) atau tetap pakai `useSuspenseQuery` dengan ErrorBoundary lokal yang fallback-nya custom.
