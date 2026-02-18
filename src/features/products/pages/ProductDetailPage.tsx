@@ -3,67 +3,16 @@ import { Avatar } from '@/shared/ui/Avatar';
 import { DEFAULT_PLACEHOLDER, formatCurrency, formatDate } from '@/shared/lib/formatters';
 import { useGetProductById } from '../api/hooks/useGetProductById';
 import { ArrowLeft } from 'lucide-react';
-import { LoadingState } from '@/shared/ui/LoadingState';
-import { getErrorMessage } from '@/shared/lib/error';
-import { ErrorState } from '@/shared/ui/ErrorState';
 
 export default function ProductDetailPage() {
   const navigate = useNavigate();
   const { productId } = useParams<{ productId: string }>();
 
-  const { data: product, isLoading, error, refetch, isFetching  } = useGetProductById(productId);
-
   if (!productId) {
-    return (
-      <ErrorState
-        variant="warning"
-        title="Invalid product link"
-        message="Product ID is missing from the URL."
-        actions={[
-          {
-            label: 'Back to List',
-            onClick: () => navigate('/products'),
-            variant: 'primary',
-          },
-        ]}
-      />
-    );
+    throw new Error('Product ID is required'); // sebelumnya error pakai UI lokal, sekarang dilempar ke ErrorBoundary untuk standarisai.
   }
 
-  if (isLoading) { // TODO: ubah error handler pakai errorboundary biar bisa ikut pakai fallback Suspense di level route.
-    return <LoadingState label="Loading product..." />;
-  }
-  
-  if (error) {
-    const errorMessage = getErrorMessage(error);
-    const isProductNotFound = errorMessage === 'Product not found';
-
-    return (
-      <ErrorState
-        variant={isProductNotFound ? 'warning' : 'danger'}
-        title={isProductNotFound ? 'Product not found' : 'Error loading product'}
-        message={isProductNotFound
-          ? 'The product ID is invalid or the product no longer exists.'
-          : errorMessage}
-        actions={[
-          ...(isProductNotFound
-            ? []
-            : [
-                {
-                  label: isFetching ? 'Retrying...' : 'Retry',
-                  onClick: () => refetch(),
-                  disabled: isFetching,
-                },
-              ]),
-          {
-            label: 'Back to List',
-            onClick: () => navigate('/products'),
-            variant: 'primary',
-          },
-        ]}
-      />
-    );
-  }
+  const { data: product } = useGetProductById(productId);  // setelah migrasi ke useSuspenseQuery, { isLoading, error, refetch } (handler loading & eror manual) dihapus, page ini fokus ke state sukses saja.
 
   const name = product?.name ?? DEFAULT_PLACEHOLDER;
   const material = product?.material ?? DEFAULT_PLACEHOLDER;

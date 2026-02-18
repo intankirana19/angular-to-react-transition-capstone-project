@@ -133,8 +133,8 @@ MIT
 
 5.  Detail produk (mock karena real api hanya daftar produk awal):
     - Service (`productsService.ts`): `getProductById` tidak call endpoint detail terpisah, tapi ambil dari `getProducts()` lalu `find` by `id`. Keputusan ini dipakai supaya sumber data detail sama dengan list yang sudah dipersist lokal; hasil create/edit mock langsung kebaca di halaman detail tanpa mismatch. Nantinya jika sudah ada API detail produk, logic "ambil dari list lalu find by id" ini tidak terpakai lagi, dan diganti dengan request ke endpoint detail langsung lalu parse response seperti biasa.
-    - Hook (`useGetProductById.ts`): query key dipisah (`['products', productId]`) dan query hanya jalan saat `productId` ada (`enabled: Boolean(productId)`), jadi cache detail tetap stabil walau source-nya masih dari list.
-    - Page (`ProductDetailPage.tsx`): tetap konsumsi hook detail seperti flow final API, termasuk loading/error/retry, supaya nanti migrasi ke endpoint detail cukup ubah service.
+    - Hook (`useGetProductById.ts`): pakai `useSuspenseQuery` dengan key `['products', productId]`, jadi loading awal detail ikut fallback Suspense route-level dan error dilempar ke ErrorBoundary. Baris `enabled: Boolean(productId)` dari versi lama (`useQuery`) sekarang tidak dipakai lagi, tapi disisakan sebagai komentar referensi supaya alasan migrasinya tetap jelas.
+    - Page (`ProductDetailPage.tsx`): branch `isLoading/error` manual dihapus supaya tidak double logic karena state loading/error sudah dihandle di level layout/app dengan pattern Suspense + ErrorBoundary jadi komponen fokus render data sukses saja.
 
 6.  Tambah produk (mock karena real api hanya daftar produk awal):
     - Service (`productsService.ts`): `createProduct` validasi payload pakai `productInputSchema`, generate `id` (`crypto.randomUUID`) + `createdAt`, lalu prepend (produk baru diletakkan di index 0/awal list) ke list dan simpan pakai `persistProducts` karena belum ada api create sehingga api list belum update dengan data produk baru, jadi list harus dihandle secara lokal supaya hasil create produk langsung terlihat dan tetap ada setelah refresh. Nantinya jika sudah ada API create produk, logic "generate id + prepend list + persist local storage" ini tidak terpakai lagi, dan diganti dengan request ke endpoint create lalu parse response seperti biasa.
@@ -170,3 +170,5 @@ MIT
 13. `ProductForm` ditambah inline submit error (teks di bawah tombol `Save`) selain toast, jadi saat create/update gagal user tetap dapat feedback langsung di area form.
 
 14. Tampilan error di page `users` dan `products` dirapikan pakai komponen reusable `ErrorState` (`src/shared/ui/ErrorState.tsx`) supaya fallback UI konsisten dan maintenance lebih mudah.
+
+15. `ErrorBoundary` sekarang pakai `ErrorState` sebagai UI fallback (mode `fullScreen`) supaya tampilan error global dan error di level halaman tetap satu pola.
