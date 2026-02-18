@@ -168,3 +168,5 @@ MIT
 12. Error message distandarisasi dengan helper `getErrorMessage` di `src/shared/lib/error.ts` supaya pesan dari `Error`, `AxiosError`, dan payload API bisa ditampilkan konsisten ke user. Pemakaian awal diterapkan di fallback `ErrorBoundary`, halaman list/detail, dan feedback submit/delete form agar tidak ada silent failure. 
 
 13. Fallback `ErrorBoundary` ditambah reset boundary state sebelum opsi hard refresh.
+
+14. `ProductForm` ditambah inline submit error (teks di bawah tombol `Save`) selain toast, jadi saat create/update gagal user tetap dapat feedback langsung di area form.

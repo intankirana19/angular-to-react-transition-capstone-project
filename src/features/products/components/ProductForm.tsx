@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Input } from '@/shared/ui/Input';
 import { Textarea, TextareaField } from '@/shared/ui/Textarea';
 import { productInputSchema, type Product, type ProductInputValues } from '../types';
@@ -33,6 +33,7 @@ export function ProductForm({
   const createProductMutation = useCreateProduct();
   const updateProductMutation = useUpdateProduct();
   const { addToast } = useToast();
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
@@ -56,6 +57,9 @@ export function ProductForm({
     : updateProductMutation.isPending);
 
   const handleValidSubmit = async (data: ProductInputValues) => {
+    // reset error lama sebelum submit baru
+    setSubmitError(null);
+
     try {
       if (mode === 'create') {
         const createdProduct = await createProductMutation.mutateAsync(data); // pakai mutateAsync drpd mutate karna data perlu dipakai dionSuccess
@@ -92,11 +96,15 @@ export function ProductForm({
         await onSuccess(updatedProduct);
       }
     } catch (error) {
+      const message = getErrorMessage(error);
+
+      setSubmitError(message); // buat set inline error message juga biar user lihat langsung di form
+
       // kalau gagal, kasih tau user lewat toast biar ga silent failure
       addToast({
         type: 'error',
         title: mode === 'create' ? 'Failed to create product' : 'Failed to update product',
-        message: getErrorMessage(error),
+        message,
         duration: 7000,
       });
     }
@@ -151,6 +159,11 @@ export function ProductForm({
       >
         {isSubmitting ? 'Saving...' : 'Save'}
       </button>
+      {submitError ? (
+        <p className="text-sm text-danger-700" role="alert">
+          {submitError}
+        </p>
+      ) : null}
     </form>
   );
 }
