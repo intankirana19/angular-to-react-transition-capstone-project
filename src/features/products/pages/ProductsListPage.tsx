@@ -13,24 +13,6 @@ export default function ProductsListPage() {
   // loading + error dihandle suspense + ErrorBoundary di level app/layout.
   const { data: products } = useGetProducts();
 
-  // kalau custom error UI, pakai manual `if (error)` lagi.
-  // const { data: products, error, refetch, isFetching } = useGetProducts();
-  //  if (error) {
-  //     return (
-  //       <ErrorState
-  //         title="Error loading products"
-  //         message={getErrorMessage(error)}
-  //         actions={[
-  //           {
-  //             label: isFetching ? 'Retrying...' : 'Retry',
-  //             onClick: () => refetch(),
-  //             disabled: isFetching,
-  //           },
-  //         ]}
-  //       />
-  //     );
-  //   }
-
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
   const [deletingProductId, setDeletingProductId] = useState<string | null>(null);

@@ -6,17 +6,6 @@ export default function UsersPage() {
   // loading + error dihandle suspense + ErrorBoundary di level app/layout.
   const { data: users } = useGetUsers();
 
-  // kalau custom error UI, pakai manual `if (error)` lagi.
-  // const { data: users, error } = useGetUsers();
-  // if (error) {
-  //   return (
-  //     <ErrorState
-  //       title="Error loading users"
-  //       message={getErrorMessage(error)}
-  //     />
-  //   );
-  // }
-
   return (
     <div>
       <div className="flex items-center justify-between mb-6">

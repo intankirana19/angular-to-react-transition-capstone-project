@@ -1,6 +1,7 @@
 import { ReactNode, Suspense } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { useUiStore } from '@/app/store/useUIStore';
+import { ErrorBoundary } from '@/shared/components/ErrorBoundary';
 import { LoadingState } from '@/shared/ui/LoadingState';
 import { Button } from '@/shared/ui/Button';
 import { Sidebar } from './Sidebar';
@@ -31,10 +32,19 @@ export function MainLayout({ children }: MainLayoutProps) {
         </header>
 
         <main className="flex-1 overflow-y-auto p-6">
-          {/* suspense khusus outlet biar loader ga full page (atau untuk handle fallback react query jika ada yg pakai useSuspenseQuery), `location.key` reset boundary tiap navigasi biar fallback muncul per perpindahan route (ga freeze dipage asal) */}
-          <Suspense key={location.key} fallback={<LoadingState label="Loading page..." />}>
-            {children ?? <Outlet />}
-          </Suspense>
+          {/* boundary di level konten: kalau page error, sidebar/header tetap tampil */}
+          <ErrorBoundary
+            key={location.key}
+            fullScreen={false}
+            title="Something went wrong"
+            message="Failed to load this page. Try reloading or open another menu."
+            reloadLabel="Reload Page"
+          >
+            {/* suspense khusus outlet biar loader ga full page (atau untuk handle fallback react query jika ada yg pakai useSuspenseQuery), `location.key` reset boundary tiap navigasi biar fallback muncul per perpindahan route (ga freeze dipage asal) */}
+            <Suspense key={location.key} fallback={<LoadingState label="Loading page..." />}>
+              {children ?? <Outlet />}
+            </Suspense>
+          </ErrorBoundary>
         </main>
       </div>
     </div>

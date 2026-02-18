@@ -5,6 +5,10 @@ import { ErrorState } from '@/shared/ui/ErrorState';
 interface Props {
   children: ReactNode;
   fallback?: ReactNode;
+  fullScreen?: boolean;
+  title?: string;
+  message?: string;
+  reloadLabel?: string;
 }
 
 interface State {
@@ -31,13 +35,13 @@ export class ErrorBoundary extends Component<Props, State> {
       return (
         this.props.fallback || (
           <ErrorState
-            fullScreen
+            fullScreen={this.props.fullScreen ?? true}
             variant="danger"
-            title="Something went wrong"
-            message={getErrorMessage(this.state.error, 'An unexpected error occurred.')}
+            title={this.props.title ?? 'Something went wrong'}
+            message={this.props.message ?? getErrorMessage(this.state.error, 'An unexpected error occurred.')}
             actions={[
               {
-                label: 'Reload Page',
+                label: this.props.reloadLabel ?? 'Reload Page',
                 onClick: () => window.location.reload(),
                 variant: 'primary',
               },
