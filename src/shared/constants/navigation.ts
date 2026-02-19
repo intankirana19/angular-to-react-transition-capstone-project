@@ -1,18 +1,18 @@
 import {
-  Home,
   LayoutGrid,
   Users,
   UsersRound,
-  Type,
-  ChevronDown,
-  ListFilter,
-  Calendar,
-  FileText,
-  MessageSquare,
   Package,
-  File,
-  BookOpen,
-  Palette,
+  // Home,
+  // Type,
+  // ChevronDown,
+  // ListFilter,
+  // Calendar,
+  // FileText,
+  // MessageSquare,
+  // File,
+  // BookOpen,
+  // Palette,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -25,12 +25,12 @@ export interface NavItem {
 }
 
 export const navigation: NavItem[] = [
-  {
-    label: 'Home',
-    href: '/',
-    icon: Home,
-    end: true,
-  },
+  // {
+  //   label: 'Home',
+  //   href: '/',
+  //   icon: Home,
+  //   end: true,
+  // },
   {
     label: 'Management',
     icon: LayoutGrid,
@@ -52,56 +52,56 @@ export const navigation: NavItem[] = [
       },
     ],
   },
-  {
-    label: 'UI',
-    icon: Package,
-    children: [
-      {
-        label: 'Typography',
-        href: '/typography',
-        icon: Type,
-      },
-      {
-        label: 'Colors',
-        href: '/colors',
-        icon: Palette,
-      },
-      {
-        label: 'Accordion',
-        href: '/accordion',
-        icon: ChevronDown,
-      },
-      {
-        label: 'Select',
-        href: '/select',
-        icon: ListFilter,
-      },
-      {
-        label: 'Date Picker',
-        href: '/datepicker',
-        icon: Calendar,
-      },
-      {
-        label: 'Textarea',
-        href: '/textarea',
-        icon: FileText,
-      },
-      {
-        label: 'Dialog',
-        href: '/dialog',
-        icon: MessageSquare,
-      },
-    ],
-  },
-  {
-    label: 'Pages',
-    icon: File,
-    children: [
-      {
-        label: 'Daily Logs',
-        href: '/daily-logs',
-        icon: BookOpen,
-      },
-    ],
-  },
+  // {
+  //   label: 'UI',
+  //   icon: Package,
+  //   children: [
+  //     {
+  //       label: 'Typography',
+  //       href: '/typography',
+  //       icon: Type,
+  //     },
+  //     {
+  //       label: 'Colors',
+  //       href: '/colors',
+  //       icon: Palette,
+  //     },
+  //     {
+  //       label: 'Accordion',
+  //       href: '/accordion',
+  //       icon: ChevronDown,
+  //     },
+  //     {
+  //       label: 'Select',
+  //       href: '/select',
+  //       icon: ListFilter,
+  //     },
+  //     {
+  //       label: 'Date Picker',
+  //       href: '/datepicker',
+  //       icon: Calendar,
+  //     },
+  //     {
+  //       label: 'Textarea',
+  //       href: '/textarea',
+  //       icon: FileText,
+  //     },
+  //     {
+  //       label: 'Dialog',
+  //       href: '/dialog',
+  //       icon: MessageSquare,
+  //     },
+  //   ],
+  // },
+  // {
+  //   label: 'Pages',
+  //   icon: File,
+  //   children: [
+  //     {
+  //       label: 'Daily Logs',
+  //       href: '/daily-logs',
+  //       icon: BookOpen,
+  //     },
+  //   ],
+  // },
 ];

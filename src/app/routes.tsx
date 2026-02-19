@@ -5,7 +5,7 @@ import { MainLayout } from '@/app/layouts/MainLayout';
 import { AuthLayout } from '@/app/layouts/AuthLayout';
 import { LoadingState } from '@/shared/ui/LoadingState';
 
-const HomePage = lazy(() => import('@/features/home'));
+// const HomePage = lazy(() => import('@/features/home'));
 const UsersPage = lazy(() => import('@/features/users'));
 const ProductsPage = lazy(() => import('@/features/products'));
 const ProductDetailPage = lazy(() => import('@/features/products/pages/ProductDetailPage'));
@@ -29,7 +29,8 @@ export function AppRoutes() {
     | { path: string; Component: ElementType };
 
   const routes: AppRoute[] = [
-    { index: true, Component: HomePage },
+    // { index: true, Component: HomePage },
+    { index: true, Component: ProductsPage },
     { path: 'users', Component: UsersPage },
     { path: 'products', Component: ProductsPage },
     { path: 'products/:productId', Component: ProductDetailPage },
