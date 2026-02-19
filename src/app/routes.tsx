@@ -19,6 +19,7 @@ const DialogPage = lazy(() => import('@/features/dialog'));
 const DailyLogsPage = lazy(() => import('@/features/daily-logs'));
 const LoginPage = lazy(() => import('@/features/auth/pages/LoginPage'));
 const ForgotPasswordPage = lazy(() => import('@/features/auth/pages/ForgotPasswordPage'));
+const NotFoundPage = lazy(() => import('@/app/pages/NotFoundPage'));
 
 export function AppRoutes() {
   type AppRoute =
@@ -62,6 +63,9 @@ export function AppRoutes() {
             );
           })}
         </Route>
+
+        {/* Full-page wildcard (without sidebar) */}
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Suspense>
   );
