@@ -297,3 +297,12 @@ MIT
     Sources:
     - https://vitest.dev/guide/mocking/modules
     - https://vitest.dev/api/mock
+
+38. Unit test `useProductSearchState` menggunakan `renderHook` dan `act` untuk memverifikasi transisi state inti hook:
+    - trim keyword input,
+    - pembentukan payload `querySearch`,
+    - flag `hasSearch`,
+    - dan reset state saat `clearSearch`.
+    Sources:
+    - https://testing-library.com/docs/react-testing-library/api/#renderhook
+    - https://react.dev/reference/react/act
