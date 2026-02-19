@@ -4,10 +4,11 @@ import { cn } from '@/shared/lib/cn';
 
 interface CodeBlockProps {
   code: string;
+  language?: string;
   className?: string;
 }
 
-export function CodeBlock({ code, className }: CodeBlockProps) {
+export function CodeBlock({ code, language, className }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -30,7 +31,12 @@ export function CodeBlock({ code, className }: CodeBlockProps) {
         )}
       </button>
       <pre className="bg-neutral-900 rounded-lg p-4 overflow-x-auto">
-        <code className="text-sm text-neutral-100 font-mono leading-relaxed">{code}</code>
+        <code
+          className={cn('text-sm text-neutral-100 font-mono leading-relaxed', language)}
+          data-language={language}
+        >
+          {code}
+        </code>
       </pre>
     </div>
   );

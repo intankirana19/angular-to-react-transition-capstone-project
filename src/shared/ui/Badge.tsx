@@ -199,7 +199,7 @@ const validateBadgeProps = (props: BadgeProps) => {
       break;
   }
 
-  if (errors.length > 0 && process.env.NODE_ENV === 'development') {
+  if (errors.length > 0 && import.meta.env.DEV) {
     console.warn('Badge component validation errors:', errors);
   }
 };
