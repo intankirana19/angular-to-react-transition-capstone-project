@@ -86,6 +86,7 @@ export function ProductForm({
       <Input
         label="Avatar URL"
         placeholder="https://..."
+        error={errors.avatar?.message}
         disabled={isSubmitting}
         {...register('avatar')}
       />

@@ -150,4 +150,18 @@ describe('ProductForm', () => {
     expect(await screen.findByText('Price must be a valid number')).toBeInTheDocument();
     expect(submitProductMock).not.toHaveBeenCalled(); // submit keblok karena validasi price gagal
   });
+
+  it('shows avatar URL format validation error for invalid URL', async () => {
+    const user = userEvent.setup();
+    render(<ProductForm mode="create" />);
+
+    await user.type(screen.getByLabelText('Name'), 'Desk');
+    await user.clear(screen.getByLabelText('Price'));
+    await user.type(screen.getByLabelText('Price'), '120');
+    await user.type(screen.getByLabelText('Avatar URL'), 'not-a-url');
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+
+    expect(await screen.findByText('Avatar URL must be a valid http(s) URL')).toBeInTheDocument();
+    expect(submitProductMock).not.toHaveBeenCalled();
+  });
 });

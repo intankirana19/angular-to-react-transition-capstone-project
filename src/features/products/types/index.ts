@@ -29,11 +29,33 @@ export interface ProductListQuery {
 }
 
 export const productInputSchema = z.object({
-  name: z.string().trim().min(1, 'Name is required'), // name wajib ada.
-  price: z.coerce.number().nonnegative('Price must be a valid number'), // coerce ke number biar validasi konsisten walau input string.
-  avatar: z.string().trim().optional(), // optional url avatar.
-  material: z.string().trim().optional(), // optional material text.
-  description: z.string().trim().optional(), // optional description text.
+  name: z.string().trim().min(1, 'Name is required').max(100, 'Name must be at most 100 characters'), // name wajib ada.
+  price: z
+    .coerce
+    .number()
+    .nonnegative('Price must be a valid number')
+    .max(1_000_000, 'Price must be less than or equal to 1000000'), // coerce ke number biar validasi konsisten walau input string.
+  avatar: z
+    .string()
+    .trim()
+    .refine((value) => {
+      if (!value) {
+        return true;
+      }
+
+      if (!/^https?:\/\//i.test(value)) {
+        return false;
+      }
+
+      try {
+        const parsedUrl = new URL(value);
+        return parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:';
+      } catch {
+        return false;
+      }
+    }, 'Avatar URL must be a valid http(s) URL'), // optional url avatar (boleh kosong, kalau isi harus URL valid).
+  material: z.string().trim().max(50, 'Material must be at most 50 characters').optional(), // optional material text.
+  description: z.string().trim().max(500, 'Description must be at most 500 characters').optional(), // optional description text.
 });
 
 export type ProductInputValues = z.infer<typeof productInputSchema>;
