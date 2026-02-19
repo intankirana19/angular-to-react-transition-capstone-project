@@ -37,7 +37,7 @@ export default function ProductDetailPage() {
           <Button
             variant="secondary"
             onClick={() => {
-              void navigate(`/products/edit/${productId}`);
+              void navigate(`/products/edit/${productId}`, { replace: true }); // replace history entry supaya alur edit tidak numpuk detail lama di tombol Back.
             }}
           >
             <Edit className="h-4 w-4" />

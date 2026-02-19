@@ -14,12 +14,10 @@ export default function EditProductPage() {
 
   const { data: product } = useGetProductById(productId);
 
+  const detailPath = `/products/${productId}`;
+
   const handleBack = () => {
-    if (window.history.length > 1) {
-      void navigate(-1);
-      return;
-    }
-    void navigate('/products');
+    void navigate(detailPath, { replace: true }); // replace agar cancel kembali ke detail tanpa menambah stack history baru.
   };
 
   const initialValues: Partial<ProductInputValues> = {
@@ -48,7 +46,7 @@ export default function EditProductPage() {
           initialValues={initialValues}
           mode="edit"
           onSuccess={() => {
-            void navigate('/products');
+            void navigate(detailPath, { replace: true }); // replace agar setelah save, Back tidak kembali ke form edit.
           }}
         />
       </div>
