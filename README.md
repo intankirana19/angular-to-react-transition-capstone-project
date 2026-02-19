@@ -290,3 +290,10 @@ MIT
     - https://testing-library.com/docs/user-event/intro/
     - https://vitest.dev/guide/mocking/modules
     - https://vitest.dev/api/vi#vi-hoisted
+
+37. Unit test `ProductFormDialog` memock `ProductForm` jadi komponen dummy (`data-testid="product-form-mock"`) agar test bisa isolasi logic dialog.
+    - `productFormSpy` dipakai untuk mengecek props mapping `initialValues` pada mode edit.
+    - Assertion difokuskan ke flow dialog: title/description per mode, fallback saat product kosong, dan `onSuccess` yang menutup dialog.
+    Sources:
+    - https://vitest.dev/guide/mocking/modules
+    - https://vitest.dev/api/mock
