@@ -8,7 +8,8 @@ import { useProductFormSubmission } from '../hooks/useProductFormSubmission';
 
 interface ProductFormProps {
   productId?: string;
-  initialValues?: Partial<ProductInputValues>; // buat edit, isi awal diambil dari data produk.
+  // buat mode edit biar form bisa diisi data existing
+  initialValues?: Partial<ProductInputValues>;
   mode?: 'create' | 'edit';
   onSuccess?: (product: Product) => void | Promise<void>;
 }
@@ -27,26 +28,29 @@ export function ProductForm({
   mode = 'create',
   onSuccess,
 }: ProductFormProps) {
-  const descriptionInputId = 'product-description';  // tambah id ini buat dipasangkan ke htmlFor di TextareaField setelah testing sempat fail karena label belum ke-link ke textarea
-  
+  // id dipisah biar label description kebaca aksesibel dan stabil di test
+  const descriptionInputId = 'product-description';
+
+  // submit logic dipisah ke hook supaya komponen fokus render field
   const { isMutationPending, submitError, submitProduct } = useProductFormSubmission({
     mode,
     productId,
     onSuccess,
   });
 
+  // setup react hook form dan validasi zod
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting: isFormSubmitting },
   } = useForm<ProductInputValues>({
-    resolver: zodResolver(productInputSchema), // ambil validasi zod yg dischema
-    mode: 'onBlur', // munculin error saat field selesai diisi
+    resolver: zodResolver(productInputSchema), // pakai schema biar rules konsisten
+    mode: 'onBlur', // tampilkan error setelah field disentuh
     defaultValues,
   });
 
-  // Kalau ada data edit biar disinkronin ke form
+  // kalau mode edit reset form saat initial value berubah
   useEffect(() => {
     if (initialValues) {
       reset({ ...defaultValues, ...initialValues });
@@ -58,6 +62,7 @@ export function ProductForm({
   return (
     <form
       className="space-y-4"
+      // bungkus submit react hook form ke handler internal
       onSubmit={(e) => {void handleSubmit(submitProduct)(e);}}
       noValidate
     >
@@ -66,7 +71,7 @@ export function ProductForm({
         placeholder="Product name"
         error={errors.name?.message}
         disabled={isSubmitting}
-        {...register('name')} // register ke react hook form
+        {...register('name')} // hubungkan input ke state form
       />
       <Input
         label="Price"
@@ -75,7 +80,7 @@ export function ProductForm({
         error={errors.price?.message}
         disabled={isSubmitting}
         {...register('price', {
-          valueAsNumber: true, // input number selalu string, pakai valueAsNumber biar jadi number.
+          valueAsNumber: true, // ubah nilai input number jadi number beneran
         })}
       />
       <Input
@@ -105,7 +110,7 @@ export function ProductForm({
       <button
         type="submit"
         disabled={isSubmitting}
-        className="px-4 py-2.5 text-ait-body-md-semibold text-white bg-primary-500 rounded-lg transition-colors enabled:hover:bg-primary-400 disabled:bg-disabled disabled:text-white/70 disabled:opacity-60 disabled:cursor-not-allowed disabled:pointer-events-none"
+        className="w-full sm:w-auto px-4 py-2.5 text-ait-body-md-semibold text-white bg-primary-500 rounded-lg transition-colors enabled:hover:bg-primary-400 disabled:bg-disabled disabled:text-white/70 disabled:opacity-60 disabled:cursor-not-allowed disabled:pointer-events-none"
       >
         {isSubmitting ? 'Saving...' : 'Save'}
       </button>

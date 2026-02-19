@@ -355,6 +355,16 @@ VITE_ENABLE_DEVTOOLS=true
       - `src/features/products/components/ProductsTable.tsx`
       - `src/features/products/pages/ProductDetailPage.tsx`
 
+42. Flow Create/Edit/Form/Delete produk ikut dirapikan untuk viewport kecil.
+    - `CreateProductPage` dan `EditProductPage`: tombol `Cancel` serta spacing container dibuat lebih proporsional di mobile.
+    - `ProductForm`: tombol submit dibuat full-width di mobile (`w-full`) lalu kembali auto-width di desktop.
+    - `DeleteProductDialog`: diberi safe horizontal margin di mobile agar dialog tidak menempel ke sisi layar.
+    - File:
+      - `src/features/products/pages/CreateProductPage.tsx`
+      - `src/features/products/pages/EditProductPage.tsx`
+      - `src/features/products/components/ProductForm.tsx`
+      - `src/features/products/components/DeleteProductDialog.tsx`
+
 ## License
 
 MIT

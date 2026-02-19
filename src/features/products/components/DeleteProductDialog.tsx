@@ -69,7 +69,11 @@ export function DeleteProductDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent size="sm" showClose={!isDeleting}>
+      <DialogContent
+        size="sm"
+        showClose={!isDeleting}
+        className="mx-4 w-[calc(100%-2rem)] sm:mx-0 sm:w-full"
+      >
         <DialogHeader>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-danger-100 flex items-center justify-center flex-shrink-0">

@@ -15,17 +15,21 @@ export default function CreateProductPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex items-stretch justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-neutral-900">New Product</h1>
           <p className="text-sm text-neutral-600">Fill the form to add a product</p>
         </div>
-        <Button variant="secondary" onClick={handleBack}>
+        <Button
+          className="self-stretch h-auto min-h-[44px] px-4 text-sm"
+          variant="secondary"
+          onClick={handleBack}
+        >
           Cancel
         </Button>
       </div>
 
-      <div className="rounded-lg bg-white p-6 shadow-sm border border-neutral-200">
+      <div className="rounded-lg border border-neutral-200 bg-white p-4 shadow-sm sm:p-6">
         <ProductForm
           mode="create"
           onSuccess={() => {
