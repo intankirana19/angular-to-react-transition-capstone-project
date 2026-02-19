@@ -39,7 +39,9 @@ pnpm format:check   # prettier --check
 pnpm type-check     # tsc --noEmit
 pnpm test           # vitest (watch)
 pnpm test:ui        # vitest --ui
+pnpm test:ui:coverage # vitest --ui --coverage
 pnpm test:run       # vitest run
+pnpm test:coverage  # vitest run --coverage
 ```
 
 ## Project Structure
@@ -56,7 +58,7 @@ src/
 |   |-- lib/          # utilities/config (axios, cn, queryClient, helpers)
 |   |-- types/        # shared TS types
 |   `-- ui/           # reusable UI primitives/composites
-|-- test/             # test setup
+|-- tests/            # test setup and test suites
 |-- index.css
 `-- main.tsx
 ```
@@ -256,3 +258,20 @@ MIT
 
 31. Visual header pada shared `DataTable` dirapikan (typography, border, dan hover state) tanpa mengubah perilaku sorting handler TanStack Table.
     - Alasan: meningkatkan konsistensi visual tabel reusable, sementara behavior sorting tetap sama.
+
+32. Konfigurasi testing Vitest memakai globals (`globals: true` di `vitest.config.ts`), jadi API test seperti `describe`, `it`, `expect`, `beforeEach`, dan `vi` tidak perlu di-import berulang di setiap file test. Tambahan `types: ["vitest/globals", "@testing-library/jest-dom"]` di `tsconfig.app.json` dipakai supaya TypeScript mengenali global API testing itu.
+    Sources:
+    - https://vitest.dev/config/#globals
+
+33. Setup coverage untuk Vitest ditambahkan agar laporan test bisa dipantau dari terminal dan file report:
+    - Script baru: `test:ui:coverage` dan `test:coverage` di `package.json`.
+    - Dependency baru: `@vitest/ui` dan `@vitest/coverage-v8`.
+    - Coverage config di `vitest.config.ts`: provider `v8`, include `src/**/*.{ts,tsx}`, dan reporter `text/html/json-summary`.
+    Sources:
+    - https://vitest.dev/guide/ui
+    - https://vitest.dev/guide/coverage
+    - https://vitest.dev/config/#coverage
+
+34. Struktur unit test dipindahkan ke `src/tests/unit` (bukan co-located) agar folder source tetap lebih bersih dan review test lebih mudah dipindai lintas fitur.
+    - Trade-off: file test jadi lebih jauh dari file source pasangannya.
+    - Detail struktur dicatat di `src/tests/unit/README.md`.
