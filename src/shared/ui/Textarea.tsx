@@ -133,6 +133,7 @@ Textarea.displayName = 'Textarea';
 
 export interface TextareaFieldProps {
   label?: string;
+  htmlFor?: string;   // tambah prop ini biar ProductForm bisa ngirim htmlFor dan label description nyambung ke textarea setelah testing sempat fail
   error?: string;
   helperText?: string;
   required?: boolean;
@@ -142,6 +143,7 @@ export interface TextareaFieldProps {
 
 export function TextareaField({
   label,
+  htmlFor,
   error,
   helperText,
   required,
@@ -152,7 +154,7 @@ export function TextareaField({
     return (
       <div className="flex gap-4 items-start">
         {label && (
-          <label className="text-ait-body-md-bold text-neutral-900 min-w-[120px] pt-2.5">
+          <label htmlFor={htmlFor} className="text-ait-body-md-bold text-neutral-900 min-w-[120px] pt-2.5">
             {label}
             {required && <span className="text-danger-500 ml-1">*</span>}
           </label>
@@ -177,7 +179,7 @@ export function TextareaField({
   return (
     <div className="space-y-2">
       {label && (
-        <label className="text-ait-body-md-bold text-neutral-900">
+        <label htmlFor={htmlFor} className="text-ait-body-md-bold text-neutral-900">
           {label}
           {required && <span className="text-danger-500 ml-1">*</span>}
         </label>

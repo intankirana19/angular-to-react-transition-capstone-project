@@ -275,3 +275,18 @@ MIT
 34. Struktur unit test dipindahkan ke `src/tests/unit` (bukan co-located) agar folder source tetap lebih bersih dan review test lebih mudah dipindai lintas fitur.
     - Trade-off: file test jadi lebih jauh dari file source pasangannya.
     - Detail struktur dicatat di `src/tests/unit/README.md`.
+
+35. `Description` di `ProductForm` sempat gagal di test `getByLabelText` karena label belum terhubung ke textarea.
+    - Fix: tambah `htmlFor` di `TextareaField` (`src/shared/ui/Textarea.tsx`) dan `id` di textarea `ProductForm` (`src/features/products/components/ProductForm.tsx`).
+    - Hasil: aksesibilitas label-field valid dan test kembali stabil.
+    Sources:
+    - https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/label
+    - https://testing-library.com/docs/queries/bylabeltext/
+
+36. Unit test `ProductForm` memock `useProductFormSubmission` supaya fokus test ada di perilaku form (validasi field, disabled state saat pending, dan payload submit), bukan ke mutation/network.
+    - `userEvent` dipakai untuk simulasi interaksi user yang realistis saat isi field dan submit.
+    - `vi.hoisted` dipakai untuk menyiapkan mock function sebelum `vi.mock(...)` dieksekusi.
+    Sources:
+    - https://testing-library.com/docs/user-event/intro/
+    - https://vitest.dev/guide/mocking/modules
+    - https://vitest.dev/api/vi#vi-hoisted

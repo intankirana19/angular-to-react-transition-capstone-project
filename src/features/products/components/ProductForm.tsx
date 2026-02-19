@@ -27,6 +27,7 @@ export function ProductForm({
   mode = 'create',
   onSuccess,
 }: ProductFormProps) {
+  const descriptionInputId = 'product-description';  // tambah id ini buat dipasangkan ke htmlFor di TextareaField setelah testing sempat fail karena label belum ke-link ke textarea
   
   const { isMutationPending, submitError, submitProduct } = useProductFormSubmission({
     mode,
@@ -89,8 +90,13 @@ export function ProductForm({
         disabled={isSubmitting}
         {...register('material')}
       />
-      <TextareaField label="Description" error={errors.description?.message}>
+      <TextareaField
+        label="Description"
+        htmlFor={descriptionInputId}
+        error={errors.description?.message}
+      >
         <Textarea
+          id={descriptionInputId}
           placeholder="Description"
           disabled={isSubmitting}
           {...register('description')}
