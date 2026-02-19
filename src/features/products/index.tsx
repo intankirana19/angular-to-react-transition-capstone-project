@@ -1,2 +1,2 @@
-// hanya entry point supaya import-nya bersih (import('@/features/products')), bukan tempat semua UI
-export { default } from './pages/ProductsListPage';
+// Entry point module products untuk route subtree /products/*
+export { default } from './ProductsRoutes';

@@ -116,7 +116,7 @@ src/
 ## Notes
 
 - Invalid/missing `productId` is currently handled through ErrorBoundary fallback.
-- Module-specific wildcard `404` route for `/products/*` is not yet added.
+- Module-specific wildcard `404` route for `/products/*` is now handled inside the products module router.
 
 ## Environment Variables
 
