@@ -6,17 +6,18 @@ import { Edit, Trash2 } from 'lucide-react';
 import { type Product } from '../types';
 
 interface ProductsTableProps {
-  products: Product[];
-  onRowClick?: (product: Product) => void;
-  onEdit?: (product: Product) => void;
-  onDelete?: (product: Product) => void;
+  products: Product[]; // data rows yg ditampilkan di table.
+  onRowClick?: (product: Product) => void; // callback saat row diklik.
+  onEdit?: (product: Product) => void; // callback edit action per row.
+  onDelete?: (product: Product) => void; // callback delete action per row.
 }
 
 // refer ke TeamsTable dr skafold
 export function ProductsTable({ products, onRowClick, onEdit, onDelete }: ProductsTableProps) {
-  const columns = useMemo<ColumnDef<Product>[]>( // memoisasi biar columns disimpan sekali aja jd referencenya stabil utk DataTable
+  const columns = useMemo<ColumnDef<Product>[]>( // memo columns supaya referensi stabil dan menghindari rerender table berlebih.
     () => [
       {
+        // Sorting di-handle lewat query/service agar konsisten dengan infinite scroll.
         header: 'Product',
         accessorKey: 'name',
         cell: ({ row }) => {
@@ -39,14 +40,25 @@ export function ProductsTable({ products, onRowClick, onEdit, onDelete }: Produc
         enableSorting: false,
       },
       {
+        // Sorting kolom dimatikan di table (external sorting).
         header: 'Price',
         accessorKey: 'price',
         cell: ({ row }) => formatCurrency(row.original.price),
+        enableSorting: false,
       },
       {
+        // Sorting kolom dimatikan di table (external sorting).
+        header: 'Material',
+        accessorKey: 'material',
+        cell: ({ row }) => row.original.material?.trim() || DEFAULT_PLACEHOLDER,
+        enableSorting: false,
+      },
+      {
+        // Sorting kolom dimatikan di table (external sorting).
         header: 'Created',
         accessorKey: 'createdAt',
         cell: ({ row }) => formatDate(row.original.createdAt),
+        enableSorting: false,
       },
       {
         header: 'Actions',
@@ -88,14 +100,15 @@ export function ProductsTable({ products, onRowClick, onEdit, onDelete }: Produc
   return (
     <DataTable
       data={products}
-      columns={columns}
-      enablePagination={false}
-      // enablePagination
+      columns={columns} // definisi kolom table.
+      enablePagination={false} // paging dihandle infinite scroll di page.
+      // enablePagination // uncomment kalau mau pakai pagination
       // pageSize={10}
-      enableSorting
-      enableFiltering
-      searchPlaceholder="Search products..."
+      enableSorting={false} // sorting source of truth ada di query/service, bukan sort lokal table.
+      enableFiltering={false} // search/filter eksternal dari toolbar page.
       onRowClick={(row) => onRowClick?.(row.original)}
     />
   );
 }
+
+

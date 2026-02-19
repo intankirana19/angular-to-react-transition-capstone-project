@@ -217,6 +217,18 @@ MIT
     - Dampak arsitektur: saat API produk real sudah support query params search/filter/sort, perubahan utama cukup di layer service (mapping payload ke request params) tanpa ubah komponen page/table.
     - Contoh payload: { search, material, createdFrom, createdTo, sortBy, sortOrder }.
 
+23. Sumber opsi `material` untuk filter saat ini masih diambil dari data list produk yang sedang loaded (`useProductMaterialOptions`) untuk kebutuhan mock/local flow.
+    - Keputusan untuk real API: opsi filter sebaiknya berasal dari backend (facet/metadata endpoint, misalnya `/products/filters` atau `/products/materials`) atau dari enum hardcoded jika domain category memang fixed.
+    - Implikasi: logic "derive material options dari list aktif" dianggap sementara; saat backend sudah siap, cukup ganti source options (hook/service terkait) tanpa ubah flow dialog filter di page.
+
+24. State list products (search/filter/sort/infinite) dipisah jadi hook per fungsi agar `ProductsListPage` fokus ke komposisi UI, bukan detail state:
+    - `useProductSearchState` (`src/features/products/hooks/useProductSearchState.ts`) untuk input keyword + query part `search`.
+    - `useProductFilterState` (`src/features/products/hooks/useProductFilterState.ts`) untuk filter aktif `material` + `createdFrom/createdTo`.
+    - `useProductFilterDialogState` (`src/features/products/hooks/useProductFilterDialogState.ts`) untuk alur draft dialog (open/edit/apply/clear) tanpa langsung mengubah filter aktif.
+    - `useProductSortState` (`src/features/products/hooks/useProductSortState.ts`) untuk opsi sort + query part `sortBy/sortOrder`.
+    - `useProductInfiniteList` (`src/features/products/hooks/useProductInfiniteList.ts`) untuk batching `visibleProducts` + reset page saat query berubah.
+    - Alasan: lebih mudah dites per hook, dan perubahan di satu fungsi tidak bikin fungsi lain ikut rusak.
+
 25. Engine reusable query-state dipindah ke layer `shared/hooks` untuk dipakai lintas fitur, bukan khusus products:
     - `useSearchQueryState` (`src/shared/hooks/useSearchQueryState.ts`)
     - `useSortQueryState` (`src/shared/hooks/useSortQueryState.ts`)
@@ -233,3 +245,11 @@ MIT
 28. `DateRangePicker` diperluas dengan prop `monthsToShow` (`src/shared/ui/DatePicker.tsx`) dan adapter type `DateRangeValue`.
     - Pemakaian awal: filter dialog products pakai `monthsToShow={1}` agar dialog lebih ringkas.
     - Alasan: komponen date range jadi fleksibel untuk kebutuhan compact (toolbar/dialog sempit) atau full (2 bulan) tanpa bikin komponen baru.
+
+29. `SelectTrigger` ditambah prop `showIcon` (`src/shared/ui/Select.tsx`) untuk kasus trigger custom (misal tombol sort dengan icon sendiri).
+    - Alasan: menghindari icon ganda dan menjaga API komponen tetap reusable tanpa bikin komponen Select versi baru/terpisah.
+
+30. Empty-state list products dibedakan berdasarkan context filter aktif di `ProductsListPage`:
+    - Default: `No products found`
+    - Saat search/filter aktif: `No products match current filters`
+    - Alasan: feedback lebih jelas ke user apakah data memang kosong dari source, atau kosong karena filter/pencarian yang dipilih user.

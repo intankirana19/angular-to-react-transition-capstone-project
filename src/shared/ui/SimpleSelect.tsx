@@ -21,6 +21,7 @@ export const SimpleSelect = React.forwardRef<HTMLButtonElement, SimpleSelectProp
   ({ value, onChange, options, placeholder, disabled, className, variant, size }, ref) => {
     return (
       <Select value={value} onValueChange={onChange} disabled={disabled}>
+        {/* Wrapper select sederhana untuk kasus form/filter yang butuh API ringkas */}
         <SelectTrigger ref={ref} className={className} variant={variant} size={size}>
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>

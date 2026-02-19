@@ -50,23 +50,26 @@ interface SelectTriggerProps extends React.ComponentPropsWithoutRef<
 > {
   variant?: 'default' | 'error';
   size?: 'sm' | 'md' | 'lg';
+  showIcon?: boolean; // Bisa dimatikan saat trigger dipakai sebagai tombol custom icon
 }
 
 const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
   SelectTriggerProps
->(({ className, children, variant = 'default', size = 'md', ...props }, ref) => (
+>(({ className, children, variant = 'default', size = 'md', showIcon = true, ...props }, ref) => (
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(selectTriggerVariants({ variant, size }), className)}
     {...props}
   >
     {children}
-    <SelectPrimitive.Icon asChild>
-      <ChevronDown className="h-4 w-4 opacity-50" />
-    </SelectPrimitive.Icon>
+    {showIcon && (
+      <SelectPrimitive.Icon asChild>
+        <ChevronDown className="h-4 w-4 opacity-50" />
+      </SelectPrimitive.Icon>
+    )}
   </SelectPrimitive.Trigger>
-));
+ ));
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
 
 const SelectScrollUpButton = React.forwardRef<
