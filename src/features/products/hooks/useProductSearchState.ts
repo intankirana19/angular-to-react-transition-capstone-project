@@ -4,6 +4,7 @@ import { type ProductListQuery } from '../types';
 export function useProductSearchState() {
   const searchState = useSearchQueryState({
     queryKey: 'search',
+    minLength: 3,
   }); // SEARCH[1]: Inisialisasi engine search shared dengan key payload "search"
 
   return {

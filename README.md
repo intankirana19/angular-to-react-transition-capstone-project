@@ -219,7 +219,8 @@ VITE_ENABLE_DEVTOOLS=true
     - Source: https://blog.logrocket.com/react-infinite-scroll/
 
 20. Search produk sekarang dikirim sebagai payload query dari page ke hook (`useGetProducts`) lalu diteruskan ke service (`productsService.ts`) untuk meniru request params API.
-     - Alur: `ProductsListPage` input search -> `useProductSearchState` bentuk query part `search` -> digabung dengan filter+sort jadi `queryPayload` -> `useGetProducts(queryPayload)` (query key `["products", queryPayload]`) -> `getProducts(queryPayload)` -> `applyProductListQuery` (`matchesSearch`).
+     - Aturan input: search baru dianggap aktif saat keyword minimal 3 karakter (set lewat `minLength: 3` di `useProductSearchState`).
+     - Alur: `ProductsListPage` input search -> `useProductSearchState` bentuk query part `search` (jika >= 3 karakter) -> digabung dengan filter+sort jadi `queryPayload` -> `useGetProducts(queryPayload)` (query key `["products", queryPayload]`) -> `getProducts(queryPayload)` -> `applyProductListQuery` (`matchesSearch`).
 
 21. Filter produk (material + created date range) juga mengikuti alur payload yang sama agar kontrak client tetap siap untuk backend query params.
     - Alur: filter dialog di `ProductsListPage` (draft) -> commit ke payload (`material`, `createdFrom`, `createdTo`) -> service -> helper (`matchesMaterial`, `matchesCreatedAt`).
@@ -240,7 +241,7 @@ VITE_ENABLE_DEVTOOLS=true
     - Implikasi: logic "derive material options dari list aktif" dianggap sementara; saat backend sudah siap, cukup ganti source options (hook/service terkait) tanpa ubah flow dialog filter di page.
 
 24. State list products (search/filter/sort/infinite) dipisah jadi hook per fungsi agar `ProductsListPage` fokus ke komposisi UI, bukan detail state:
-    - `useProductSearchState` (`src/features/products/hooks/useProductSearchState.ts`) untuk input keyword + query part `search`.
+    - `useProductSearchState` (`src/features/products/hooks/useProductSearchState.ts`) untuk input keyword + query part `search` (aktif mulai 3 karakter).
     - `useProductFilterState` (`src/features/products/hooks/useProductFilterState.ts`) untuk filter aktif `material` + `createdFrom/createdTo`.
     - `useProductFilterDialogState` (`src/features/products/hooks/useProductFilterDialogState.ts`) untuk alur draft dialog (open/edit/apply/clear) tanpa langsung mengubah filter aktif.
     - `useProductSortState` (`src/features/products/hooks/useProductSortState.ts`) untuk opsi sort + query part `sortBy/sortOrder`.

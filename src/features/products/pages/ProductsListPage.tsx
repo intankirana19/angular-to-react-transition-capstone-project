@@ -96,7 +96,7 @@ export default function ProductsListPage() {
             onChange={(event) => {
               searchState.setSearchQuery(event.target.value);
             }}
-            placeholder="Search products..."
+            placeholder="Search products (min. 3 chars)..."
             leading={<Search />}
             containerClassName="border-neutral-300 bg-neutral-50 shadow-md ring-1 ring-neutral-200/70"
             inputClassName="text-sm font-medium text-neutral-900 placeholder:text-neutral-500"
