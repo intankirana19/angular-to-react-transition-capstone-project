@@ -3,11 +3,11 @@ import { type Product } from '../../types';
 import { getProductById } from '../services/productsService';
 
 export function useGetProductById(productId?: string) {
-  return useSuspenseQuery<Product, Error>({ // sebelumnya pakai useQuery + branch isLoading/error manual di page, sekarang loading/error di-handle oleh Suspense + ErrorBoundary 
+  return useSuspenseQuery<Product | null, Error>({ // sebelumnya pakai useQuery + branch isLoading/error manual di page, sekarang loading/error di-handle oleh Suspense + ErrorBoundary 
     queryKey: ['products', productId],
     queryFn: () => {
       if (!productId) {
-        throw new Error('Product ID is required'); // source error untuk ErrorBoundary kalau param route invalid
+        return Promise.resolve(null);
       }
       return getProductById(productId);
     },

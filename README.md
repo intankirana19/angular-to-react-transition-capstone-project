@@ -63,7 +63,7 @@ pnpm test:coverage    # vitest run --coverage
 
 - `/products` - list page
 - `/products/new` - create page
-- `/products/:productId` - detail page
+- `/products/detail/:productId` - detail page
 - `/products/edit/:productId` - edit page
 
 ## Requirement Alignment (Summary)
@@ -115,7 +115,9 @@ src/
 
 ## Notes
 
-- Invalid/missing `productId` is currently handled through ErrorBoundary fallback.
+- Invalid/missing `productId` and product entity-not-found dipisahkan:
+  - Param route tidak valid: tetap dilempar ke ErrorBoundary.
+  - Param valid tapi data produk tidak ada: dirender `ProductEntityNotFoundPage`.
 - Module-specific wildcard `404` route for `/products/*` is now handled inside the products module router.
 
 ## Environment Variables
@@ -164,7 +166,7 @@ VITE_ENABLE_DEVTOOLS=true
     - Hook (`useUpdateProduct.ts`): setelah sukses, invalidate query `['products']` (list) dan `['products', id]` (detail) supaya dua page itu nanti ikut sinkron/terupdate setelah edit.
     - Component (`ProductForm.tsx`): mode `edit` kirim `{ id, payload }` ke mutation update, dan tetap pakai alur submit yang sama dengan create.
     - Page (`EditProductPage.tsx`): route edit dipisah ke page khusus edit, ambil data awal edit dari `useGetProductById(productId)`, mapping ke `initialValues`, lalu `ProductForm` di-`reset` biar isi form langsung ikut sinkron/terupdate sesuai data edit yang baru didapat.
-    - Alur navigasi: dari `ProductDetailPage`, tombol edit membuka `/products/edit/:productId` dengan `replace: true`; saat back atau submit sukses di `EditProductPage`, navigasi diarahkan ke `/products/:productId` juga dengan `replace: true` supaya flow tetap konsisten detail -> edit -> detail.
+    - Alur navigasi: dari `ProductDetailPage`, tombol edit membuka `/products/edit/:productId` dengan `replace: true`; saat back atau submit sukses di `EditProductPage`, navigasi diarahkan ke `/products/detail/:productId` juga dengan `replace: true` supaya flow tetap konsisten detail -> edit -> detail.
     - Komponen page add & edit produk dipisah walau UI mirip karena `useSuspenseQuery` tidak ada `enabled` seperti `useQuery`, jadi hook tidak bisa dipanggil conditional di satu komponen sedangkan add product tidak perlu fetch data.
 
 8.  Toast notification diubah dari state lokal per halaman ke store global `zustand` dan `ToastContainer` dirender sekali di `App.tsx` supaya notifikasi tetap muncul saat pindah halaman, karena data toast disimpan satu tempat di level app dan tetap dipakai bersama oleh semua halaman lewat `useToast` tanpa mengubah cara pakainya di feature.

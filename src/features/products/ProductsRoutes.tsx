@@ -10,7 +10,7 @@ export default function ProductsRoutes() {
     <Routes>
       <Route index element={<ProductsListPage />} />
       <Route path="new" element={<CreateProductPage />} />
-      <Route path=":productId" element={<ProductDetailPage />} />
+      <Route path="detail/:productId" element={<ProductDetailPage />} />
       <Route path="edit/:productId" element={<EditProductPage />} />
       <Route path="*" element={<ProductNotFoundPage />} />
     </Routes>

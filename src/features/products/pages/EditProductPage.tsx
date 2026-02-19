@@ -3,29 +3,32 @@ import { Button } from '@/shared/ui/Button';
 import { ProductForm } from '../components/ProductForm';
 import { useGetProductById } from '../api/hooks/useGetProductById';
 import { type ProductInputValues } from '../types';
+import ProductEntityNotFoundPage from './ProductEntityNotFoundPage';
 
 export default function EditProductPage() {
   const navigate = useNavigate();
   const { productId } = useParams<{ productId: string }>();
+  const { data: product } = useGetProductById(productId);
 
   if (!productId) {
     throw new Error('Product ID is required');
   }
+  if (!product) {
+    return <ProductEntityNotFoundPage />;
+  }
 
-  const { data: product } = useGetProductById(productId);
-
-  const detailPath = `/products/${productId}`;
+  const detailPath = `/products/detail/${productId}`;
 
   const handleBack = () => {
     void navigate(detailPath, { replace: true }); // replace agar cancel kembali ke detail tanpa menambah stack history baru.
   };
 
   const initialValues: Partial<ProductInputValues> = {
-    name: product?.name ?? '',
-    price: product?.price ?? 0,
-    avatar: product?.avatar ?? '',
-    material: product?.material ?? '',
-    description: product?.description ?? '',
+    name: product.name ?? '',
+    price: product.price ?? 0,
+    avatar: product.avatar ?? '',
+    material: product.material ?? '',
+    description: product.description ?? '',
   };
 
   return (

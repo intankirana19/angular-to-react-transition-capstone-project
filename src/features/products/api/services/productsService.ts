@@ -53,15 +53,11 @@ export async function getProducts(query: ProductListQuery = {}): Promise<Product
 }
 
 // Dipakai ProductDetailPage/EditProductPage buat ambil 1 product berdasarkan id
-export async function getProductById(id: string): Promise<Product> {
+export async function getProductById(id: string): Promise<Product | null> {
   const products = await getProducts(); // ambil dari source list yang sama biar data tetap sinkron
   const product = products.find((item) => item.id === id);
 
-  if (!product) {
-    throw new Error('Product not found');
-  }
-
-  return product;
+  return product ?? null;
 
   // kalo ada api get detail by id
   // const response = await apiClient.get(API_ENDPOINTS.product(id)); // pakai ini saat endpoint detail sudah ada

@@ -211,7 +211,7 @@ export default function ProductsListPage() {
         <ProductsTable
           products={visibleProducts}
           onRowClick={(product) => {
-            void navigate(`/products/${product.id}`);
+            void navigate(`/products/detail/${product.id}`);
           }}
           onEdit={(product) => {
             setEditingProductId(product.id);
