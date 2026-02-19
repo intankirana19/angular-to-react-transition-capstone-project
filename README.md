@@ -326,6 +326,24 @@ VITE_ENABLE_DEVTOOLS=true
     - https://testing-library.com/docs/react-testing-library/api/#renderhook
     - https://react.dev/reference/react/act
 
+39. Responsive shell app (sidebar + header) dirapikan agar perilaku mobile dan desktop konsisten tanpa duplikasi logic.
+    - Logic baru dipisah jadi reusable:
+      - `useMediaQuery` di `src/shared/hooks/useMediaQuery.ts` untuk baca breakpoint lintas fitur.
+      - `useSyncSidebarWithViewport` di `src/app/hooks/useSyncSidebarWithViewport.ts` untuk sinkronisasi `sidebarOpen` berdasarkan viewport.
+    - Store UI ditambah setter eksplisit `setSidebarOpen` di `src/app/store/useUIStore.ts` supaya sinkronisasi viewport tidak mengandalkan toggle.
+    - Implementasi:
+      - `MainLayout` memakai hook sinkronisasi viewport dan menu toggle mobile (`src/app/layouts/MainLayout.tsx`).
+      - `Sidebar` pakai mode drawer overlay di mobile + mode static/collapsed di desktop (`src/app/layouts/Sidebar.tsx`).
+    - Tailwind class responsive yang dipakai:
+      - `lg:hidden`, `hidden lg:inline-flex` untuk toggle button beda viewport
+      - `px-4 py-3 sm:px-6 sm:py-4` untuk spacing header mobile vs desktop
+      - `p-4 sm:p-6` untuk spacing konten mobile vs desktop
+      - `fixed inset-y-0 left-0 z-40 ... lg:static lg:z-auto lg:shrink-0` untuk sidebar drawer vs sidebar normal
+      - `w-full sm:w-72 lg:w-16` untuk lebar sidebar per breakpoint
+    - Dampak UX:
+      - di mobile sidebar default tertutup agar konten utama langsung terlihat.
+      - di desktop sidebar otomatis terbuka dan tetap bisa collapse.
+
 ## License
 
 MIT
