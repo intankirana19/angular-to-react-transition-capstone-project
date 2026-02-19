@@ -19,6 +19,7 @@ import {
 } from 'date-fns';
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
+import { type DateRangeValue } from '@/shared/types/dateRange';
 import 'react-day-picker/style.css';
 
 const QUICK_FILTERS = [
@@ -33,10 +34,7 @@ const QUICK_FILTERS = [
   { label: 'All time', value: 'all-time' },
 ] as const;
 
-interface DateTimeRange {
-  from: Date;
-  to: Date;
-}
+type DateTimeRange = Required<DateRangeValue>;
 
 interface DateTimeRangePickerProps {
   value?: DateTimeRange;
@@ -47,6 +45,7 @@ interface DateTimeRangePickerProps {
   className?: string;
   showQuickFilters?: boolean;
   showTimePicker?: boolean;
+  monthsToShow?: 1 | 2;
 }
 
 function getQuickFilterRange(filter: string): DateTimeRange | null {
@@ -220,6 +219,7 @@ export function DateTimeRangePicker({
   className,
   showQuickFilters = true,
   showTimePicker = true,
+  monthsToShow = 2,
 }: DateTimeRangePickerProps) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [tempRange, setTempRange] = React.useState<DateTimeRange | null>(value || null);
@@ -331,12 +331,16 @@ export function DateTimeRangePicker({
 
   const handlePrevMonth1 = () => {
     setCurrentMonth1(subtractMonths(currentMonth1, 1));
-    setCurrentMonth2(subtractMonths(currentMonth2, 1));
+    if (monthsToShow === 2) {
+      setCurrentMonth2(subtractMonths(currentMonth2, 1));
+    }
   };
 
   const handleNextMonth2 = () => {
     setCurrentMonth1(addMonths(currentMonth1, 1));
-    setCurrentMonth2(addMonths(currentMonth2, 1));
+    if (monthsToShow === 2) {
+      setCurrentMonth2(addMonths(currentMonth2, 1));
+    }
   };
 
   const dropdownContent = isOpen && !disabled && (
@@ -387,6 +391,15 @@ export function DateTimeRangePicker({
               >
                 <ChevronLeft className="w-4 h-4 text-neutral-700" />
               </button>
+              {monthsToShow === 1 && (
+                <button
+                  type="button"
+                  onClick={handleNextMonth2}
+                  className="absolute right-6 top-6 z-10 p-2.5 hover:bg-neutral-100 rounded-lg transition-colors"
+                >
+                  <ChevronRight className="w-4 h-4 text-neutral-700" />
+                </button>
+              )}
               <CalendarGrid
                 month={currentMonth1}
                 selectedRange={tempRange}
@@ -403,28 +416,30 @@ export function DateTimeRangePicker({
             </div>
 
             {/* Right calendar */}
-            <div className="relative">
-              <button
-                type="button"
-                onClick={handleNextMonth2}
-                className="absolute right-6 top-6 z-10 p-2.5 hover:bg-neutral-100 rounded-lg transition-colors"
-              >
-                <ChevronRight className="w-4 h-4 text-neutral-700" />
-              </button>
-              <CalendarGrid
-                month={currentMonth2}
-                selectedRange={tempRange}
-                onDateClick={handleDateClick}
-                onDateHover={() => {}}
-              />
-              {showTimePicker && (
-                <div className="px-6 pb-6 flex items-center gap-2 justify-center">
-                  <TimeInput value={toHour} onChange={setToHour} placeholder="08" />
-                  <span className="text-neutral-500">:</span>
-                  <TimeInput value={toMinute} onChange={setToMinute} placeholder="00" />
-                </div>
-              )}
-            </div>
+            {monthsToShow === 2 && (
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={handleNextMonth2}
+                  className="absolute right-6 top-6 z-10 p-2.5 hover:bg-neutral-100 rounded-lg transition-colors"
+                >
+                  <ChevronRight className="w-4 h-4 text-neutral-700" />
+                </button>
+                <CalendarGrid
+                  month={currentMonth2}
+                  selectedRange={tempRange}
+                  onDateClick={handleDateClick}
+                  onDateHover={() => {}}
+                />
+                {showTimePicker && (
+                  <div className="px-6 pb-6 flex items-center gap-2 justify-center">
+                    <TimeInput value={toHour} onChange={setToHour} placeholder="08" />
+                    <span className="text-neutral-500">:</span>
+                    <TimeInput value={toMinute} onChange={setToMinute} placeholder="00" />
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -518,13 +533,15 @@ export function DateRangePicker({
   onDateRangeChange,
   ...props
 }: {
-  dateRange?: { from?: Date; to?: Date };
-  onDateRangeChange?: (dateRange: { from?: Date; to?: Date } | undefined) => void;
+  dateRange?: DateRangeValue;
+  onDateRangeChange?: (dateRange: DateRangeValue | undefined) => void;
   placeholder?: string;
   disabled?: boolean;
   variant?: 'default' | 'error';
   className?: string;
+  monthsToShow?: 1 | 2;
 }) {
+  // Adapter agar consumer bisa pakai format { from?, to? } sementara komponen inti tetap DateTimeRange
   const handleChange = (range: DateTimeRange | undefined) => {
     if (range) {
       onDateRangeChange?.({ from: range.from, to: range.to });

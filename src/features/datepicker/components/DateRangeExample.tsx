@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { DateRangePicker } from '@/shared/ui/DatePicker';
+import { type DateRangeValue } from '@/shared/types/dateRange';
 import { CodeBlock } from '@/shared/ui/CodeBlock';
 
 const exampleCode = `import { useState } from 'react';
 import { DateRangePicker } from '@/shared/ui/DatePicker';
+import { type DateRangeValue } from '@/shared/types/dateRange';
 
-const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date }>();
+const [dateRange, setDateRange] = useState<DateRangeValue>();
 
 <DateRangePicker
   dateRange={dateRange}
@@ -14,7 +16,7 @@ const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date }>();
 />`;
 
 export function DateRangeExample() {
-  const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date }>();
+  const [dateRange, setDateRange] = useState<DateRangeValue>();
 
   return (
     <section className="space-y-4 overflow-visible">

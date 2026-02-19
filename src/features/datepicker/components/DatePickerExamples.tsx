@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { DatePicker, DatePickerField, DateRangePicker } from '@/shared/ui/DatePicker';
+import { type DateRangeValue } from '@/shared/types/dateRange';
 import { CodeBlock } from '@/shared/ui/CodeBlock';
 
 const travelBookingCode = `import { useState } from 'react';
@@ -28,8 +29,9 @@ const [checkOut, setCheckOut] = useState<Date>();
 
 const eventPlanningCode = `import { useState } from 'react';
 import { DateRangePicker, DatePickerField } from '@/shared/ui/DatePicker';
+import { type DateRangeValue } from '@/shared/types/dateRange';
 
-const [tripRange, setTripRange] = useState<{ from?: Date; to?: Date }>();
+const [tripRange, setTripRange] = useState<DateRangeValue>();
 
 <DatePickerField
   label="Campaign Duration"
@@ -46,7 +48,7 @@ const [tripRange, setTripRange] = useState<{ from?: Date; to?: Date }>();
 export function DatePickerExamples() {
   const [checkIn, setCheckIn] = useState<Date>();
   const [checkOut, setCheckOut] = useState<Date>();
-  const [tripRange, setTripRange] = useState<{ from?: Date; to?: Date }>();
+  const [tripRange, setTripRange] = useState<DateRangeValue>();
 
   return (
     <>

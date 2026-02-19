@@ -199,3 +199,10 @@ MIT
     8. Hook otomatis aman dipakai dari awal sampai selesai.
        Di `src/shared/hooks/useInfiniteScroll.ts` (effect pertama): `target.addEventListener('scroll', handleScroll)`, `handleScroll()` (initial check), dan cleanup `target.removeEventListener('scroll', handleScroll)`.
     - Source: https://blog.logrocket.com/react-infinite-scroll/
+
+27. Tipe date range distandarisasi ke `DateRangeValue` (`src/shared/types/dateRange.ts`) dan helper clone dipisah ke `cloneDateRange` (`src/shared/lib/dateRange.ts`).
+    - Alasan: supaya tipe date range tidak ditulis ulang di banyak file, dan supaya perubahan nilai tanggal di satu tempat tidak tanpa sengaja mengubah data di tempat lain.
+
+28. `DateRangePicker` diperluas dengan prop `monthsToShow` (`src/shared/ui/DatePicker.tsx`) dan adapter type `DateRangeValue`.
+    - Pemakaian awal: filter dialog products pakai `monthsToShow={1}` agar dialog lebih ringkas.
+    - Alasan: komponen date range jadi fleksibel untuk kebutuhan compact (toolbar/dialog sempit) atau full (2 bulan) tanpa bikin komponen baru.
