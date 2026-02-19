@@ -45,6 +45,7 @@ export function DataTable<TData>({
     columns,
     getCoreRowModel: getCoreRowModel(),
     ...(enableSorting && {
+      // Saat enableSorting aktif, TanStack menyiapkan sorted row model + state handler
       getSortedRowModel: getSortedRowModel(),
       onSortingChange: setSorting,
     }),

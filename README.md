@@ -253,3 +253,6 @@ MIT
     - Default: `No products found`
     - Saat search/filter aktif: `No products match current filters`
     - Alasan: feedback lebih jelas ke user apakah data memang kosong dari source, atau kosong karena filter/pencarian yang dipilih user.
+
+31. Visual header pada shared `DataTable` dirapikan (typography, border, dan hover state) tanpa mengubah perilaku sorting handler TanStack Table.
+    - Alasan: meningkatkan konsistensi visual tabel reusable, sementara behavior sorting tetap sama.
