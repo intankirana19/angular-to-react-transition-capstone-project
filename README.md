@@ -1,22 +1,37 @@
 # INTAN CMS
 
-A production-ready React scaffold with modern tools and sensible defaults.
+React capstone project based on a reusable internal scaffold.
 
-## What's included
+## Project Context
+
+This repository still contains scaffold modules (for example `users`, `team`, and several UI demo pages).
+The implementation task in this submission is focused on the **Product Management** feature module.
+
+## What Was Implemented (Product Catalog)
+
+- Product list page with table rendering
+- Search, filter, and sort using a typed query payload
+- Infinite scroll for progressive list rendering
+- Product detail page by dynamic route param (`:productId`)
+- Create and edit forms using React Hook Form + Zod
+- Delete flow with confirmation dialog
+- React Query cache invalidation after mutations
+- Global toast feedback and inline form error feedback
+- Product-focused unit tests
+
+## Tech Stack
 
 - React 19 + TypeScript + Vite
 - React Router v7
-- Tailwind CSS v4 + Radix UI (Dialog, Dropdown Menu, Slot)
-- CVA for component variants + Lucide icons
-- TanStack Query v5 + DevTools (server state)
-- TanStack Table (data tables)
-- Zustand v5 (client/UI state)
-- Zod for schema validation
-- Axios + axios-retry (HTTP client)
-- ESLint + Prettier + Husky/lint-staged
-- Vitest + Testing Library + Vitest UI
+- TanStack Query v5
+- TanStack Table
+- Zustand
+- Axios + axios-retry
+- Zod
+- Tailwind CSS v4 + Radix UI
+- Vitest + Testing Library
 
-## Quick start
+## Setup Instructions
 
 **Prerequisites:** Node.js 20+, pnpm 9+
 
@@ -29,75 +44,79 @@ pnpm dev
 ## Scripts
 
 ```bash
-pnpm dev            # start dev server
-pnpm build          # production build
-pnpm preview        # preview build
-pnpm lint           # eslint
-pnpm lint:fix       # eslint --fix
-pnpm format         # prettier --write
-pnpm format:check   # prettier --check
-pnpm type-check     # tsc --noEmit
-pnpm test           # vitest (watch)
-pnpm test:ui        # vitest --ui
+pnpm dev              # start dev server
+pnpm build            # production build
+pnpm preview          # preview build
+pnpm lint             # eslint
+pnpm lint:fix         # eslint --fix
+pnpm format           # prettier --write
+pnpm format:check     # prettier --check
+pnpm type-check       # tsc --noEmit
+pnpm test             # vitest (watch)
+pnpm test:ui          # vitest --ui
 pnpm test:ui:coverage # vitest --ui --coverage
-pnpm test:run       # vitest run
-pnpm test:coverage  # vitest run --coverage
+pnpm test:run         # vitest run
+pnpm test:coverage    # vitest run --coverage
 ```
 
-## Project Structure
+## Product Routes
 
-```
+- `/products` - list page
+- `/products/new` - create page
+- `/products/:productId` - detail page
+- `/products/edit/:productId` - edit page
+
+## Requirement Alignment (Summary)
+
+The Product module already covers the core capstone expectations:
+
+- UI composition with reusable shared components (`ErrorState`, `LoadingState`)
+- Routing with dynamic params and programmatic navigation
+- Server state via React Query (typed query keys, cache invalidation on mutation)
+- Local UI state via `useState`, global client state via Zustand
+- Typed service layer with Zod schema validation
+- Form handling + validation + pending/disabled submit state
+- Consistent loading/error UX using `Suspense` + `ErrorBoundary`
+- Testability with product-focused component/form/hook tests
+
+## Product-Centric Structure
+
+```text
 src/
-|-- app/              # app-level layer (App, routes, layouts, app store)
-|-- features/         # feature modules (products, users, team, etc.)
+|-- features/
+|   `-- products/
+|       |-- api/
+|       |   |-- hooks/        # query/mutation hooks
+|       |   `-- services/     # products service layer
+|       |-- components/       # ProductsTable, ProductForm, dialogs
+|       |-- hooks/            # products list/form state hooks
+|       |-- pages/            # list/detail/create/edit pages
+|       |-- types/
+|       `-- utils/
 |-- shared/
-|   |-- api/          # shared API constants/endpoints
-|   |-- components/   # shared complex components (data-table, boundary)
-|   |-- constants/    # shared constants (navigation, filters)
-|   |-- hooks/        # reusable cross-feature hooks
-|   |-- lib/          # utilities/config (axios, cn, queryClient, helpers)
-|   |-- types/        # shared TS types
-|   `-- ui/           # reusable UI primitives/composites
-|-- tests/            # test setup and test suites
-|-- index.css
-`-- main.tsx
+|   |-- components/data-table/
+|   |-- hooks/                # reusable query/infinite hooks
+|   |-- lib/                  # axios, query client, helpers
+|   `-- ui/                   # reusable UI components
+|-- app/                      # routes, layouts, app store
+`-- tests/unit/products/      # product-focused unit tests
 ```
 
-## Conventions
+## Key Product Files
 
-- Feature-first organization under `src/features/*`
-- State:
-  - TanStack Query for server state
-  - Zustand for global UI/client state
-  - React Context for app-level providers only
-- Components:
-  - `src/shared/ui/` - reusable UI primitives/composites
-  - `src/shared/components/` - shared complex components (data tables, boundary, etc.)
-  - `src/app/layouts/` - app/layout components
+- `src/features/products/pages/ProductsListPage.tsx`
+- `src/features/products/pages/ProductDetailPage.tsx`
+- `src/features/products/pages/CreateProductPage.tsx`
+- `src/features/products/pages/EditProductPage.tsx`
+- `src/features/products/api/services/productsService.ts`
+- `src/features/products/utils/productListQuery.ts`
+- `src/features/products/hooks/useProductInfiniteList.ts`
+- `src/shared/hooks/useInfiniteScroll.ts`
 
 ## Notes
 
-- Sidebar: `src/app/layouts/Sidebar.tsx`
-- Navigation config: `src/shared/constants/navigation.ts`
-- Data table component: `src/shared/components/data-table/`
-- HTTP client config: `src/shared/lib/axios.ts`
-- Query client config: `src/shared/lib/queryClient.ts`
-
-## Features
-
-### Data Table Component
-
-A reusable data table component built with TanStack Table:
-
-- Located at `src/shared/components/data-table/`
-- Includes: TableHeader, TableBody, TablePagination, TableToolbar, TableRowActions
-- Customizable via props and hooks
-
-### Feature Modules
-
-- **Home**: Landing page (`src/features/home/`)
-- **Team**: Team management with table (`src/features/team/`)
-- **Users**: User management with API integration (`src/features/users/`)
+- Invalid/missing `productId` is currently handled through ErrorBoundary fallback.
+- Module-specific wildcard `404` route for `/products/*` is not yet added.
 
 ## Environment Variables
 
@@ -109,11 +128,7 @@ VITE_API_TIMEOUT=30000
 VITE_ENABLE_DEVTOOLS=true
 ```
 
-## License
-
-MIT
-
-## Architecture Notes
+## Architectural Decisions
 
 1.  `App.tsx`, `routes.tsx`, `layouts`, dan `useUIStore.ts` dipindahkan ke folder `app` sebagai layer aplikasi. Semua yang bersifat app-level (tidak reusable) diletakkan di folder `app`. Semua yang reusable secara global dipindahkan ke folder `shared`.
     Sources:
@@ -306,3 +321,13 @@ MIT
     Sources:
     - https://testing-library.com/docs/react-testing-library/api/#renderhook
     - https://react.dev/reference/react/act
+
+
+## License
+
+MIT
+
+
+
+
+
