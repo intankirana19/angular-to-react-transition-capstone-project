@@ -200,6 +200,23 @@ MIT
        Di `src/shared/hooks/useInfiniteScroll.ts` (effect pertama): `target.addEventListener('scroll', handleScroll)`, `handleScroll()` (initial check), dan cleanup `target.removeEventListener('scroll', handleScroll)`.
     - Source: https://blog.logrocket.com/react-infinite-scroll/
 
+20. Search produk sekarang dikirim sebagai payload query dari page ke hook (`useGetProducts`) lalu diteruskan ke service (`productsService.ts`) untuk meniru request params API.
+     - Alur: `ProductsListPage` input search -> `useProductSearchState` bentuk query part `search` -> digabung dengan filter+sort jadi `queryPayload` -> `useGetProducts(queryPayload)` (query key `["products", queryPayload]`) -> `getProducts(queryPayload)` -> `applyProductListQuery` (`matchesSearch`).
+
+21. Filter produk (material + created date range) juga mengikuti alur payload yang sama agar kontrak client tetap siap untuk backend query params.
+    - Alur: filter dialog di `ProductsListPage` (draft) -> commit ke payload (`material`, `createdFrom`, `createdTo`) -> service -> helper (`matchesMaterial`, `matchesCreatedAt`).
+
+22. Sort produk diproses dari payload sortBy + sortOrder, lalu helper mengurutkan data seperti response server-side sorted list.
+    - Alur: kontrol sort di toolbar page -> payload query -> service -> helper (sortProducts).
+    - Keputusan final: table-level sorting (TanStack getSortedRowModel) dinonaktifkan di ProductsTable, sehingga source of truth sorting hanya dari query/service.
+    - Alasan (best practice untuk infinite scroll + server-side style query): sorting harus konsisten untuk seluruh dataset, bukan hanya item yang sedang terlihat (visibleProducts).
+    - Cons sebelum perubahan (saat ada 2 sorting system):
+      1. Urutan bisa tidak konsisten karena pada infinite scroll header table hanya me-sort `visibleProducts` (slice batch yang sedang tampil), bukan seluruh dataset products.
+      2. Setelah load batch berikutnya (scroll), urutan global bisa terlihat "campur" antara hasil sort query dan sort lokal table.
+      3. Sulit dipredict/debug karena ada dua sumber state sorting yang aktif bersamaan.
+    - Dampak arsitektur: saat API produk real sudah support query params search/filter/sort, perubahan utama cukup di layer service (mapping payload ke request params) tanpa ubah komponen page/table.
+    - Contoh payload: { search, material, createdFrom, createdTo, sortBy, sortOrder }.
+
 25. Engine reusable query-state dipindah ke layer `shared/hooks` untuk dipakai lintas fitur, bukan khusus products:
     - `useSearchQueryState` (`src/shared/hooks/useSearchQueryState.ts`)
     - `useSortQueryState` (`src/shared/hooks/useSortQueryState.ts`)
