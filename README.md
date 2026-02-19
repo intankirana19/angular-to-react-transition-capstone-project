@@ -130,6 +130,18 @@ VITE_API_TIMEOUT=30000
 VITE_ENABLE_DEVTOOLS=true
 ```
 
+### Production Deploy (Vercel)
+
+For Vercel deployments, set these variables in **Project Settings -> Environment Variables** (Production):
+
+```env
+VITE_API_BASE_URL=https://68789a3563f24f1fdc9e98dd.mockapi.io/api
+VITE_API_TIMEOUT=30000
+VITE_ENABLE_DEVTOOLS=false
+```
+
+If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`src/shared/lib/axios.ts`) and requests like `/api/products` can return `404`.
+
 ## Architectural Decisions
 
 1.  `App.tsx`, `routes.tsx`, `layouts`, dan `useUIStore.ts` dipindahkan ke folder `app` sebagai layer aplikasi. Semua yang bersifat app-level (tidak reusable) diletakkan di folder `app`. Semua yang reusable secara global dipindahkan ke folder `shared`.
