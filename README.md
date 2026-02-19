@@ -46,19 +46,19 @@ pnpm test:run       # vitest run
 
 ```
 src/
-├── components/
-│   ├── layout/     # app layouts (MainLayout, Sidebar)
-│   ├── shared/     # shared components (data-table)
-│   └── ui/         # reusable UI components (Avatar, Badge, Button, Checkbox, Input)
-├── constants/      # app constants (navigation)
-├── features/       # feature modules (home, team, users)
-├── hooks/          # shared hooks (useDebounce)
-├── lib/            # shared utilities/config (axios, cn, queryClient)
-├── providers/      # app providers
-├── routes/         # router setup
-├── store/          # zustand stores (useUIStore)
-├── test/           # test setup
-└── types/          # global TS types (env.d.ts)
+|-- app/              # app-level layer (App, routes, layouts, app store)
+|-- features/         # feature modules (products, users, team, etc.)
+|-- shared/
+|   |-- api/          # shared API constants/endpoints
+|   |-- components/   # shared complex components (data-table, boundary)
+|   |-- constants/    # shared constants (navigation, filters)
+|   |-- hooks/        # reusable cross-feature hooks
+|   |-- lib/          # utilities/config (axios, cn, queryClient, helpers)
+|   |-- types/        # shared TS types
+|   `-- ui/           # reusable UI primitives/composites
+|-- test/             # test setup
+|-- index.css
+`-- main.tsx
 ```
 
 ## Conventions
@@ -69,17 +69,17 @@ src/
   - Zustand for global UI/client state
   - React Context for app-level providers only
 - Components:
-  - `src/components/ui/` - reusable UI primitives
-  - `src/components/shared/` - shared complex components (data tables, etc.)
-  - `src/components/layout/` - layout components
+  - `src/shared/ui/` - reusable UI primitives/composites
+  - `src/shared/components/` - shared complex components (data tables, boundary, etc.)
+  - `src/app/layouts/` - app/layout components
 
 ## Notes
 
-- Sidebar: `src/components/layout/Sidebar.tsx`
-- Navigation config: `src/constants/navigation.ts`
-- Data table component: `src/components/shared/data-table/`
-- HTTP client config: `src/lib/axios.ts`
-- Query client config: `src/lib/queryClient.ts`
+- Sidebar: `src/app/layouts/Sidebar.tsx`
+- Navigation config: `src/shared/constants/navigation.ts`
+- Data table component: `src/shared/components/data-table/`
+- HTTP client config: `src/shared/lib/axios.ts`
+- Query client config: `src/shared/lib/queryClient.ts`
 
 ## Features
 
@@ -87,7 +87,7 @@ src/
 
 A reusable data table component built with TanStack Table:
 
-- Located at `src/components/shared/data-table/`
+- Located at `src/shared/components/data-table/`
 - Includes: TableHeader, TableBody, TablePagination, TableToolbar, TableRowActions
 - Customizable via props and hooks
 
