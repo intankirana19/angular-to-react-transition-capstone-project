@@ -200,6 +200,16 @@ MIT
        Di `src/shared/hooks/useInfiniteScroll.ts` (effect pertama): `target.addEventListener('scroll', handleScroll)`, `handleScroll()` (initial check), dan cleanup `target.removeEventListener('scroll', handleScroll)`.
     - Source: https://blog.logrocket.com/react-infinite-scroll/
 
+25. Engine reusable query-state dipindah ke layer `shared/hooks` untuk dipakai lintas fitur, bukan khusus products:
+    - `useSearchQueryState` (`src/shared/hooks/useSearchQueryState.ts`)
+    - `useSortQueryState` (`src/shared/hooks/useSortQueryState.ts`)
+    - `useSelectDateRangeFilterState` (`src/shared/hooks/useSelectDateRangeFilterState.ts`)
+    - `useFilterDialogDraftState` (`src/shared/hooks/useFilterDialogDraftState.ts`)
+    - Alasan: karena pola state ini dipakai berulang di banyak halaman list, kita jadikan reusable supaya tidak copy-paste dan format data ke API tetap seragam.
+
+26. Nilai default opsi filter "All" distandarisasi di konstanta global `FILTER_ALL_VALUE` (`src/shared/constants/filters.ts`) dan dipakai oleh products filter.
+    - Alasan: mencegah hardcoded string tersebar, mengurangi typo/inconsistency saat nanti ada fitur lain yang butuh pola filter serupa.
+
 27. Tipe date range distandarisasi ke `DateRangeValue` (`src/shared/types/dateRange.ts`) dan helper clone dipisah ke `cloneDateRange` (`src/shared/lib/dateRange.ts`).
     - Alasan: supaya tipe date range tidak ditulis ulang di banyak file, dan supaya perubahan nilai tanggal di satu tempat tidak tanpa sengaja mengubah data di tempat lain.
 
