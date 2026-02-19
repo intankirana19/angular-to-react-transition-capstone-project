@@ -16,6 +16,7 @@ export function DataTable<TData>({
   data,
   columns,
   onRowClick,
+  getRowClickLabel,
   enableRowSelection = false,
   enablePagination = true,
   pageSize = 10,
@@ -89,7 +90,7 @@ export function DataTable<TData>({
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-neutral-200">
           <TableHeader table={table} />
-          <TableBody table={table} onRowClick={onRowClick} />
+          <TableBody table={table} onRowClick={onRowClick} getRowClickLabel={getRowClickLabel} />
         </table>
       </div>
 

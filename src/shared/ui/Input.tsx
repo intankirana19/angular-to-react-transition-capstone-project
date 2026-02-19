@@ -241,7 +241,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               id={messageId}
               className={cn(
                 messageVariants({ tone: messageTone, disabled }),
-                'mt-1',
+                'mt-2',
                 messageClassName
               )}
             >

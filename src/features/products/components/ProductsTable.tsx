@@ -110,6 +110,8 @@ export function ProductsTable({ products, onRowClick, onEdit, onDelete }: Produc
               key={product.id}
               className="rounded-lg border border-neutral-200 bg-white p-3 shadow-sm"
               role="button"
+              aria-label="View product detail"
+              title="View product detail"
               tabIndex={0}
               onClick={() => onRowClick?.(product)}
               onKeyDown={(event) => {
@@ -177,6 +179,7 @@ export function ProductsTable({ products, onRowClick, onEdit, onDelete }: Produc
           enableSorting={false} // source sorting ada di query service
           enableFiltering={false} // search filter dikontrol dari page
           onRowClick={(row) => onRowClick?.(row.original)}
+          getRowClickLabel={() => 'View product detail'}
         />
       </div>
     </>

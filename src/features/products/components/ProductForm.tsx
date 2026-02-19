@@ -111,7 +111,7 @@ export function ProductForm({
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full sm:w-auto px-4 py-2.5 text-ait-body-md-semibold text-white bg-primary-500 rounded-lg transition-colors enabled:hover:bg-primary-400 disabled:bg-disabled disabled:text-white/70 disabled:opacity-60 disabled:cursor-not-allowed disabled:pointer-events-none"
+        className="w-full sm:w-auto px-4 py-2.5 text-ait-body-md-semibold text-white bg-primary-500 rounded-lg transition-colors enabled:hover:bg-primary-400 disabled:bg-neutral-500 disabled:text-neutral-200 disabled:opacity-100 disabled:cursor-not-allowed disabled:pointer-events-none"
       >
         {isSubmitting ? 'Saving...' : 'Save'}
       </button>

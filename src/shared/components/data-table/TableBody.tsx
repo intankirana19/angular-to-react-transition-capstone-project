@@ -4,9 +4,10 @@ import { cn } from '@/shared/lib/cn';
 interface TableBodyProps<TData> {
   table: Table<TData>;
   onRowClick?: (row: Row<TData>) => void;
+  getRowClickLabel?: (row: Row<TData>) => string;
 }
 
-export function TableBody<TData>({ table, onRowClick }: TableBodyProps<TData>) {
+export function TableBody<TData>({ table, onRowClick, getRowClickLabel }: TableBodyProps<TData>) {
   const rows = table.getRowModel().rows;
 
   if (rows.length === 0) {
@@ -30,6 +31,8 @@ export function TableBody<TData>({ table, onRowClick }: TableBodyProps<TData>) {
         <tr
           key={row.id}
           onClick={() => onRowClick?.(row)}
+          aria-label={onRowClick ? getRowClickLabel?.(row) : undefined}
+          title={onRowClick ? getRowClickLabel?.(row) : undefined}
           className={cn('transition-colors hover:bg-neutral-200/70', onRowClick && 'cursor-pointer')}
         >
           {row.getVisibleCells().map((cell) => (

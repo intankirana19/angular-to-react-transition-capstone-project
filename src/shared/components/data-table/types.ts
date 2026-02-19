@@ -5,6 +5,7 @@ export interface DataTableProps<TData> {
   data: TData[];
   columns: ColumnDef<TData>[];
   onRowClick?: (row: Row<TData>) => void;
+  getRowClickLabel?: (row: Row<TData>) => string;
   enableRowSelection?: boolean;
   enablePagination?: boolean;
   pageSize?: number;

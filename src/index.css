@@ -189,6 +189,16 @@ body,
   }
 }
 
+@layer base {
+  button:not(:disabled) {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+}
+
 @utility text-display-lg {
   font-size: 8.75rem;
   line-height: 10rem;
