@@ -344,6 +344,17 @@ VITE_ENABLE_DEVTOOLS=true
       - di mobile sidebar default tertutup agar konten utama langsung terlihat.
       - di desktop sidebar otomatis terbuka dan tetap bisa collapse.
 
+40. Responsive Products List dirapikan dengan pendekatan "compact di mobile, lengkap di desktop".
+    - Toolbar list dibuat lebih ringkas di mobile (search full width, filter/sort trigger icon-friendly, add button label adaptif).
+    - File utama: `src/features/products/pages/ProductsListPage.tsx`.
+
+41. Presentasi data produk di mobile dipisah dari tabel desktop agar keterbacaan lebih baik.
+    - `ProductsTable` pakai 2 mode render: card list mobile (`md:hidden`) dan `DataTable` desktop (`hidden md:block`).
+    - `ProductDetailPage` action button disesuaikan untuk viewport kecil (icon-first) tanpa ubah alur aksi.
+    - File:
+      - `src/features/products/components/ProductsTable.tsx`
+      - `src/features/products/pages/ProductDetailPage.tsx`
+
 ## License
 
 MIT

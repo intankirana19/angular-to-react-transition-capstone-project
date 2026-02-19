@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowUpDown, Search, SlidersVertical } from 'lucide-react';
+import { ArrowUpDown, Plus, Search, SlidersVertical } from 'lucide-react';
 import { Button } from '@/shared/ui/Button';
 import { DateRangePicker } from '@/shared/ui/DatePicker';
 import {
@@ -77,19 +77,24 @@ export default function ProductsListPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="mb-6 flex items-center justify-between gap-3">
         <h1 className="text-2xl font-bold text-neutral-900">Products</h1>
         <Button
+          size="sm"
+          className="h-9 px-3 text-sm sm:h-10 sm:px-4"
           onClick={() => {
             void navigate('/products/new');
           }}
+          aria-label="Add product"
         >
-          Add Product
+          <Plus className="hidden h-4 w-4 sm:inline" />
+          <span className="sm:hidden">+ Add</span>
+          <span className="hidden sm:inline">Add Product</span>
         </Button>
       </div>
 
       <div className="bg-white rounded-xl border border-neutral-200 p-4 mb-6 shadow-sm">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex items-center gap-2">
           {/* SEARCH[1]: user input keyword, nanti payload kebentuk dari state search/filter/sort */}
           <Input
             value={searchState.searchQuery}
@@ -100,21 +105,24 @@ export default function ProductsListPage() {
             leading={<Search />}
             containerClassName="border-neutral-300 bg-neutral-50 shadow-md ring-1 ring-neutral-200/70"
             inputClassName="text-sm font-medium text-neutral-900 placeholder:text-neutral-500"
-            className="w-full lg:max-w-sm"
+            className="w-full"
           />
 
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-2">
             {/* FILTER[1]: Tombol buat buka dialog filter material + tanggal, jadi toolbar tetap rapi */}
             <Button
               type="button"
               variant="secondary"
+              size="sm"
               onClick={() => dialogState.onFilterDialogOpenChange(true)}
-              className="border-neutral-300 bg-neutral-50 text-neutral-800 shadow-md ring-1 ring-neutral-200/70 hover:bg-neutral-100 active:bg-neutral-200"
+              className="relative h-10 w-10 justify-center px-0 border-neutral-300 bg-neutral-50 text-neutral-800 shadow-md ring-1 ring-neutral-200/70 hover:bg-neutral-100 active:bg-neutral-200 sm:w-auto sm:px-4"
+              aria-label="Open filter"
+              title="Filter"
             >
               <SlidersVertical className="w-4 h-4" />
-              Filter
+              <span className="hidden sm:inline">Filter</span>
               {activeStructuredFilterCount > 0 && (
-                <span className="ml-1 min-w-5 h-5 px-1 rounded-full bg-primary-500 text-white text-xs font-semibold">
+                <span className="absolute -right-1 -top-1 min-w-5 h-5 px-1 rounded-full bg-primary-500 text-white text-xs font-semibold">
                   {activeStructuredFilterCount}
                 </span>
               )}
@@ -125,10 +133,10 @@ export default function ProductsListPage() {
               <SelectTrigger
                 size="sm"
                 showIcon={false}
-                className="h-10 w-auto min-w-0 !justify-start gap-2 border-neutral-300 bg-neutral-50 px-4 text-sm font-semibold text-neutral-800 shadow-md ring-1 ring-neutral-200/70 hover:bg-neutral-100 active:bg-neutral-200"
+                className="h-10 w-10 min-w-0 !justify-center gap-0 border-neutral-300 bg-neutral-50 px-0 text-sm font-semibold text-neutral-800 shadow-md ring-1 ring-neutral-200/70 hover:bg-neutral-100 active:bg-neutral-200 sm:w-auto sm:gap-2 sm:px-4"
+                aria-label="Sort products"
               >
                 <ArrowUpDown className="w-4 h-4 opacity-80" />
-                <span>Sort by</span>
               </SelectTrigger>
               <SelectContent align="end" className="min-w-[180px]">
                 {sortState.sortOptions.map((option) => (
@@ -142,7 +150,7 @@ export default function ProductsListPage() {
         </div>
 
         {hasActiveFilters && (
-          <div className="flex items-center justify-between px-4 py-3 mt-4 bg-primary-50 rounded-lg border border-primary-200">
+          <div className="mt-4 flex flex-col gap-2 rounded-lg border border-primary-200 bg-primary-50 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm text-neutral-700">
               <span className="font-semibold text-primary-600">{products.length}</span> products found
             </p>
@@ -184,22 +192,23 @@ export default function ProductsListPage() {
             />
           </DialogBody>
 
-          <DialogFooter className="sm:justify-between sm:space-x-0">
+          <DialogFooter className="gap-2 sm:justify-between sm:space-x-0">
             <Button type="button" variant="text" onClick={dialogState.clearDraftFilters}>
               Clear
             </Button>
 
-            <div className="flex items-center gap-2">
+            <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
               <Button
                 type="button"
                 variant="secondary"
+                className="w-full sm:w-auto"
                 onClick={() => {
                   dialogState.onFilterDialogOpenChange(false);
                 }}
               >
                 Cancel
               </Button>
-              <Button type="button" onClick={dialogState.applyFilterDraft}>
+              <Button type="button" className="w-full sm:w-auto" onClick={dialogState.applyFilterDraft}>
                 Apply Filters
               </Button>
             </div>

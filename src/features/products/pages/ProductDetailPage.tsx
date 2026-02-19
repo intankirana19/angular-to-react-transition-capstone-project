@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Edit } from 'lucide-react';
+import { ArrowLeft, Edit, Trash2 } from 'lucide-react';
 import { Avatar } from '@/shared/ui/Avatar';
 import { Button } from '@/shared/ui/Button';
 import { DEFAULT_PLACEHOLDER, formatCurrency, formatDate } from '@/shared/lib/formatters';
@@ -15,7 +15,8 @@ export default function ProductDetailPage() {
   const { data: product } = useGetProductById(productId);
 
   if (!productId) {
-    throw new Error('Product ID is required'); // sebelumnya error pakai UI lokal, sekarang dilempar ke ErrorBoundary untuk standarisai.
+    // lempar error ke boundary global kalau param route kosong
+    throw new Error('Product ID is required');
   }
   if (!product) {
     return <ProductEntityNotFoundPage />;
@@ -27,7 +28,7 @@ export default function ProductDetailPage() {
 
   return (
     <div>
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+      <div className="mb-6 flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
           <ArrowLeft className="cursor-pointer" onClick={() => void navigate(-1)} />
           <div>
@@ -36,28 +37,38 @@ export default function ProductDetailPage() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 pt-1">
           <Button
             variant="secondary"
+            size="sm"
+            className="h-9 w-9 justify-center px-0 sm:h-10 sm:w-auto sm:px-3"
+            aria-label="Edit product"
+            title="Edit product"
             onClick={() => {
-              void navigate(`/products/edit/${productId}`, { replace: true }); // replace history entry supaya alur edit tidak numpuk detail lama di tombol Back.
+              // replace biar history ga numpuk detail lama
+              void navigate(`/products/edit/${productId}`, { replace: true });
             }}
           >
             <Edit className="h-4 w-4" />
-            Edit
+            <span className="hidden sm:inline">Edit</span>
           </Button>
           <Button
             variant="destructive-secondary"
+            size="sm"
+            className="h-9 w-9 justify-center px-0 sm:h-10 sm:w-auto sm:px-3"
+            aria-label="Delete product"
+            title="Delete product"
             onClick={() => {
               setDeleteDialogOpen(true);
             }}
           >
-            Delete
+            <Trash2 className="h-4 w-4" />
+            <span className="hidden sm:inline">Delete</span>
           </Button>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+      <div className="rounded-lg border border-neutral-200 bg-white p-4 shadow-sm sm:p-6">
         <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
           <div className="flex flex-col items-center text-center gap-4">
             <Avatar
