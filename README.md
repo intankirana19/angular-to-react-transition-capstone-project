@@ -183,9 +183,9 @@ MIT
 19. Infinite scroll dijadikan custom hook reusable `useInfiniteScroll` (`src/shared/hooks/useInfiniteScroll.ts`) supaya bisa dipakai ulang di list lain. 
     - Flow:
     1. Data yang tampil per batch ditentuin dipage konsumer:
-       Di `src/features/products/pages/ProductsListPage.tsx`, `page` + `PAGE_SIZE` dipakai untuk membentuk `visibleProducts = products.slice(0, page * PAGE_SIZE)`.
+       Di `src/features/products/hooks/useProductInfiniteList.ts`, `page` + `PAGE_SIZE` dipakai untuk membentuk `visibleProducts = products.slice(0, page * PAGE_SIZE)`.
     2. Panggil hook dengan parameter yang jelas:
-       Di `src/features/products/pages/ProductsListPage.tsx`, hook dipanggil dengan `enabled`, `hasMore`, `scrollContainerId`, `threshold`, `debounceMs`, dan `onLoadMore`.
+       Di `src/features/products/hooks/useProductInfiniteList.ts`, hook dipanggil dengan `enabled`, `hasMore`, `scrollContainerId`, `threshold`, `debounceMs`, dan `onLoadMore`.
     3. Hook pasang listener scroll ke target yang sesuai:
        Di `src/shared/hooks/useInfiniteScroll.ts`, target diambil dari `scrollContainerId` (kalau ada), fallback ke `window`.
     4. Event scroll tidak langsung memuat data:
@@ -193,7 +193,7 @@ MIT
     5. Saat posisi scroll sudah dekat bawah, hook panggil callback:
        Di `src/shared/hooks/useInfiniteScroll.ts`, perhitungan near-bottom pakai `threshold`, lalu `onLoadMore()` dipanggil jika kondisi terpenuhi.
     6. Konsumer tentuin next actionnya:
-       Di `src/features/products/pages/ProductsListPage.tsx`, `onLoadMore` meng-update `page` (`setPage(...)`) sampai batas `totalPages`.
+       Di `src/features/products/hooks/useProductInfiniteList.ts`, `onLoadMore` meng-update `page` (`setPage(...)`) sampai batas `totalPages`.
     7. Container scroll dibuat stabil di level layout.
        Di `src/app/layouts/MainLayout.tsx`, elemen `main` diberi `id=\"app-main-scroll\"` jadi hook selalu attach ke container yang benar.
     8. Hook otomatis aman dipakai dari awal sampai selesai.

@@ -1,7 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowUpDown, Search, SlidersVertical } from 'lucide-react';
-import { useInfiniteScroll } from '@/shared/hooks/useInfiniteScroll';
 import { Button } from '@/shared/ui/Button';
 import { DateRangePicker } from '@/shared/ui/DatePicker';
 import {
@@ -22,6 +21,7 @@ import { ProductFormDialog } from '../components/ProductFormDialog';
 import { ProductsTable } from '../components/ProductsTable';
 import { useProductFilterDialogState } from '../hooks/useProductFilterDialogState';
 import { useProductFilterState } from '../hooks/useProductFilterState';
+import { useProductInfiniteList } from '../hooks/useProductInfiniteList';
 import { useProductMaterialOptions } from '../hooks/useProductMaterialOptions';
 import { useProductSearchState } from '../hooks/useProductSearchState';
 import { useProductSortState } from '../hooks/useProductSortState';
@@ -29,7 +29,6 @@ import { type ProductListQuery } from '../types';
 
 // refer user page dr skafold
 export default function ProductsListPage() {
-  const PAGE_SIZE = 10;
   const navigate = useNavigate();
 
   const searchState = useProductSearchState(); // SEARCH[2]: Hook search pegang state + query part search
@@ -55,9 +54,10 @@ export default function ProductsListPage() {
   const { data: products } = useGetProducts(queryPayload); // SEARCH[5]: Payload diteruskan ke hook query list
   const materialOptions = useProductMaterialOptions(products); // FILTER[28]: Material options dibentuk dari data products yang lagi aktif
 
+  const { hasProducts, visibleProducts } = useProductInfiniteList(products, queryPayload);
+
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
   const [deletingProductId, setDeletingProductId] = useState<string | null>(null);
-  const [page, setPage] = useState(1);
   const editingProduct = useMemo(
     () => products.find((product) => product.id === editingProductId),
     [products, editingProductId]
@@ -249,22 +249,3 @@ export default function ProductsListPage() {
     </div>
   );
 }
-  const hasProducts = products.length > 0;
-  const totalPages = Math.max(1, Math.ceil(products.length / PAGE_SIZE));
-  const hasMore = page < totalPages;
-  const visibleProducts = useMemo(() => products.slice(0, page * PAGE_SIZE), [products, page]);
-
-  useEffect(() => {
-    setPage(1);
-  }, [queryPayload]);
-
-  useInfiniteScroll({
-    enabled: hasProducts && hasMore,
-    hasMore,
-    scrollContainerId: 'app-main-scroll',
-    threshold: 200,
-    debounceMs: 300,
-    onLoadMore: () => {
-      setPage((prevPage) => Math.min(prevPage + 1, totalPages));
-    },
-  });
