@@ -294,6 +294,9 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
 29. `DateRangePicker` diperluas dengan prop `monthsToShow` (`src/shared/ui/DatePicker.tsx`) dan adapter type `DateRangeValue`.
     - Pemakaian awal: filter dialog products pakai `monthsToShow={1}` agar dialog lebih ringkas.
     - Alasan: komponen date range jadi fleksibel untuk kebutuhan compact (toolbar/dialog sempit) atau full (2 bulan) tanpa bikin komponen baru.
+    - Update UX:
+      - Kalender dibuat versi compact (ukuran cell, spacing, dan control month lebih kecil) agar aman dipakai di dialog sempit.
+      - Mode range tanpa time picker sekarang auto-apply saat tanggal akhir dipilih (`autoApplyOnRangeComplete`), jadi tidak perlu langkah apply tambahan di date picker.
 
 30. `DateRangePicker` ditambah prop `usePortal` (`src/shared/ui/DatePicker.tsx`) untuk kebutuhan render popup di dalam dialog.
     - Pemakaian di products: `usePortal={false}` agar popup kalender tetap menempel ke field filter di dialog.
@@ -411,6 +414,23 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
     - Cakupan:
       - selected material tetap terlihat saat dialog filter dibuka ulang walau list kosong/terfilter,
       - fallback option tidak duplikat saat material aktif sudah ada di dataset.
+
+47. Dialog filter products dirapikan ulang untuk viewport kecil agar tidak kepotong layar dan tetap konsisten saat date picker dibuka.
+    - Implementasi utama di `src/features/products/pages/ProductsListPage.tsx`:
+      - ukuran dialog diperkecil (mode `md`) dengan batas lebar viewport (`w-[min(100vw-32px,28rem)]`),
+      - tinggi dialog dibatasi viewport (`max-h-[calc(100vh-16px)]`) dan konten internal bisa scroll (`overflow-y-auto`),
+      - area date picker dibungkus container tinggi tetap (`h-[320px]`) agar ruang popup kalender stabil di dalam dialog.
+    - Dampak UX:
+      - dialog tetap centered dengan margin aman di semua sisi,
+      - form controls tetap dekat header,
+      - kalender tidak keluar dari area dialog.
+
+48. Footer aksi filter products disederhanakan agar lebih jelas dan ringkas.
+    - Tombol `Cancel` dihapus karena sudah ada tombol close (`X`) pada dialog header.
+    - Label tombol utama diganti dari `Apply Filters` menjadi `Apply`.
+    - Layout footer dipaksa horizontal rata kanan (tidak stack vertikal di mobile), dengan aksi:
+      - `Clear` (secondary),
+      - `Apply` (primary).
 
 ## License
 

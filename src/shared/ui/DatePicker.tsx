@@ -47,6 +47,7 @@ interface DateTimeRangePickerProps {
   showTimePicker?: boolean;
   monthsToShow?: 1 | 2;
   usePortal?: boolean; // mode portal (true): render ke document.body (aman dari overflow parent), mode non-portal (false): nempel ke field (cocok di dalam dialog)
+  autoApplyOnRangeComplete?: boolean; // true: pilih range langsung commit saat tanggal akhir dipilih (tanpa Apply/Cancel)
 }
 
 function getQuickFilterRange(filter: string): DateTimeRange | null {
@@ -134,9 +135,9 @@ function CalendarGrid({
   };
 
   return (
-    <div className="flex flex-col gap-3 p-6">
-      <div className="flex items-center justify-between w-[280px]">
-        <p className="text-ait-body-lg-semibold text-neutral-900">
+    <div className="flex flex-col gap-1.5 p-3"> {/* grid dipadatkan biar enak dipakai di dialog/filter yang sempit */}
+      <div className="flex items-center justify-between w-[196px]">
+        <p className="text-ait-body-md-semibold text-neutral-900">
           {format(month, 'MMMM yyyy')}
         </p>
       </div>
@@ -144,8 +145,8 @@ function CalendarGrid({
         {/* Weekday headers */}
         <div className="flex">
           {['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sat', 'Su'].map((day) => (
-            <div key={day} className="w-10 h-10 flex items-center justify-center">
-              <p className="text-ait-body-md-semibold text-neutral-900 text-sm">{day}</p>
+            <div key={day} className="w-7 h-7 flex items-center justify-center">
+              <p className="text-ait-body-md-semibold text-neutral-900 text-xs">{day}</p>
             </div>
           ))}
         </div>
@@ -159,7 +160,7 @@ function CalendarGrid({
               const outside = isOutsideMonth(date);
 
               return (
-                <div key={dateIdx} className="relative w-10 h-10">
+                <div key={dateIdx} className="relative w-7 h-7">
                   {inRange && <div className="absolute inset-0 bg-primary-100" />}
                   <button
                     type="button"
@@ -167,7 +168,7 @@ function CalendarGrid({
                     onMouseEnter={() => onDateHover(date)}
                     onMouseLeave={() => onDateHover(null)}
                     className={cn(
-                      'relative w-10 h-10 rounded-full flex items-center justify-center text-sm transition-colors',
+                      'relative w-7 h-7 rounded-full flex items-center justify-center text-xs transition-colors',
                       outside && 'text-neutral-400',
                       !outside &&
                         !isStart &&
@@ -222,6 +223,7 @@ export function DateTimeRangePicker({
   showTimePicker = true,
   monthsToShow = 2,
   usePortal = true,
+  autoApplyOnRangeComplete = false,
 }: DateTimeRangePickerProps) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [tempRange, setTempRange] = React.useState<DateTimeRange | null>(value || null);
@@ -294,12 +296,18 @@ export function DateTimeRangePicker({
       setTempRange({ from: date, to: date });
       setSelectingFrom(false);
     } else {
+      let nextRange: DateTimeRange;
       if (tempRange && date >= tempRange.from) {
-        setTempRange({ ...tempRange, to: date });
+        nextRange = { ...tempRange, to: date };
       } else {
-        setTempRange({ from: date, to: date });
+        nextRange = { from: date, to: date };
       }
+      setTempRange(nextRange);
       setSelectingFrom(true);
+      if (autoApplyOnRangeComplete && !showTimePicker) { // flow filter cepat: range lengkap langsung apply + close popup
+        onChange?.(nextRange);
+        setIsOpen(false);
+      }
     }
     setSelectedFilter(null);
   };
@@ -396,7 +404,7 @@ export function DateTimeRangePicker({
               <button
                 type="button"
                 onClick={handlePrevMonth1}
-                className="absolute left-6 top-6 z-10 p-2.5 hover:bg-neutral-100 rounded-lg transition-colors"
+                className="absolute left-3 top-3 z-10 p-1.5 hover:bg-neutral-100 rounded-lg transition-colors"
               >
                 <ChevronLeft className="w-4 h-4 text-neutral-700" />
               </button>
@@ -404,7 +412,7 @@ export function DateTimeRangePicker({
                 <button
                   type="button"
                   onClick={handleNextMonth2}
-                  className="absolute right-6 top-6 z-10 p-2.5 hover:bg-neutral-100 rounded-lg transition-colors"
+                  className="absolute right-3 top-3 z-10 p-1.5 hover:bg-neutral-100 rounded-lg transition-colors"
                 >
                   <ChevronRight className="w-4 h-4 text-neutral-700" />
                 </button>
@@ -430,7 +438,7 @@ export function DateTimeRangePicker({
                 <button
                   type="button"
                   onClick={handleNextMonth2}
-                  className="absolute right-6 top-6 z-10 p-2.5 hover:bg-neutral-100 rounded-lg transition-colors"
+                  className="absolute right-3 top-3 z-10 p-1.5 hover:bg-neutral-100 rounded-lg transition-colors"
                 >
                   <ChevronRight className="w-4 h-4 text-neutral-700" />
                 </button>
@@ -454,7 +462,8 @@ export function DateTimeRangePicker({
       </div>
 
       {/* Footer - Outside scrollable area */}
-      <div className="border-t border-neutral-200 px-6 py-4 bg-white rounded-b-lg flex-shrink-0">
+      {!autoApplyOnRangeComplete && ( // mode manual (dengan footer action) kalau consumer masih butuh konfirmasi
+        <div className="border-t border-neutral-200 px-6 py-4 bg-white rounded-b-lg flex-shrink-0">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <p className="text-ait-body-md-regular text-neutral-700 flex-1 min-w-0 truncate">
             {tempRange && (
@@ -483,7 +492,8 @@ export function DateTimeRangePicker({
             </button>
           </div>
         </div>
-      </div>
+        </div>
+      )}
     </div>
   );
 
@@ -495,7 +505,7 @@ export function DateTimeRangePicker({
         disabled={disabled}
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          'flex h-11 w-full items-center justify-between rounded-lg border bg-white px-4 py-2.5 text-ait-body-md-regular transition-colors focus-within:outline-none focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 text-left',
+          'flex h-10 w-full items-center justify-between rounded-lg border bg-white px-3 py-2 text-ait-body-md-regular transition-colors focus-within:outline-none focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 text-left',
           variant === 'default' && 'border-neutral-300 hover:border-neutral-400',
           variant === 'error' && 'border-danger-500 focus-within:ring-danger-500'
         )}
@@ -572,6 +582,7 @@ export function DateRangePicker({
       onChange={handleChange}
       showQuickFilters={false}
       showTimePicker={false}
+      autoApplyOnRangeComplete
     />
   );
 }

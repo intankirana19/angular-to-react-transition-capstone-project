@@ -168,13 +168,16 @@ export default function ProductsListPage() {
       </div>
 
       <Dialog open={dialogState.isFilterDialogOpen} onOpenChange={dialogState.onFilterDialogOpenChange}>
-        <DialogContent size="lg">
+        <DialogContent
+          size="md"
+          className="max-h-[calc(100vh-16px)] w-[min(100vw-32px,28rem)] overflow-y-auto p-4 sm:p-5" // compact + aman di layar kecil: tetap ada margin viewport, sisanya scroll internal
+        >
           <DialogHeader>
             <DialogTitle>Filter Products</DialogTitle>
             <DialogDescription>Set material and created date range filters.</DialogDescription>
           </DialogHeader>
 
-          <DialogBody className="space-y-4">
+          <DialogBody className="space-y-2.5 py-1">
             {/* FILTER[2]: Pilihan material ini masih draft, baru kepakai pas klik Apply Filters */}
             <SimpleSelect
               value={dialogState.draftMaterialFilter}
@@ -185,36 +188,31 @@ export default function ProductsListPage() {
             />
 
             {/* FILTER[3]: Satu date-range picker untuk isi tanggal from/to sekaligus */}
-            <DateRangePicker
-              dateRange={dialogState.draftDateRange}
-              onDateRangeChange={dialogState.setDraftDateRange}
-              placeholder="Created date range"
-              monthsToShow={1}
-              usePortal={false} // kalau mode non-portal, date picker tetap "nempel" ke field input dalam dialog popup, tidak dianggap klik luar
-              className="w-full"
-            />
+            <div className="h-[300px]"> {/* ruang tetap supaya popup kalender nggak dorong layout footer */}
+              <DateRangePicker
+                dateRange={dialogState.draftDateRange}
+                onDateRangeChange={dialogState.setDraftDateRange}
+                placeholder="Created date range"
+                monthsToShow={1}
+                usePortal={false} // kalau mode non-portal, date picker tetap "nempel" ke field input dalam dialog popup, tidak dianggap klik luar
+                className="w-full"
+              />
+            </div>
           </DialogBody>
 
-          <DialogFooter className="gap-2 sm:justify-between sm:space-x-0">
-            <Button type="button" variant="text" onClick={dialogState.clearDraftFilters}>
+          <DialogFooter className="mt-2 !flex-row items-center justify-end gap-2"> {/* action simple, satu baris rata kanan */}
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
+              onClick={dialogState.clearDraftFilters}
+            >
               Clear
             </Button>
 
-            <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
-              <Button
-                type="button"
-                variant="secondary"
-                className="w-full sm:w-auto"
-                onClick={() => {
-                  dialogState.onFilterDialogOpenChange(false);
-                }}
-              >
-                Cancel
-              </Button>
-              <Button type="button" className="w-full sm:w-auto" onClick={dialogState.applyFilterDraft}>
-                Apply Filters
-              </Button>
-            </div>
+            <Button type="button" size="sm" onClick={dialogState.applyFilterDraft}>
+              Apply
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
