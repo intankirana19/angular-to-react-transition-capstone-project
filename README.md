@@ -7,7 +7,7 @@ React capstone project based on a reusable internal scaffold.
 This repository still contains scaffold modules (for example `users`, `team`, and several UI demo pages).
 The implementation task in this submission is focused on the **Product Management** feature module.
 
-## What Was Implemented (Product Catalog)
+## What Was Implemented (Product Management)
 
 - Product list page with table rendering
 - Search, filter, and sort using a typed query payload
