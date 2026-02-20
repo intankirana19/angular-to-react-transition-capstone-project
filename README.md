@@ -342,14 +342,23 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
     - https://vitest.dev/guide/mocking/modules
     - https://vitest.dev/api/vi#vi-hoisted
 
-39. Unit test `ProductFormDialog` memock `ProductForm` jadi komponen dummy (`data-testid="product-form-mock"`) agar test bisa isolasi logic dialog.
+39. `useProductFormSubmission` adalah custom hook untuk memusatkan seluruh alur submit form produk (create/edit) agar `ProductForm` tetap fokus ke render field.
+    - Tanggung jawab utama hook:
+      - memilih mutation berdasarkan mode (`create` atau `edit`),
+      - mengeksekusi submit async (`submitProduct`),
+      - expose state submit (`isMutationPending` dan `submitError`),
+      - menampilkan toast sukses/gagal,
+      - menjalankan callback `onSuccess` setelah mutation sukses.
+    - Dampak: logic submit tidak tersebar di komponen, lebih memudahkan maintenance dan lebih mudah di test terpisah dari UI.
+
+40. Unit test `ProductFormDialog` memock `ProductForm` jadi komponen dummy (`data-testid="product-form-mock"`) agar test bisa isolasi logic dialog.
     - `productFormSpy` dipakai untuk mengecek props mapping `initialValues` pada mode edit.
     - Assertion difokuskan ke flow dialog: title/description per mode, fallback saat product kosong, dan `onSuccess` yang menutup dialog.
     Sources:
     - https://vitest.dev/guide/mocking/modules
     - https://vitest.dev/api/mock
 
-40. Unit test `useProductSearchState` menggunakan `renderHook` dan `act` untuk memverifikasi transisi state inti hook:
+41. Unit test `useProductSearchState` menggunakan `renderHook` dan `act` untuk memverifikasi transisi state inti hook:
     - trim keyword input,
     - pembentukan payload `querySearch`,
     - flag `hasSearch`,
@@ -358,7 +367,7 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
     - https://testing-library.com/docs/react-testing-library/api/#renderhook
     - https://react.dev/reference/react/act
 
-41. Responsive shell app (sidebar + header) dirapikan agar perilaku mobile dan desktop konsisten tanpa duplikasi logic.
+42. Responsive shell app (sidebar + header) dirapikan agar perilaku mobile dan desktop konsisten tanpa duplikasi logic.
     - Logic baru dipisah jadi reusable:
       - `useMediaQuery` di `src/shared/hooks/useMediaQuery.ts` untuk baca breakpoint lintas fitur.
       - `useSyncSidebarWithViewport` di `src/app/hooks/useSyncSidebarWithViewport.ts` untuk sinkronisasi `sidebarOpen` berdasarkan viewport.
@@ -376,18 +385,18 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
       - di mobile sidebar default tertutup agar konten utama langsung terlihat.
       - di desktop sidebar otomatis terbuka dan tetap bisa collapse.
 
-42. Responsive Products List dirapikan dengan pendekatan "compact di mobile, lengkap di desktop".
+43. Responsive Products List dirapikan dengan pendekatan "compact di mobile, lengkap di desktop".
     - Toolbar list dibuat lebih ringkas di mobile (search full width, filter/sort trigger icon-friendly, add button label adaptif).
     - File utama: `src/features/products/pages/ProductsListPage.tsx`.
 
-43. Presentasi data produk di mobile dipisah dari tabel desktop agar keterbacaan lebih baik.
+44. Presentasi data produk di mobile dipisah dari tabel desktop agar keterbacaan lebih baik.
     - `ProductsTable` pakai 2 mode render: card list mobile (`md:hidden`) dan `DataTable` desktop (`hidden md:block`).
     - `ProductDetailPage` action button disesuaikan untuk viewport kecil (icon-first) tanpa ubah alur aksi.
     - File:
       - `src/features/products/components/ProductsTable.tsx`
       - `src/features/products/pages/ProductDetailPage.tsx`
 
-44. Flow Create/Edit/Form/Delete produk ikut dirapikan untuk viewport kecil.
+45. Flow Create/Edit/Form/Delete produk ikut dirapikan untuk viewport kecil.
     - `CreateProductPage` dan `EditProductPage`: tombol `Cancel` serta spacing container dibuat lebih proporsional di mobile.
     - `ProductForm`: tombol submit dibuat full-width di mobile (`w-full`) lalu kembali auto-width di desktop.
     - `DeleteProductDialog`: diberi safe horizontal margin di mobile agar dialog tidak menempel ke sisi layar.
@@ -397,7 +406,7 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
       - `src/features/products/components/ProductForm.tsx`
       - `src/features/products/components/DeleteProductDialog.tsx`
 
-45. Ditambahkan unit test hook `useProductMaterialOptions` untuk nge-lock bug reopen filter material.
+46. Ditambahkan unit test hook `useProductMaterialOptions` untuk nge-lock bug reopen filter material.
     - File test: `src/tests/unit/products/hooks/useProductMaterialOptions.test.ts`.
     - Cakupan:
       - selected material tetap terlihat saat dialog filter dibuka ulang walau list kosong/terfilter,
