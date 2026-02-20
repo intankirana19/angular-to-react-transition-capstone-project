@@ -151,14 +151,14 @@ export default function ProductsListPage() {
         </div>
 
         {hasActiveFilters && (
-          <div className="mt-4 flex flex-col gap-2 rounded-lg border border-primary-200 bg-primary-50 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-4 flex items-center justify-between gap-3 rounded-lg border border-primary-200 bg-primary-50 px-4 py-3">
             <p className="text-sm text-neutral-700">
               <span className="font-semibold text-primary-600">{products.length}</span> products found
             </p>
             <button
               type="button"
               onClick={clearAllFilters}
-              className="text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors underline"
+              className="shrink-0 whitespace-nowrap text-sm font-medium text-primary-600 transition-colors underline hover:text-primary-700"
             >
               Clear filters
             </button>
