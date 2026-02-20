@@ -294,22 +294,26 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
     - Pemakaian awal: filter dialog products pakai `monthsToShow={1}` agar dialog lebih ringkas.
     - Alasan: komponen date range jadi fleksibel untuk kebutuhan compact (toolbar/dialog sempit) atau full (2 bulan) tanpa bikin komponen baru.
 
-30. `SelectTrigger` ditambah prop `showIcon` (`src/shared/ui/Select.tsx`) untuk kasus trigger custom (misal tombol sort dengan icon sendiri).
+30. `DateRangePicker` ditambah prop `usePortal` (`src/shared/ui/DatePicker.tsx`) untuk kebutuhan render popup di dalam dialog.
+    - Pemakaian di products: `usePortal={false}` agar popup kalender tetap menempel ke field filter di dialog.
+    - Alasan: komponen `Dialog` tetap generic, tanpa logic khusus DatePicker.
+
+31. `SelectTrigger` ditambah prop `showIcon` (`src/shared/ui/Select.tsx`) untuk kasus trigger custom (misal tombol sort dengan icon sendiri).
     - Alasan: menghindari icon ganda dan menjaga API komponen tetap reusable tanpa bikin komponen Select versi baru/terpisah.
 
-31. Empty-state list products dibedakan berdasarkan context filter aktif di `ProductsListPage`:
+32. Empty-state list products dibedakan berdasarkan context filter aktif di `ProductsListPage`:
     - Default: `No products found`
     - Saat search/filter aktif: `No products match current filters`
     - Alasan: feedback lebih jelas ke user apakah data memang kosong dari source, atau kosong karena filter/pencarian yang dipilih user.
 
-32. Visual header pada shared `DataTable` dirapikan (typography, border, dan hover state) tanpa mengubah perilaku sorting handler TanStack Table.
+33. Visual header pada shared `DataTable` dirapikan (typography, border, dan hover state) tanpa mengubah perilaku sorting handler TanStack Table.
     - Alasan: meningkatkan konsistensi visual tabel reusable, sementara behavior sorting tetap sama.
 
-33. Konfigurasi testing Vitest memakai globals (`globals: true` di `vitest.config.ts`), jadi API test seperti `describe`, `it`, `expect`, `beforeEach`, dan `vi` tidak perlu di-import berulang di setiap file test. Tambahan `types: ["vitest/globals", "@testing-library/jest-dom"]` di `tsconfig.app.json` dipakai supaya TypeScript mengenali global API testing itu.
+34. Konfigurasi testing Vitest memakai globals (`globals: true` di `vitest.config.ts`), jadi API test seperti `describe`, `it`, `expect`, `beforeEach`, dan `vi` tidak perlu di-import berulang di setiap file test. Tambahan `types: ["vitest/globals", "@testing-library/jest-dom"]` di `tsconfig.app.json` dipakai supaya TypeScript mengenali global API testing itu.
     Sources:
     - https://vitest.dev/config/#globals
 
-34. Setup coverage untuk Vitest ditambahkan agar laporan test bisa dipantau dari terminal dan file report:
+35. Setup coverage untuk Vitest ditambahkan agar laporan test bisa dipantau dari terminal dan file report:
     - Script baru: `test:ui:coverage` dan `test:coverage` di `package.json`.
     - Dependency baru: `@vitest/ui` dan `@vitest/coverage-v8`.
     - Coverage config di `vitest.config.ts`: provider `v8`, include `src/**/*.{ts,tsx}`, dan reporter `text/html/json-summary`.
@@ -318,18 +322,18 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
     - https://vitest.dev/guide/coverage
     - https://vitest.dev/config/#coverage
 
-35. Struktur unit test dipindahkan ke `src/tests/unit` (bukan co-located) agar folder source tetap lebih bersih dan review test lebih mudah dipindai lintas fitur.
+36. Struktur unit test dipindahkan ke `src/tests/unit` (bukan co-located) agar folder source tetap lebih bersih dan review test lebih mudah dipindai lintas fitur.
     - Trade-off: file test jadi lebih jauh dari file source pasangannya.
     - Detail struktur dicatat di `src/tests/unit/README.md`.
 
-36. `Description` di `ProductForm` sempat gagal di test `getByLabelText` karena label belum terhubung ke textarea.
+37. `Description` di `ProductForm` sempat gagal di test `getByLabelText` karena label belum terhubung ke textarea.
     - Fix: tambah `htmlFor` di `TextareaField` (`src/shared/ui/Textarea.tsx`) dan `id` di textarea `ProductForm` (`src/features/products/components/ProductForm.tsx`).
     - Hasil: aksesibilitas label-field valid dan test kembali stabil.
     Sources:
     - https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/label
     - https://testing-library.com/docs/queries/bylabeltext/
 
-37. Unit test `ProductForm` memock `useProductFormSubmission` supaya fokus test ada di perilaku form (validasi field, disabled state saat pending, dan payload submit), bukan ke mutation/network.
+38. Unit test `ProductForm` memock `useProductFormSubmission` supaya fokus test ada di perilaku form (validasi field, disabled state saat pending, dan payload submit), bukan ke mutation/network.
     - `userEvent` dipakai untuk simulasi interaksi user yang realistis saat isi field dan submit.
     - `vi.hoisted` dipakai untuk menyiapkan mock function sebelum `vi.mock(...)` dieksekusi.
     Sources:
@@ -337,14 +341,14 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
     - https://vitest.dev/guide/mocking/modules
     - https://vitest.dev/api/vi#vi-hoisted
 
-38. Unit test `ProductFormDialog` memock `ProductForm` jadi komponen dummy (`data-testid="product-form-mock"`) agar test bisa isolasi logic dialog.
+39. Unit test `ProductFormDialog` memock `ProductForm` jadi komponen dummy (`data-testid="product-form-mock"`) agar test bisa isolasi logic dialog.
     - `productFormSpy` dipakai untuk mengecek props mapping `initialValues` pada mode edit.
     - Assertion difokuskan ke flow dialog: title/description per mode, fallback saat product kosong, dan `onSuccess` yang menutup dialog.
     Sources:
     - https://vitest.dev/guide/mocking/modules
     - https://vitest.dev/api/mock
 
-39. Unit test `useProductSearchState` menggunakan `renderHook` dan `act` untuk memverifikasi transisi state inti hook:
+40. Unit test `useProductSearchState` menggunakan `renderHook` dan `act` untuk memverifikasi transisi state inti hook:
     - trim keyword input,
     - pembentukan payload `querySearch`,
     - flag `hasSearch`,
@@ -353,7 +357,7 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
     - https://testing-library.com/docs/react-testing-library/api/#renderhook
     - https://react.dev/reference/react/act
 
-40. Responsive shell app (sidebar + header) dirapikan agar perilaku mobile dan desktop konsisten tanpa duplikasi logic.
+41. Responsive shell app (sidebar + header) dirapikan agar perilaku mobile dan desktop konsisten tanpa duplikasi logic.
     - Logic baru dipisah jadi reusable:
       - `useMediaQuery` di `src/shared/hooks/useMediaQuery.ts` untuk baca breakpoint lintas fitur.
       - `useSyncSidebarWithViewport` di `src/app/hooks/useSyncSidebarWithViewport.ts` untuk sinkronisasi `sidebarOpen` berdasarkan viewport.
@@ -371,18 +375,18 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
       - di mobile sidebar default tertutup agar konten utama langsung terlihat.
       - di desktop sidebar otomatis terbuka dan tetap bisa collapse.
 
-41. Responsive Products List dirapikan dengan pendekatan "compact di mobile, lengkap di desktop".
+42. Responsive Products List dirapikan dengan pendekatan "compact di mobile, lengkap di desktop".
     - Toolbar list dibuat lebih ringkas di mobile (search full width, filter/sort trigger icon-friendly, add button label adaptif).
     - File utama: `src/features/products/pages/ProductsListPage.tsx`.
 
-42. Presentasi data produk di mobile dipisah dari tabel desktop agar keterbacaan lebih baik.
+43. Presentasi data produk di mobile dipisah dari tabel desktop agar keterbacaan lebih baik.
     - `ProductsTable` pakai 2 mode render: card list mobile (`md:hidden`) dan `DataTable` desktop (`hidden md:block`).
     - `ProductDetailPage` action button disesuaikan untuk viewport kecil (icon-first) tanpa ubah alur aksi.
     - File:
       - `src/features/products/components/ProductsTable.tsx`
       - `src/features/products/pages/ProductDetailPage.tsx`
 
-43. Flow Create/Edit/Form/Delete produk ikut dirapikan untuk viewport kecil.
+44. Flow Create/Edit/Form/Delete produk ikut dirapikan untuk viewport kecil.
     - `CreateProductPage` dan `EditProductPage`: tombol `Cancel` serta spacing container dibuat lebih proporsional di mobile.
     - `ProductForm`: tombol submit dibuat full-width di mobile (`w-full`) lalu kembali auto-width di desktop.
     - `DeleteProductDialog`: diberi safe horizontal margin di mobile agar dialog tidak menempel ke sisi layar.

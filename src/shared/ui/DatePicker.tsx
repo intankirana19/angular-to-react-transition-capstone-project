@@ -46,6 +46,7 @@ interface DateTimeRangePickerProps {
   showQuickFilters?: boolean;
   showTimePicker?: boolean;
   monthsToShow?: 1 | 2;
+  usePortal?: boolean; // mode portal (true): render ke document.body (aman dari overflow parent), mode non-portal (false): nempel ke field (cocok di dalam dialog)
 }
 
 function getQuickFilterRange(filter: string): DateTimeRange | null {
@@ -220,6 +221,7 @@ export function DateTimeRangePicker({
   showQuickFilters = true,
   showTimePicker = true,
   monthsToShow = 2,
+  usePortal = true,
 }: DateTimeRangePickerProps) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [tempRange, setTempRange] = React.useState<DateTimeRange | null>(value || null);
@@ -246,7 +248,7 @@ export function DateTimeRangePicker({
   React.useEffect(() => {
     const updatePosition = () => {
       if (buttonRef.current) {
-        const rect = buttonRef.current.getBoundingClientRect();
+        const rect = buttonRef.current.getBoundingClientRect(); // mode portal pakai koordinat viewport (position: fixed), bukan relatif ke parent
         setDropdownPosition({
           top: rect.bottom + 8,
           left: rect.left,
@@ -347,12 +349,19 @@ export function DateTimeRangePicker({
     <div
       ref={dropdownRef}
       data-portal="datepicker"
-      className="fixed z-[100] rounded-lg border border-neutral-200 bg-white shadow-ait-lg flex flex-col max-h-[90vh] max-w-[95vw]"
-      style={{
-        top: `${dropdownPosition.top}px`,
-        left: `${dropdownPosition.left}px`,
-        minWidth: `${dropdownPosition.width}px`,
-      }}
+      className={cn(
+        'z-[100] rounded-lg border border-neutral-200 bg-white shadow-ait-lg flex flex-col max-h-[90vh] max-w-[95vw]',
+        usePortal ? 'fixed' : 'absolute left-0 top-[calc(100%+8px)] w-full' // non-portal pakai absolute supaya popup tetap ngikut posisi field
+      )}
+      style={
+        usePortal
+          ? {
+              top: `${dropdownPosition.top}px`,
+              left: `${dropdownPosition.left}px`,
+              minWidth: `${dropdownPosition.width}px`,
+            }
+          : undefined
+      }
     >
       <div className="flex overflow-auto flex-1">
         {/* Quick filters sidebar */}
@@ -495,7 +504,8 @@ export function DateTimeRangePicker({
         <CalendarIcon className="h-4 w-4 text-neutral-500" />
       </button>
 
-      {dropdownContent && createPortal(dropdownContent, document.body)}
+      {/* Portal optional: kalau di dalam dialog biasanya lebih stabil pakai non-portal */}
+      {dropdownContent && (usePortal ? createPortal(dropdownContent, document.body) : dropdownContent)}
     </div>
   );
 }
@@ -512,6 +522,7 @@ export function DatePicker({
   disabled?: boolean;
   variant?: 'default' | 'error';
   className?: string;
+  usePortal?: boolean;
 }) {
   const handleChange = (range: DateTimeRange | undefined) => {
     onDateChange?.(range?.from);
@@ -540,6 +551,7 @@ export function DateRangePicker({
   variant?: 'default' | 'error';
   className?: string;
   monthsToShow?: 1 | 2;
+  usePortal?: boolean;
 }) {
   // Adapter agar consumer bisa pakai format { from?, to? } sementara komponen inti tetap DateTimeRange
   const handleChange = (range: DateTimeRange | undefined) => {
