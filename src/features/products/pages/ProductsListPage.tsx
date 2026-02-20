@@ -133,10 +133,11 @@ export default function ProductsListPage() {
               <SelectTrigger
                 size="sm"
                 showIcon={false}
-                className="h-10 w-10 min-w-0 !justify-center gap-0 border-neutral-300 bg-neutral-50 px-0 text-sm font-semibold text-neutral-800 shadow-md ring-1 ring-neutral-200/70 hover:bg-neutral-100 active:bg-neutral-200 sm:w-auto sm:gap-2 sm:px-4"
+                className="h-10 w-10 min-w-0 !justify-center border-neutral-300 bg-neutral-50 px-0 text-sm font-semibold text-neutral-800 shadow-md ring-1 ring-neutral-200/70 hover:bg-neutral-100 active:bg-neutral-200 sm:w-auto sm:gap-2 sm:px-4"
                 aria-label="Sort products"
               >
                 <ArrowUpDown className="w-4 h-4 opacity-80" />
+                <div className="hidden sm:inline">Sort By</div>
               </SelectTrigger>
               <SelectContent align="end" className="min-w-[180px]">
                 {sortState.sortOptions.map((option) => (
