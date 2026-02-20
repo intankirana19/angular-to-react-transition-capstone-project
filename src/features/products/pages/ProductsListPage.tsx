@@ -52,7 +52,8 @@ export default function ProductsListPage() {
 
   // loading + error dihandle suspense + ErrorBoundary di level app/layout
   const { data: products } = useGetProducts(queryPayload); // SEARCH[5]: Payload diteruskan ke hook query list
-  const materialOptions = useProductMaterialOptions(products); // FILTER[28]: Material options dibentuk dari data products yang lagi aktif
+  const { data: allProducts } = useGetProducts(); // FILTER[28]: Query tanpa payload dipakai khusus sumber daftar pilihan material agar dropdown tidak ikut menyusut saat filter aktif
+  const materialOptions = useProductMaterialOptions(allProducts, filterState.materialFilter); // FILTER[29]: Daftar pilihan material stabil saat dialog dibuka ulang
 
   const { hasProducts, visibleProducts } = useProductInfiniteList(products, queryPayload);
 
@@ -189,6 +190,7 @@ export default function ProductsListPage() {
               onDateRangeChange={dialogState.setDraftDateRange}
               placeholder="Created date range"
               monthsToShow={1}
+              usePortal={false} // kalau mode non-portal, date picker tetap "nempel" ke field input dalam dialog popup, tidak dianggap klik luar
               className="w-full"
             />
           </DialogBody>

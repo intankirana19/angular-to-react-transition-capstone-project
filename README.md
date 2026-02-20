@@ -265,9 +265,10 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
     - Dampak arsitektur: saat API produk real sudah support query params search/filter/sort, perubahan utama cukup di layer service (mapping payload ke request params) tanpa ubah komponen page/table.
     - Contoh payload: { search, material, createdFrom, createdTo, sortBy, sortOrder }.
 
-24. Sumber opsi `material` untuk filter saat ini masih diambil dari data list produk yang sedang loaded (`useProductMaterialOptions`) untuk kebutuhan mock/local flow.
-    - Keputusan untuk real API: opsi filter sebaiknya berasal dari backend (facet/metadata endpoint, misalnya `/products/filters` atau `/products/materials`) atau dari enum hardcoded jika domain category memang fixed.
-    - Implikasi: logic "derive material options dari list aktif" dianggap sementara; saat backend sudah siap, cukup ganti source options (hook/service terkait) tanpa ubah flow dialog filter di page.
+24. Daftar pilihan filter `material` diambil dari data products dasar (`useGetProducts()` tanpa payload), bukan dari list yang sudah terfilter.
+    - Tujuan: dropdown material tetap lengkap saat search/filter aktif.
+    - Fallback: jika material aktif belum ada di daftar pilihan, hook tetap menambah value itu agar tetap terlihat.
+    - Catatan: saat real API siap, daftar pilihan material idealnya dari api.
 
 25. State list products (search/filter/sort/infinite) dipisah jadi hook per fungsi agar `ProductsListPage` fokus ke komposisi UI, bukan detail state:
     - `useProductSearchState` (`src/features/products/hooks/useProductSearchState.ts`) untuk input keyword + query part `search` (aktif mulai 3 karakter).
@@ -395,6 +396,12 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
       - `src/features/products/pages/EditProductPage.tsx`
       - `src/features/products/components/ProductForm.tsx`
       - `src/features/products/components/DeleteProductDialog.tsx`
+
+45. Ditambahkan unit test hook `useProductMaterialOptions` untuk nge-lock bug reopen filter material.
+    - File test: `src/tests/unit/products/hooks/useProductMaterialOptions.test.ts`.
+    - Cakupan:
+      - selected material tetap terlihat saat dialog filter dibuka ulang walau list kosong/terfilter,
+      - fallback option tidak duplikat saat material aktif sudah ada di dataset.
 
 ## License
 
