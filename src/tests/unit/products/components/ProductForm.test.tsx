@@ -1,13 +1,14 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event'; // buat simulasi interaksi user sungguhan (klik, ketik), bukan sekadar trigger event manual
+import userEvent from '@testing-library/user-event';
 import { ProductForm } from '@/features/products/components/ProductForm';
 import { type ProductInputValues } from '@/features/products/types';
 
-// vi.mock dijalanin lebih dulu, jadi mock function-nya disiapin dari awal pakai vi.hoisted
+// vi.hoisted memastikan reference mock sudah siap sebelum vi.mock dievaluasi.
 const { useProductFormSubmissionMock } = vi.hoisted(() => ({
   useProductFormSubmissionMock: vi.fn(),
 }));
-const submitProductMock = vi.fn<(data: unknown) => Promise<void>>(); // spy payload submit form
+// Spy submit dipakai untuk verifikasi payload yang keluar dari UI form.
+const submitProductMock = vi.fn<(data: unknown) => Promise<void>>();
 
 // hook asli dimock supaya test fokus ke perilaku UI form, bukan logic mutation/network di hook
 vi.mock('@/features/products/hooks/useProductFormSubmission', () => ({
@@ -16,7 +17,7 @@ vi.mock('@/features/products/hooks/useProductFormSubmission', () => ({
 
 describe('ProductForm', () => {
   beforeEach(() => {
-    vi.clearAllMocks(); // reset call/mock implementation tiap test
+    vi.clearAllMocks(); // reset call/mock implementation tiap test antar test tidak saling bocor call history/implementation.
     useProductFormSubmissionMock.mockReturnValue({
       isMutationPending: false, // default: belum loading
       submitError: null, // default: belum ada error submit
@@ -47,10 +48,11 @@ describe('ProductForm', () => {
     await user.type(screen.getByLabelText('Price'), '120');
     await user.type(screen.getByLabelText('Avatar URL'), 'https://img.test/desk.png');
     await user.type(screen.getByLabelText('Material'), 'Wood');
-    await user.type(screen.getByLabelText('Description'), 'Solid wood desk'); // dulu sempat fail karena label Description belum nyambung ke textarea
+    await user.type(screen.getByLabelText('Description'), 'Solid wood desk'); // sempat fail karena label Description belum nyambung ke textarea
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
+    // waitFor dipakai karena submit async dan assertion menunggu spy call.
     await waitFor(() => {
       expect(submitProductMock).toHaveBeenCalledTimes(1); // submit harus kepanggil sekali
     });

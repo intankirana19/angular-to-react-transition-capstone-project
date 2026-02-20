@@ -1,38 +1,38 @@
 import { useMemo, useState } from 'react';
 
 type UseSearchQueryStateOptions<QueryKey extends string> = {
-  queryKey: QueryKey; // SEARCH[0]: key payload yang dipakai di alur SEARCH pada list page
-  initialValue?: string; // SEARCH[0]: nilai awal input SEARCH
-  minLength?: number; // SEARCH[0]: panjang minimal keyword sebelum dianggap aktif
+  queryKey: QueryKey; // SEARCH[0]: key payload yang dipakai untuk query search
+  initialValue?: string; // SEARCH[0]: nilai awal input search
+  minLength?: number; // SEARCH[0]: panjang minimal keyword agar search dianggap aktif
 };
 
-// SEARCH[1]: Hook reusable untuk alur SEARCH, pegang keyword dan bentuk query part payload list API
 export function useSearchQueryState<QueryKey extends string>({
   queryKey,
   initialValue = '',
   minLength = 1,
 }: UseSearchQueryStateOptions<QueryKey>) {
   const [searchQuery, setSearchQuery] = useState(initialValue); // SEARCH[2]: state mentah keyword dari input
-  const trimmedSearch = useMemo(() => searchQuery.trim(), [searchQuery]); // SEARCH[3]: normalisasi keyword sebelum dipakai ke payload
-  const canSearch = trimmedSearch.length >= minLength;
+  const trimmedSearch = searchQuery.trim();  // SEARCH[3]: normalisasi keyword sebelum dipakai ke payload. Tadinya pakai useMemo untuk konsistensi nilai turunan, tapi di sini tidak perlu karena trim() ringan dan cukup dihitung langsung tiap render.
+  const canSearch = trimmedSearch.length >= minLength; // SEARCH[4]: flag apakah search aktif
   const queryPart = useMemo<Partial<Record<QueryKey, string>>>(() => {
-    if (!canSearch) {
-      return {}; // SEARCH[4]: kalau keyword kosong, jangan kirim query part
+    if (!canSearch) { // SEARCH[5]: jika keyword belum valid, jangan kirim potongan query search.
+      return {};
     }
 
-    return { [queryKey]: trimmedSearch } as Partial<Record<QueryKey, string>>; // SEARCH[5]: bentuk query part sesuai key yang dikonfigurasi
+    // SEARCH[6]: query part dibentuk dari key yang dinamis, jadi type assertion dipakai supaya TypeScript tetap bisa infer tipenya dengan benar.
+    return { [queryKey]: trimmedSearch } as Partial<Record<QueryKey, string>>;
   }, [canSearch, trimmedSearch, queryKey]);
 
-  function clearSearch() {
-    setSearchQuery(''); // SEARCH[6]: reset state ke default
+  function clearSearch() { // SEARCH[7]: reset keyword ke kondisi default.
+    setSearchQuery('');
   }
 
   return {
-    searchQuery, // SEARCH[7]: value untuk binding input
-    setSearchQuery, // SEARCH[8]: setter saat user mengetik
-    trimmedSearch, // SEARCH[9]: keyword yang sudah dinormalisasi
-    hasSearch: canSearch, // SEARCH[10]: flag alur SEARCH aktif/tidak
-    queryPart, // SEARCH[11]: potongan payload dari alur SEARCH
-    clearSearch, // SEARCH[12]: helper reset
+    searchQuery, // SEARCH[8]: value untuk binding input
+    setSearchQuery, // SEARCH[9]: setter saat user mengetik
+    trimmedSearch, // SEARCH[10]: keyword yang sudah dinormalisasi
+    hasSearch: canSearch, // SEARCH[11]: status search aktif/tidak
+    queryPart, // SEARCH[12]: potongan payload query search
+    clearSearch, // SEARCH[13]: helper reset state search
   };
 }
