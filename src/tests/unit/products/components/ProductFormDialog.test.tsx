@@ -2,6 +2,17 @@ import { render, screen } from '@testing-library/react';
 import { ProductFormDialog } from '@/features/products/components/ProductFormDialog';
 import { type ProductInputValues } from '@/features/products/types';
 
+// penambahan mock shared dialog untuk solve issue isolasi dari Radix Dialog agar test stabil dan fokus ke logic ProductFormDialog.
+vi.mock('@/shared/ui/Dialog', () => ({
+  Dialog: (props: { open?: boolean; children?: React.ReactNode }) =>
+    props.open ? <div data-testid="dialog-root">{props.children}</div> : null,
+  DialogContent: (props: { children?: React.ReactNode }) => <div>{props.children}</div>,
+  DialogHeader: (props: { children?: React.ReactNode }) => <div>{props.children}</div>,
+  DialogTitle: (props: { children?: React.ReactNode }) => <h2>{props.children}</h2>,
+  DialogDescription: (props: { children?: React.ReactNode }) => <p>{props.children}</p>,
+  DialogBody: (props: { children?: React.ReactNode }) => <div>{props.children}</div>,
+}));
+
 // spy ini buat nyatet ProductForm dipanggil pakai props apa aja
 const productFormSpy = vi.fn();
 
