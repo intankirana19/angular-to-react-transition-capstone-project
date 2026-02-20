@@ -72,7 +72,7 @@ export function DeleteProductDialog({
       <DialogContent
         size="sm"
         showClose={!isDeleting}
-        className="mx-4 w-[calc(100%-2rem)] sm:mx-0 sm:w-full"
+        className="mx-5 w-[calc(100%-2.5rem)] p-5 sm:mx-0 sm:w-full sm:p-6"
       >
         <DialogHeader>
           <div className="flex items-center gap-3">
