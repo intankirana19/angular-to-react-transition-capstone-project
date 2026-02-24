@@ -113,12 +113,6 @@ src/
 - `src/features/products/hooks/useProductInfiniteList.ts`
 - `src/shared/hooks/useInfiniteScroll.ts`
 
-## Notes
-
-- Invalid/missing `productId` and product entity-not-found dipisahkan:
-  - Param route tidak valid: tetap dilempar ke ErrorBoundary.
-  - Param valid tapi data produk tidak ada: dirender `ProductEntityNotFoundPage`.
-- Module-specific wildcard `404` route for `/products/*` is now handled inside the products module router.
 
 ## Environment Variables
 
@@ -144,297 +138,270 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
 
 ## Architectural Decisions
 
-1.  `App.tsx`, `routes.tsx`, `layouts`, dan `useUIStore.ts` dipindahkan ke folder `app` sebagai layer aplikasi. Semua yang bersifat app-level (tidak reusable) diletakkan di folder `app`. Semua yang reusable secara global dipindahkan ke folder `shared`.
-    Sources:
-    - https://feature-sliced.design/docs/reference/layers
-    - Ada non-member link nya: https://medium.com/@tejasvinavale1599/the-best-folder-structure-for-scalable-react-apps-in-2025-enterprise-recommended-4fa755b8f0c7
+### A. App Layering, Boundaries, and Project Structure
 
-2.  API base URL disimpan di `.env` (`VITE_API_BASE_URL`) dan bisa dipakai sebagai `baseURL` di instance Axios. Hanya pakai `.env` saja karena saat ini hanya menargetkan satu environment (local dev/mock API); jika nanti ada staging/production, baru dipisah ke `.env.development` / `.env.production`.
-    Sources:
-    - https://vite.dev/guide/env-and-mode
-    - https://axios-http.com/docs/config_defaults
+1. `App.tsx`, `routes.tsx`, `layouts`, dan `useUIStore.ts` dipindahkan ke folder `app` sebagai layer aplikasi. Semua yang app-level (tidak reusable) diletakkan di `app`, sedangkan yang reusable global dipindahkan ke `shared`.
+   Sources:
+   - https://feature-sliced.design/docs/reference/layers
+   - https://medium.com/@tejasvinavale1599/the-best-folder-structure-for-scalable-react-apps-in-2025-enterprise-recommended-4fa755b8f0c7
 
-3.  Refer dari fitur auth dari skafold, tapi untuk fitur produk, `index.tsx` hanya dipakai sebagai entry point agar import lebih rapi (`import('@/features/products')`), bukan sebagai tempat menumpuk seluruh UI. UI utama tetap disimpan di folder `pages/` agar mudah dikembangkan untuk list/detail/create/edit sesuai kebutuhan. Mungkin bisa dihindari penggunaan wildcard exports untuk jaga bundle size (bisa jadi ada banyak yang sebenarnya tidak terpakai).
-    Source:
-    - https://www.linkedin.com/pulse/best-practices-using-indexts-files-avoiding-tree-shaking-amin-atwi-bexmf#:~:text=An%20index.,a%20cleaner%20interface%20for%20modules.
+2. API base URL disimpan di `.env` (`VITE_API_BASE_URL`) dan dipakai sebagai `baseURL` Axios. Saat ini cukup `.env` karena target masih satu env (local/mock). Kalau nanti ada staging/production, tinggal pecah ke `.env.development` / `.env.production`.
+   Sources:
+   - https://vite.dev/guide/env-and-mode
+   - https://axios-http.com/docs/config_defaults
 
-4.  Refer dari fitur user, tapi untuk fitur produk, service dan custom hook dipisah. Service bisa jadi reusable misal untuk test atau prefetching.
-    Source:
-    - https://tanstack.com/query/v5/docs/framework/react/guides/prefetching
+3. Untuk fitur produk, `index.tsx` dipakai sebagai entry point import yang rapi (`import('@/features/products')`), bukan tempat numpuk UI. UI utama tetap di `pages/` agar list/detail/create/edit berkembang rapi. Wildcard export bisa dihindari kalau nanti berpotensi ganggu tree-shaking.
+   Source:
+   - https://www.linkedin.com/pulse/best-practices-using-indexts-files-avoiding-tree-shaking-amin-atwi-bexmf
 
-5.  Detail produk (mock karena real api hanya daftar produk awal):
-    - Service (`productsService.ts`): `getProductById` tidak call endpoint detail terpisah, tapi ambil dari `getProducts()` lalu `find` by `id`. Keputusan ini dipakai supaya sumber data detail sama dengan list yang sudah dipersist lokal; hasil create/edit mock langsung kebaca di halaman detail tanpa mismatch. Nantinya jika sudah ada API detail produk, logic "ambil dari list lalu find by id" ini tidak terpakai lagi, dan diganti dengan request ke endpoint detail langsung lalu parse response seperti biasa.
-    - Hook (`useGetProductById.ts`): pakai `useSuspenseQuery` dengan key `['products', productId]`, jadi loading awal detail ikut fallback Suspense route-level dan error dilempar ke ErrorBoundary.
-    - Page (`ProductDetailPage.tsx`): branch `isLoading/error` manual dihapus supaya tidak double logic karena state loading/error sudah dihandle di level layout/app dengan pattern Suspense + ErrorBoundary jadi komponen fokus render data sukses saja.
+4. Service dan custom hook dipisah (ngikut best-practice dari feature lain), supaya service reusable untuk test/prefetching dan layer query tetap tipis.
+   Source:
+   - https://tanstack.com/query/v5/docs/framework/react/guides/prefetching
 
-6.  Tambah produk (mock karena real api hanya daftar produk awal):
-    - Service (`productsService.ts`): `createProduct` validasi payload pakai `productInputSchema`, generate `id` (`crypto.randomUUID`) + `createdAt`, lalu prepend (produk baru diletakkan di index 0/awal list) ke list dan simpan pakai `persistProducts` karena belum ada api create sehingga api list belum update dengan data produk baru, jadi list harus dihandle secara lokal supaya hasil create produk langsung terlihat dan tetap ada setelah refresh. Nantinya jika sudah ada API create produk, logic "generate id + prepend list + persist local storage" ini tidak terpakai lagi, dan diganti dengan request ke endpoint create lalu parse response seperti biasa.
-    - Hook (`useCreateProduct.ts`): setelah mutation sukses, invalidate query `['products']` agar list refetch dari source lokal terbaru (yang sudah diupdate service).
-    - Component (`ProductForm.tsx`): mode `create` pakai `createProductMutation.mutateAsync`, submit state terkontrol (`isPending`) dan callback `onSuccess` menerima produk hasil create.
-    - Page (`CreateProductPage.tsx`): route create dipisah ke page khusus create dengan tetap reuse komponen `ProductForm` mode `create` ( alasan pemisahan ada di poin terakhir edit produk), lalu setelah sukses navigasi kembali ke `/products` sehingga user langsung lihat item baru di list.
+### B. Product Data Flow (Mock-first CRUD, Ready for Real API)
 
-7.  Edit produk (mock karena real api hanya daftar produk awal):
-    - Service (`productsService.ts`): `updateProduct` validasi payload, cari produk yang mau diedit, update datanya, lalu simpan lagi ke local storage. Karena mock, untuk data `id` dan `createdAt` ambil dari data existing supaya produknya tetap dianggap item yang sama. Nantinya jika sudah ada API update produk, logic "cari + update + simpan ke local storage" ini tidak terpakai lagi, dan diganti dengan request ke endpoint update lalu parse response seperti biasa.
-    - Hook (`useUpdateProduct.ts`): setelah sukses, invalidate query `['products']` (list) dan `['products', id]` (detail) supaya dua page itu nanti ikut sinkron/terupdate setelah edit.
-    - Component (`ProductForm.tsx`): mode `edit` kirim `{ id, payload }` ke mutation update, dan tetap pakai alur submit yang sama dengan create.
-    - Page (`EditProductPage.tsx`): route edit dipisah ke page khusus edit, ambil data awal edit dari `useGetProductById(productId)`, mapping ke `initialValues`, lalu `ProductForm` di-`reset` biar isi form langsung ikut sinkron/terupdate sesuai data edit yang baru didapat.
-    - Alur navigasi: dari `ProductDetailPage`, tombol edit membuka `/products/edit/:productId` dengan `replace: true`; saat back atau submit sukses di `EditProductPage`, navigasi diarahkan ke `/products/detail/:productId` juga dengan `replace: true` supaya flow tetap konsisten detail -> edit -> detail.
-    - Komponen page add & edit produk dipisah walau UI mirip karena `useSuspenseQuery` tidak ada `enabled` seperti `useQuery`, jadi hook tidak bisa dipanggil conditional di satu komponen sedangkan add product tidak perlu fetch data.
+5. Detail produk (mock, karena API real hanya daftar awal):
+   - Service `getProductById` tidak call endpoint detail terpisah, tapi ambil dari `getProducts()` lalu `find` by `id`.
+   - Tujuannya: source detail = source list yang sudah persist lokal, jadi hasil create/edit langsung kebaca tanpa mismatch.
+   - Kalau API detail sudah tersedia, logic ini diganti request ke endpoint detail.
+   - Hook `useGetProductById` pakai `useSuspenseQuery` key `['products', productId]`.
+   - `ProductDetailPage` buang branch `isLoading/error` manual karena sudah ditangani Suspense + ErrorBoundary.
 
-8.  Toast notification diubah dari state lokal per halaman ke store global `zustand` dan `ToastContainer` dirender sekali di `App.tsx` supaya notifikasi tetap muncul saat pindah halaman, karena data toast disimpan satu tempat di level app dan tetap dipakai bersama oleh semua halaman lewat `useToast` tanpa mengubah cara pakainya di feature.
-    Sources:
-    - https://zustand.docs.pmnd.rs/getting-started/introduction
-    - https://zustand.docs.pmnd.rs/apis/create
+6. Tambah produk (mock):
+   - Service `createProduct`: validasi `productInputSchema`, generate `id` (`crypto.randomUUID`) + `createdAt`, prepend item baru ke awal list, lalu persist lokal.
+   - Karena belum ada API create, list harus dihandle lokal supaya hasil create langsung terlihat dan tetap ada setelah refresh.
+   - Saat API create real siap, logic local-generate + persist diganti request normal.
+   - Hook `useCreateProduct` invalidate `['products']` setelah sukses.
+   - `ProductForm` mode create pakai `mutateAsync` + state pending.
+   - `CreateProductPage` tetap page terpisah (reuse `ProductForm` mode create), lalu sukses -> navigate `/products`.
 
-9.  UI loading distandarisai ke komponen reusable `src/shared/ui/LoadingState.tsx` baik untuk fallback suspense route-level maupun komponen lain supaya tampilannya konsisten dan maintenance lebih ringan.
+7. Edit produk (mock):
+   - Service `updateProduct`: validasi payload, cari item, update datanya, persist lagi.
+   - `id` dan `createdAt` dipertahankan dari existing item supaya tetap entity yang sama.
+   - Saat API update real siap, logic local update ini diganti request endpoint update.
+   - Hook `useUpdateProduct` invalidate `['products']` dan `['products', id]`.
+   - `ProductForm` mode edit kirim `{ id, payload }`.
+   - `EditProductPage` ambil initial data dari `useGetProductById(productId)`, mapping ke `initialValues`, lalu reset form biar sinkron.
+   - Navigasi detail -> edit -> detail pakai `replace: true` agar history flow konsisten.
+   - Add/Edit page dipisah walau UI mirip karena `useSuspenseQuery` tidak punya `enabled` (tidak bisa dipanggil kondisional untuk mode create).
 
-10. Suspense dipisah antara level global (`routes.tsx`) dan level konten route (`MainLayout.tsx`). Di `routes.tsx`, secara global dipakai sebagai fallback saat initial lazy-load route tree untuk loading chunk code dari `lazy()`. Di `MainLayout.tsx`, suspense "membungkus" `Outlet` supaya saat route berganti yang loading hanya area konten utama sehingga layout sidebar (atau kalau ada header) tetap tampil dan `key={location.key}` dipakai agar fallback di-remount setiap navigasi, jadi fallback (loader) bisa muncul lagi setiap pindah halaman (tidak freeze dihalaman asal saat navigasi).
-    Sources:
-    - https://react.dev/reference/react/Suspense
+### C. Loading, Error, Toast, and UX Consistency (App-level)
 
-11. Custom hook untuk api daftar `user` dan `product` diubah dari pakai `useQuery` jadi pakai `useSuspenseQuery` untuk menyatukan loading awal halaman ke `<Suspense fallback>` (route-level), jadi page tidak perlu branch `isLoading` manual. Jika butuh UI/UX berbeda per komponen (bukan route-level), bisa tetap pakai `useQuery` + `isLoading` lokal.
-    Sources:
-    - https://tanstack.com/query/v5/docs/framework/react/reference/useSuspenseQuery
-    - https://tanstack.com/query/v5/docs/framework/react/guides/suspense
-    - https://tanstack.com/query/v5/docs/framework/react/reference/useQuery
+8. Toast notification dipindah dari local state per-page ke global store Zustand, `ToastContainer` dirender sekali di `App.tsx`, supaya toast tetap aman saat pindah halaman.
+   Sources:
+   - https://zustand.docs.pmnd.rs/getting-started/introduction
+   - https://zustand.docs.pmnd.rs/apis/create
 
-12. Error message distandarisasi dengan helper `getErrorMessage` di `src/shared/lib/error.ts` supaya pesan dari `Error`, `AxiosError`, dan payload API bisa ditampilkan konsisten ke user. Pemakaian awal diterapkan di fallback `ErrorBoundary`, halaman list/detail, dan feedback submit/delete form agar tidak ada silent failure. 
+9. Loading UI distandarisasi ke reusable `LoadingState` agar fallback suspense dan loading komponen lain konsisten.
 
-13. `ProductForm` ditambah inline submit error (teks di bawah tombol `Save`) selain toast, jadi saat create/update gagal user tetap dapat feedback langsung di area form.
+10. Suspense dipisah 2 level:
+   - `routes.tsx`: fallback global saat initial lazy-load route tree.
+   - `MainLayout.tsx`: Suspense membungkus `Outlet`, jadi yang loading hanya area konten, layout tetap tampil.
+   - `key={location.key}` dipakai supaya fallback remount setiap navigasi.
+   Source:
+   - https://react.dev/reference/react/Suspense
 
-14. Tampilan error di page `users` dan `products` dirapikan pakai komponen reusable `ErrorState` (`src/shared/ui/ErrorState.tsx`) supaya fallback UI konsisten dan maintenance lebih mudah.
+11. Hook API list (`users`, `products`) diubah dari `useQuery` ke `useSuspenseQuery` untuk menyatukan loading awal ke `<Suspense fallback>`, jadi page gak perlu branch `isLoading` manual. `useQuery` tetap bisa dipakai kalau butuh loading lokal per-komponen.
+   Sources:
+   - https://tanstack.com/query/v5/docs/framework/react/reference/useSuspenseQuery
+   - https://tanstack.com/query/v5/docs/framework/react/guides/suspense
+   - https://tanstack.com/query/v5/docs/framework/react/reference/useQuery
 
-15. `ErrorBoundary` sekarang pakai `ErrorState` sebagai UI fallback dan expose props konfigurasi (`fullScreen`, `title`, `message`, `reloadLabel`) supaya boundary global dan boundary konten bisa beda copy/layout tanpa nulis fallback JSX berulang.
+12. Error message distandarisasi lewat helper `getErrorMessage` (`Error`, `AxiosError`, payload API) supaya tidak ada silent failure.
 
-16. Loading/error handler dipage `users`, `products list`, dan `product detail` dihapus supaya fokus ke state sukses karena loading/error sudah dihandle di level layout/app dengan Suspense + ErrorBoundary.
+13. `ProductForm` ditambah inline submit error (selain toast), jadi gagal submit tetap terlihat di area form.
 
-17. Tambah ErrorBoundary di `MainLayout` level konten (`Outlet`) dengan fallback `ErrorState` non-fullscreen, jadi saat error feature-level sidebar/header tetap tampil dan user masih bisa pindah menu. `Retry` di boundary konten pakai `onRetry` + `queryClient.resetQueries()` supaya error state query ikut di-reset lalu refetch, tanpa hard refresh seluruh app.
+14. Error UI di page users/products dirapikan pakai reusable `ErrorState`.
 
-18. Logic submit di `ProductForm` dipindah ke custom hook `useProductFormSubmission` (`src/features/products/hooks/useProductFormSubmission.ts`) supaya komponen `ProductForm` fokus ke render + binding form field saja. Alur create/edit, toast sukses/gagal, dan inline submit error sekarang di hook biar lebih gampang untuk maintenance & testing.
+15. `ErrorBoundary` pakai `ErrorState` dan expose props (`fullScreen`, `title`, `message`, `reloadLabel`) biar boundary global dan content bisa beda copy/layout tanpa duplicate JSX.
 
-19. Aturan validasi form create/edit produk dipusatkan di `productInputSchema` (`src/features/products/types/index.ts`) dan dieksekusi oleh React Hook Form via `zodResolver` (`src/features/products/components/ProductForm.tsx`).
-    - `required fields`:
-      - `name` wajib diisi (`min(1)` -> `Name is required`).
-    - `format validation`:
-      - `avatar` boleh kosong, tapi jika diisi harus URL valid dengan protokol `http/https`.
-      - `if (!/^https?:\/\//i.test(value)) return false;` dipakai biar input wajib diawali `http://` atau `https://`, jadi teks random seperti `abc` gak lolos.
-      - `new URL(value)` dipakai buat nge-parse struktur URL beneran, jadi format yang rusak tetap ketolak.
-      - `parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:'` dipakai biar hanya skema web yang diterima.
-      - `catch { return false; }` artinya kalau parse gagal langsung dianggap invalid dan submit diblok.
-    - `min/max constraints`:
-      - `name` maksimum 100 karakter.
-      - `price` minimum `0` dan maksimum `1,000,000`.
-      - `material` maksimum 50 karakter.
-      - `description` maksimum 500 karakter.
+16. Loading/error handler manual di users/products list/detail dihapus supaya page fokus render state sukses.
 
-20. Infinite scroll dijadikan custom hook reusable `useInfiniteScroll` (`src/shared/hooks/useInfiniteScroll.ts`) supaya bisa dipakai ulang di list lain. 
-    - Flow:
-    1. Data yang tampil per batch ditentuin dipage konsumer:
-       Di `src/features/products/hooks/useProductInfiniteList.ts`, `page` + `PAGE_SIZE` dipakai untuk membentuk `visibleProducts = products.slice(0, page * PAGE_SIZE)`.
-    2. Panggil hook dengan parameter yang jelas:
-       Di `src/features/products/hooks/useProductInfiniteList.ts`, hook dipanggil dengan `enabled`, `hasMore`, `scrollContainerId`, `threshold`, `debounceMs`, dan `onLoadMore`.
-    3. Hook pasang listener scroll ke target yang sesuai:
-       Di `src/shared/hooks/useInfiniteScroll.ts`, target diambil dari `scrollContainerId` (kalau ada), fallback ke `window`.
-    4. Event scroll tidak langsung memuat data:
-       Di `src/shared/hooks/useInfiniteScroll.ts`, listener hanya menaikkan `scrollTick`, lalu `scrollTick` diproses lewat `useDebounce` untuk mengurangi trigger berlebihan.
-    5. Saat posisi scroll sudah dekat bawah, hook panggil callback:
-       Di `src/shared/hooks/useInfiniteScroll.ts`, perhitungan near-bottom pakai `threshold`, lalu `onLoadMore()` dipanggil jika kondisi terpenuhi.
-    6. Konsumer tentuin next actionnya:
-       Di `src/features/products/hooks/useProductInfiniteList.ts`, `onLoadMore` meng-update `page` (`setPage(...)`) sampai batas `totalPages`.
-    7. Container scroll dibuat stabil di level layout.
-       Di `src/app/layouts/MainLayout.tsx`, elemen `main` diberi `id=\"app-main-scroll\"` jadi hook selalu attach ke container yang benar.
-    8. Hook otomatis aman dipakai dari awal sampai selesai.
-       Di `src/shared/hooks/useInfiniteScroll.ts` (effect pertama): `target.addEventListener('scroll', handleScroll)`, `handleScroll()` (initial check), dan cleanup `target.removeEventListener('scroll', handleScroll)`.
-    - Source: https://blog.logrocket.com/react-infinite-scroll/
+17. Tambah ErrorBoundary content-level di `MainLayout` (`Outlet`) dengan fallback non-fullscreen, jadi sidebar/header tetap hidup saat error feature-level. Retry pakai `queryClient.resetQueries()` biar query state ikut reset tanpa hard refresh app.
 
-21. Search produk sekarang dikirim sebagai payload query dari page ke hook (`useGetProducts`) lalu diteruskan ke service (`productsService.ts`) untuk meniru request params API.
-     - Aturan input: search baru dianggap aktif saat keyword minimal 3 karakter (set lewat `minLength: 3` di `useProductSearchState`).
-     - Alur: `ProductsListPage` input search -> `useProductSearchState` bentuk query part `search` (jika >= 3 karakter) -> digabung dengan filter+sort jadi `queryPayload` -> `useGetProducts(queryPayload)` (query key `["products", queryPayload]`) -> `getProducts(queryPayload)` -> `applyProductListQuery` (`matchesSearch`).
+### D. Form Architecture and Validation Rules
 
-22. Filter produk (material + created date range) juga mengikuti alur payload yang sama agar kontrak client tetap siap untuk backend query params.
-    - Alur: filter dialog di `ProductsListPage` (draft) -> commit ke payload (`material`, `createdFrom`, `createdTo`) -> service -> helper (`matchesMaterial`, `matchesCreatedAt`).
+18. Logic submit `ProductForm` dipindah ke custom hook `useProductFormSubmission` supaya komponen fokus ke render + binding field.
 
-23. Sort produk diproses dari payload sortBy + sortOrder, lalu helper mengurutkan data seperti response server-side sorted list.
-    - Alur: kontrol sort di toolbar page -> payload query -> service -> helper (sortProducts).
-    - Keputusan final: table-level sorting (TanStack getSortedRowModel) dinonaktifkan di ProductsTable, sehingga source of truth sorting hanya dari query/service.
-    - Alasan (best practice untuk infinite scroll + server-side style query): sorting harus konsisten untuk seluruh dataset, bukan hanya item yang sedang terlihat (visibleProducts).
-    - Cons sebelum perubahan (saat ada 2 sorting system):
-      1. Urutan bisa tidak konsisten karena pada infinite scroll header table hanya me-sort `visibleProducts` (slice batch yang sedang tampil), bukan seluruh dataset products.
-      2. Setelah load batch berikutnya (scroll), urutan global bisa terlihat "campur" antara hasil sort query dan sort lokal table.
-      3. Sulit dipredict/debug karena ada dua sumber state sorting yang aktif bersamaan.
-    - Dampak arsitektur: saat API produk real sudah support query params search/filter/sort, perubahan utama cukup di layer service (mapping payload ke request params) tanpa ubah komponen page/table.
-    - Contoh payload: { search, material, createdFrom, createdTo, sortBy, sortOrder }.
+19. Validasi create/edit dipusatkan di `productInputSchema` + `zodResolver`.
+   - Required:
+     - `name` wajib (`min(1)`).
+   - Format:
+     - `avatar` optional, tapi kalau diisi harus URL valid + protokol `http/https`.
+     - check regex `^https?://` + `new URL(value)` + validasi protocol.
+     - parse gagal -> invalid.
+   - Min/Max:
+     - `name` max 100,
+     - `price` min 0 max 1,000,000,
+     - `material` max 50,
+     - `description` max 500.
 
-24. Daftar pilihan filter `material` diambil dari data products dasar (`useGetProducts()` tanpa payload), bukan dari list yang sudah terfilter.
-    - Tujuan: dropdown material tetap lengkap saat search/filter aktif.
-    - Fallback: jika material aktif belum ada di daftar pilihan, hook tetap menambah value itu agar tetap terlihat.
-    - Catatan: saat real API siap, daftar pilihan material idealnya dari api.
+39. Scope `useProductFormSubmission`:
+   - pilih mutation by mode (`create`/`edit`),
+   - submit async,
+   - expose `isMutationPending` + `submitError`,
+   - toast sukses/gagal,
+   - callback `onSuccess`.
+   Dampak: submit logic tidak tersebar di UI dan lebih gampang dites.
 
-25. State list products (search/filter/sort/infinite) dipisah jadi hook per fungsi agar `ProductsListPage` fokus ke komposisi UI, bukan detail state:
-    - `useProductSearchState` (`src/features/products/hooks/useProductSearchState.ts`) untuk input keyword + query part `search` (aktif mulai 3 karakter).
-    - `useProductFilterState` (`src/features/products/hooks/useProductFilterState.ts`) untuk filter aktif `material` + `createdFrom/createdTo`.
-    - `useProductFilterDialogState` (`src/features/products/hooks/useProductFilterDialogState.ts`) untuk alur draft dialog (open/edit/apply/clear) tanpa langsung mengubah filter aktif.
-    - `useProductSortState` (`src/features/products/hooks/useProductSortState.ts`) untuk opsi sort + query part `sortBy/sortOrder`.
-    - `useProductInfiniteList` (`src/features/products/hooks/useProductInfiniteList.ts`) untuk batching `visibleProducts` + reset page saat query berubah.
-    - Alasan: lebih mudah dites per hook, dan perubahan di satu fungsi tidak bikin fungsi lain ikut rusak.
+### E. Product List Query Architecture (Search/Filter/Sort/Infinite)
 
-26. Engine reusable query-state dipindah ke layer `shared/hooks` untuk dipakai lintas fitur, bukan khusus products:
-    - `useSearchQueryState` (`src/shared/hooks/useSearchQueryState.ts`)
-    - `useSortQueryState` (`src/shared/hooks/useSortQueryState.ts`)
-    - `useSelectDateRangeFilterState` (`src/shared/hooks/useSelectDateRangeFilterState.ts`)
-    - `useFilterDialogDraftState` (`src/shared/hooks/useFilterDialogDraftState.ts`)
-    - Alasan: karena pola state ini dipakai berulang di banyak halaman list, kita jadikan reusable supaya tidak copy-paste dan format data ke API tetap seragam.
+20. Infinite scroll dijadikan reusable hook `useInfiniteScroll`.
+   Flow:
+   1. Konsumer (`useProductInfiniteList`) tentukan batch via `page * PAGE_SIZE`.
+   2. Konsumer panggil hook dengan `enabled`, `hasMore`, `scrollContainerId`, `threshold`, `debounceMs`, `onLoadMore`.
+   3. Hook attach listener ke container by id (fallback `window`).
+   4. Scroll event naikin `scrollTick`, lalu diproses `useDebounce`.
+   5. Kalau near-bottom (`threshold`), callback `onLoadMore()` dipanggil.
+   6. Konsumer update `page` sampai `totalPages`.
+   7. Layout memberi container stabil `id="app-main-scroll"`.
+   8. Hook handle mount/initial-check/cleanup listener.
+   Source:
+   - https://blog.logrocket.com/react-infinite-scroll/
 
-27. Nilai default opsi filter "All" distandarisasi di konstanta global `FILTER_ALL_VALUE` (`src/shared/constants/filters.ts`) dan dipakai oleh products filter.
-    - Alasan: mencegah hardcoded string tersebar, mengurangi typo/inconsistency saat nanti ada fitur lain yang butuh pola filter serupa.
+21. Search dikirim sebagai payload query dari page -> hook -> service untuk meniru request params API.
+   - Search aktif minimal 3 karakter (`minLength: 3`).
+   - Alur: input search -> `useProductSearchState` -> merge dengan filter/sort -> `useGetProducts(queryPayload)` -> `getProducts(queryPayload)` -> helper query (`matchesSearch`).
 
-28. Tipe date range distandarisasi ke `DateRangeValue` (`src/shared/types/dateRange.ts`) dan helper clone dipisah ke `cloneDateRange` (`src/shared/lib/dateRange.ts`).
-    - Alasan: supaya tipe date range tidak ditulis ulang di banyak file, dan supaya perubahan nilai tanggal di satu tempat tidak tanpa sengaja mengubah data di tempat lain.
+22. Filter (material + created date range) ikut payload flow yang sama (client contract siap backend query params).
 
-29. `DateRangePicker` diperluas dengan prop `monthsToShow` (`src/shared/ui/DatePicker.tsx`) dan adapter type `DateRangeValue`.
-    - Pemakaian awal: filter dialog products pakai `monthsToShow={1}` agar dialog lebih ringkas.
-    - Alasan: komponen date range jadi fleksibel untuk kebutuhan compact (toolbar/dialog sempit) atau full (2 bulan) tanpa bikin komponen baru.
-    - Update UX:
-      - Kalender dibuat versi compact (ukuran cell, spacing, dan control month lebih kecil) agar aman dipakai di dialog sempit.
-      - Mode range tanpa time picker sekarang auto-apply saat tanggal akhir dipilih (`autoApplyOnRangeComplete`), jadi tidak perlu langkah apply tambahan di date picker.
+23. Sort diproses dari payload (`sortBy`, `sortOrder`) di helper (server-side style).
+   - Table-level sorting TanStack dimatikan; source of truth sorting hanya query/service.
+   - Alasan utama: infinite scroll butuh urutan global dataset, bukan cuma `visibleProducts`.
+   - Problem sebelum disatukan:
+     1. urutan terlihat gak konsisten,
+     2. setelah load batch baru urutan bisa campur,
+     3. susah dipredict/debug karena 2 sumber sorting aktif.
+   - Dampak: saat API real support params, mayoritas perubahan cukup di service.
 
-30. `DateRangePicker` ditambah prop `usePortal` (`src/shared/ui/DatePicker.tsx`) untuk kebutuhan render popup di dalam dialog.
-    - Pemakaian di products: `usePortal={false}` agar popup kalender tetap menempel ke field filter di dialog.
-    - Alasan: komponen `Dialog` tetap generic, tanpa logic khusus DatePicker.
+24. Opsi filter `material` diambil dari base products (tanpa payload) agar dropdown tetap lengkap saat filter/search aktif.
+   - Jika selected material belum ada di opsi, hook tetap inject value aktif agar tetap terlihat.
+   - Catatan: nanti idealnya options datang dari API.
 
-31. `SelectTrigger` ditambah prop `showIcon` (`src/shared/ui/Select.tsx`) untuk kasus trigger custom (misal tombol sort dengan icon sendiri).
-    - Alasan: menghindari icon ganda dan menjaga API komponen tetap reusable tanpa bikin komponen Select versi baru/terpisah.
+25. State list dipisah per-hook supaya `ProductsListPage` fokus komposisi UI:
+   - `useProductSearchState`
+   - `useProductFilterState`
+   - `useProductFilterDialogState`
+   - `useProductSortState`
+   - `useProductInfiniteList`
+   Alasan: lebih testable dan perubahan satu concern tidak ngerusak concern lain.
 
-32. Empty-state list products dibedakan berdasarkan context filter aktif di `ProductsListPage`:
-    - Default: `No products found`
-    - Saat search/filter aktif: `No products match current filters`
-    - Alasan: feedback lebih jelas ke user apakah data memang kosong dari source, atau kosong karena filter/pencarian yang dipilih user.
+### F. Shared Reusability Decisions
 
-33. Visual header pada shared `DataTable` dirapikan (typography, border, dan hover state) tanpa mengubah perilaku sorting handler TanStack Table.
-    - Alasan: meningkatkan konsistensi visual tabel reusable, sementara behavior sorting tetap sama.
+26. Query-state engine dipindah ke `shared/hooks` supaya reusable lintas fitur:
+   - `useSearchQueryState`
+   - `useSortQueryState`
+   - `useSelectDateRangeFilterState`
+   - `useFilterDialogDraftState`
 
-34. Konfigurasi testing Vitest memakai globals (`globals: true` di `vitest.config.ts`), jadi API test seperti `describe`, `it`, `expect`, `beforeEach`, dan `vi` tidak perlu di-import berulang di setiap file test. Tambahan `types: ["vitest/globals", "@testing-library/jest-dom"]` di `tsconfig.app.json` dipakai supaya TypeScript mengenali global API testing itu.
-    Sources:
-    - https://vitest.dev/config/#globals
+27. Nilai default filter `All` distandarisasi di `FILTER_ALL_VALUE` (`src/shared/constants/filters.ts`).
 
-35. Setup coverage untuk Vitest ditambahkan agar laporan test bisa dipantau dari terminal dan file report:
-    - Script baru: `test:ui:coverage` dan `test:coverage` di `package.json`.
-    - Dependency baru: `@vitest/ui` dan `@vitest/coverage-v8`.
-    - Coverage config di `vitest.config.ts`: provider `v8`, include `src/**/*.{ts,tsx}`, dan reporter `text/html/json-summary`.
-    Sources:
-    - https://vitest.dev/guide/ui
-    - https://vitest.dev/guide/coverage
-    - https://vitest.dev/config/#coverage
+28. Date range type distandarisasi ke `DateRangeValue`; clone helper dipisah ke `cloneDateRange` untuk hindari mutasi tidak sengaja.
 
-36. Struktur unit test dipindahkan ke `src/tests/unit` (bukan co-located) agar folder source tetap lebih bersih dan review test lebih mudah dipindai lintas fitur.
-    - Trade-off: file test jadi lebih jauh dari file source pasangannya.
-    - Detail struktur dicatat di `src/tests/unit/README.md`.
+29. `DateRangePicker` ditambah `monthsToShow` + adapter `DateRangeValue`.
+   - Dipakai `monthsToShow={1}` di filter products untuk dialog compact.
+   - UX: compact calendar sizing + auto-apply saat range complete.
 
-37. `Description` di `ProductForm` sempat gagal di test `getByLabelText` karena label belum terhubung ke textarea.
-    - Fix: tambah `htmlFor` di `TextareaField` (`src/shared/ui/Textarea.tsx`) dan `id` di textarea `ProductForm` (`src/features/products/components/ProductForm.tsx`).
-    - Hasil: aksesibilitas label-field valid dan test kembali stabil.
-    Sources:
-    - https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/label
-    - https://testing-library.com/docs/queries/bylabeltext/
+30. `DateRangePicker` ditambah `usePortal`.
+   - Di products dipakai `usePortal={false}` agar popup tetap nempel di dialog.
 
-38. Unit test `ProductForm` memock `useProductFormSubmission` supaya fokus test ada di perilaku form (validasi field, disabled state saat pending, dan payload submit), bukan ke mutation/network.
-    - `userEvent` dipakai untuk simulasi interaksi user yang realistis saat isi field dan submit.
-    - `vi.hoisted` dipakai untuk menyiapkan mock function sebelum `vi.mock(...)` dieksekusi.
-    Sources:
-    - https://testing-library.com/docs/user-event/intro/
-    - https://vitest.dev/guide/mocking/modules
-    - https://vitest.dev/api/vi#vi-hoisted
+31. `SelectTrigger` ditambah `showIcon` untuk custom trigger (hindari icon ganda, API komponen tetap reusable).
 
-39. `useProductFormSubmission` adalah custom hook untuk memusatkan seluruh alur submit form produk (create/edit) agar `ProductForm` tetap fokus ke render field.
-    - Tanggung jawab utama hook:
-      - memilih mutation berdasarkan mode (`create` atau `edit`),
-      - mengeksekusi submit async (`submitProduct`),
-      - expose state submit (`isMutationPending` dan `submitError`),
-      - menampilkan toast sukses/gagal,
-      - menjalankan callback `onSuccess` setelah mutation sukses.
-    - Dampak: logic submit tidak tersebar di komponen, lebih memudahkan maintenance dan lebih mudah di test terpisah dari UI.
+32. Empty-state products dibedakan by context:
+   - default: `No products found`
+   - saat search/filter aktif: `No products match current filters`
 
-40. Unit test `ProductFormDialog` memock `ProductForm` jadi komponen dummy (`data-testid="product-form-mock"`) agar test bisa isolasi logic dialog.
-    - `productFormSpy` dipakai untuk mengecek props mapping `initialValues` pada mode edit.
-    - Assertion difokuskan ke flow dialog: title/description per mode, fallback saat product kosong, dan `onSuccess` yang menutup dialog.
-    Sources:
-    - https://vitest.dev/guide/mocking/modules
-    - https://vitest.dev/api/mock
+33. Visual header shared `DataTable` dirapikan (typography, border, hover) tanpa ubah behavior sorting handler TanStack.
 
-41. Unit test `useProductSearchState` menggunakan `renderHook` dan `act` untuk memverifikasi transisi state inti hook:
-    - trim keyword input,
-    - pembentukan payload `querySearch`,
-    - flag `hasSearch`,
-    - dan reset state saat `clearSearch`.
-    Sources:
-    - https://testing-library.com/docs/react-testing-library/api/#renderhook
-    - https://react.dev/reference/react/act
+### G. Testing Architecture and Decisions
 
-42. Responsive shell app (sidebar + header) dirapikan agar perilaku mobile dan desktop konsisten tanpa duplikasi logic.
-    - Logic baru dipisah jadi reusable:
-      - `useMediaQuery` di `src/shared/hooks/useMediaQuery.ts` untuk baca breakpoint lintas fitur.
-      - `useSyncSidebarWithViewport` di `src/app/hooks/useSyncSidebarWithViewport.ts` untuk sinkronisasi `sidebarOpen` berdasarkan viewport.
-    - Store UI ditambah setter eksplisit `setSidebarOpen` di `src/app/store/useUIStore.ts` supaya sinkronisasi viewport tidak mengandalkan toggle.
-    - Implementasi:
-      - `MainLayout` memakai hook sinkronisasi viewport dan menu toggle mobile (`src/app/layouts/MainLayout.tsx`).
-      - `Sidebar` pakai mode drawer overlay di mobile + mode static/collapsed di desktop (`src/app/layouts/Sidebar.tsx`).
-    - Tailwind class responsive yang dipakai:
-      - `lg:hidden`, `hidden lg:inline-flex` untuk toggle button beda viewport
-      - `px-4 py-3 sm:px-6 sm:py-4` untuk spacing header mobile vs desktop
-      - `p-4 sm:p-6` untuk spacing konten mobile vs desktop
-      - `fixed inset-y-0 left-0 z-40 ... lg:static lg:z-auto lg:shrink-0` untuk sidebar drawer vs sidebar normal
-      - `w-full sm:w-72 lg:w-16` untuk lebar sidebar per breakpoint
-    - Dampak UX:
-      - di mobile sidebar default tertutup agar konten utama langsung terlihat.
-      - di desktop sidebar otomatis terbuka dan tetap bisa collapse.
+34. Vitest pakai globals (`globals: true`) + type support di TS (`vitest/globals`, `@testing-library/jest-dom`) biar gak import API test berulang.
+   Source:
+   - https://vitest.dev/config/#globals
 
-43. Responsive Products List dirapikan dengan pendekatan "compact di mobile, lengkap di desktop".
-    - Toolbar list dibuat lebih ringkas di mobile (search full width, filter/sort trigger icon-friendly, add button label adaptif).
-    - File utama: `src/features/products/pages/ProductsListPage.tsx`.
+35. Coverage setup ditambah:
+   - script `test:ui:coverage` dan `test:coverage`,
+   - dependency `@vitest/ui` + `@vitest/coverage-v8`,
+   - coverage config: provider `v8`, include `src/**/*.{ts,tsx}`, reporter `text/html/json-summary`.
+   Sources:
+   - https://vitest.dev/guide/ui
+   - https://vitest.dev/guide/coverage
 
-44. Presentasi data produk di mobile dipisah dari tabel desktop agar keterbacaan lebih baik.
-    - `ProductsTable` pakai 2 mode render: card list mobile (`md:hidden`) dan `DataTable` desktop (`hidden md:block`).
-    - `ProductDetailPage` action button disesuaikan untuk viewport kecil (icon-first) tanpa ubah alur aksi.
-    - File:
-      - `src/features/products/components/ProductsTable.tsx`
-      - `src/features/products/pages/ProductDetailPage.tsx`
+36. Struktur unit test dipindah ke `src/tests/unit` (non-co-located) untuk jaga source folder tetap bersih.
+   - Trade-off: test file lebih jauh dari source file.
 
-45. Flow Create/Edit/Form/Delete produk ikut dirapikan untuk viewport kecil.
-    - `CreateProductPage` dan `EditProductPage`: tombol `Cancel` serta spacing container dibuat lebih proporsional di mobile.
-    - `ProductForm`: tombol submit dibuat full-width di mobile (`w-full`) lalu kembali auto-width di desktop.
-    - `DeleteProductDialog`: diberi safe horizontal margin di mobile agar dialog tidak menempel ke sisi layar.
-    - File:
-      - `src/features/products/pages/CreateProductPage.tsx`
-      - `src/features/products/pages/EditProductPage.tsx`
-      - `src/features/products/components/ProductForm.tsx`
-      - `src/features/products/components/DeleteProductDialog.tsx`
+37. Fix test `Description` by label:
+   - tambah `htmlFor` di `TextareaField`,
+   - tambah `id` di textarea `ProductForm`.
+   Hasil: aksesibilitas label-field valid + test stabil.
+   Sources:
+   - https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/label
+   - https://testing-library.com/docs/queries/bylabeltext/
 
-46. Ditambahkan unit test hook `useProductMaterialOptions` untuk nge-lock bug reopen filter material.
-    - File test: `src/tests/unit/products/hooks/useProductMaterialOptions.test.ts`.
-    - Cakupan:
-      - selected material tetap terlihat saat dialog filter dibuka ulang walau list kosong/terfilter,
-      - fallback option tidak duplikat saat material aktif sudah ada di dataset.
+38. Unit test `ProductForm` mock `useProductFormSubmission` supaya fokus ke behavior form (validasi, disabled state pending, payload submit), bukan mutation/network.
+   Sources:
+   - https://testing-library.com/docs/user-event/intro/
+   - https://vitest.dev/guide/mocking/modules
+   - https://vitest.dev/api/vi#vi-hoisted
 
-47. Dialog filter products dirapikan ulang untuk viewport kecil agar tidak kepotong layar dan tetap konsisten saat date picker dibuka.
-    - Implementasi utama di `src/features/products/pages/ProductsListPage.tsx`:
-      - ukuran dialog diperkecil (mode `md`) dengan batas lebar viewport (`w-[min(100vw-32px,28rem)]`),
-      - tinggi dialog dibatasi viewport (`max-h-[calc(100vh-16px)]`) dan konten internal bisa scroll (`overflow-y-auto`),
-      - area date picker dibungkus container tinggi tetap (`h-[320px]`) agar ruang popup kalender stabil di dalam dialog.
-    - Dampak UX:
-      - dialog tetap centered dengan margin aman di semua sisi,
-      - form controls tetap dekat header,
-      - kalender tidak keluar dari area dialog.
+40. Unit test `ProductFormDialog` mock `ProductForm` dummy untuk isolasi logic dialog.
+   - cek props mapping `initialValues`, title/description per mode, fallback saat product kosong, dan `onSuccess` menutup dialog.
 
-48. Footer aksi filter products disederhanakan agar lebih jelas dan ringkas.
-    - Tombol `Cancel` dihapus karena sudah ada tombol close (`X`) pada dialog header.
-    - Label tombol utama diganti dari `Apply Filters` menjadi `Apply`.
-    - Layout footer dipaksa horizontal rata kanan (tidak stack vertikal di mobile), dengan aksi:
-      - `Clear` (secondary),
-      - `Apply` (primary).
+41. Unit test `useProductSearchState` pakai `renderHook` + `act` untuk verifikasi trim input, payload `querySearch`, flag `hasSearch`, dan reset via `clearSearch`.
+   Sources:
+   - https://testing-library.com/docs/react-testing-library/api/#renderhook
+   - https://react.dev/reference/react/act
+
+46. Ditambah test hook `useProductMaterialOptions` untuk lock bug reopen filter material:
+   - selected material tetap terlihat walau list kosong/terfilter,
+   - fallback option tidak duplikat.
+
+### H. Responsive and Mobile UX Decisions
+
+42. Responsive shell app (sidebar + header) dirapikan agar mobile/desktop konsisten tanpa duplikasi logic.
+   - reusable `useMediaQuery` dan `useSyncSidebarWithViewport`.
+   - store UI ditambah `setSidebarOpen` eksplisit.
+   - `MainLayout` handle sync viewport + mobile toggle.
+   - `Sidebar` mode drawer di mobile, static/collapsed di desktop.
+   - dampak UX:
+     - mobile default sidebar tertutup,
+     - desktop default terbuka dan bisa collapse.
+
+43. Responsive Products List: compact di mobile, lengkap di desktop (toolbar lebih ringkas, trigger icon-friendly, add button adaptif).
+
+44. Presentasi data produk dipisah:
+   - mobile `md:hidden` card list,
+   - desktop `hidden md:block` DataTable.
+   `ProductDetailPage` action button juga disesuaikan untuk viewport kecil (icon-first).
+
+45. Flow create/edit/form/delete dirapikan untuk mobile:
+   - cancel/spacing page lebih proporsional,
+   - submit button full-width di mobile,
+   - delete dialog punya safe horizontal margin.
+
+47. Filter dialog products dirapikan untuk mobile:
+   - width aman viewport,
+   - max-height aman viewport,
+   - internal content scrollable,
+   - area date picker pakai tinggi stabil.
+
+48. Footer aksi filter disederhanakan:
+   - `Cancel` dihapus (sudah ada close `X`),
+   - label utama jadi `Apply`,
+   - layout footer horizontal kanan: `Clear` + `Apply`.
+
+### I. Routing Edge Cases (dipindah dari Notes biar gak kepisah)
+
+- Invalid/missing `productId` dan entity-not-found dipisahkan:
+  - param route tidak valid -> ErrorBoundary,
+  - param valid tapi data tidak ada -> `ProductEntityNotFoundPage`.
+- Wildcard `404` untuk `/products/*` ditangani di router module products.
+
 
 ## License
-
 MIT
+
+
 
 
 
