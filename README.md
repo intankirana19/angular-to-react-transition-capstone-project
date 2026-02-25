@@ -356,9 +356,13 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
    - selected material tetap terlihat walau list kosong/terfilter,
    - fallback option tidak duplikat.
 
-43. Ditambah unit test page `ProductEntityNotFoundPage` untuk memastikan:
-   - pesan error state tampil sesuai copy,
-   - tombol `Back to Products` benar-benar memanggil `navigate('/products', { replace: true })`.
+43. Pola not-found di feature products disederhanakan dengan render `ErrorState` langsung pada konteks yang butuh:
+   - wildcard route `/products/*`,
+   - entity-not-found di page detail/edit.
+   - test dipisah per unit (bukan digabung):
+     - `src/tests/unit/products/pages/ProductsRoutes.test.tsx`
+     - `src/tests/unit/products/pages/ProductDetailPage.test.tsx`
+     - `src/tests/unit/products/pages/EditProductPage.test.tsx`
 
 ### H. Responsive and Mobile UX Decisions
 
@@ -396,10 +400,9 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
 
 ### I. Routing Edge Cases
 
-50. Invalid/missing `productId` dan entity-not-found dipisahkan:
-  - param route tidak valid -> ErrorBoundary,
-  - param valid tapi data tidak ada -> `ProductEntityNotFoundPage`.
-- Wildcard `404` untuk `/products/*` ditangani di router module products.
+50. Routing edge case products ditangani seperti ini:
+  - path route tidak valid (termasuk `/products/detail/` tanpa id) -> wildcard route `*` di `ProductsRoutes` dengan `ErrorState`,
+  - param route valid tapi data tidak ada -> `ErrorState` langsung di `ProductDetailPage` / `EditProductPage`. Jadi tidak ada component khusus not-found produk; copy dan aksi ditulis eksplisit di masing-masing context agar intent UI lebih jelas supaya mengurangi layer abstraksi yang tidak perlu dan menjaga dependensi page tetap minimal.
 
 
 ## License

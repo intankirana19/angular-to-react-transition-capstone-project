@@ -1,20 +1,30 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/shared/ui/Button';
+import { ErrorState } from '@/shared/ui/ErrorState';
 import { ProductForm } from '../components/ProductForm';
 import { useGetProductById } from '../api/hooks/useGetProductById';
 import { type ProductInputValues } from '../types';
-import ProductEntityNotFoundPage from './ProductEntityNotFoundPage';
 
 export default function EditProductPage() {
   const navigate = useNavigate();
   const { productId } = useParams<{ productId: string }>();
   const { data: product } = useGetProductById(productId);
 
-  if (!productId) {
-    throw new Error('Product ID is required');
-  }
   if (!product) {
-    return <ProductEntityNotFoundPage />;
+    return (
+      <ErrorState
+        variant="warning"
+        title="Product not found"
+        message="The product ID exists in route format, but no product data was found."
+        actions={[
+          {
+            label: 'Back to Products',
+            variant: 'primary',
+            onClick: () => navigate('/products', { replace: true }),
+          },
+        ]}
+      />
+    );
   }
 
   const detailPath = `/products/detail/${productId}`;

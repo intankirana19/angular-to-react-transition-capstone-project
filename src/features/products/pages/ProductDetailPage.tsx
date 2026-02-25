@@ -3,10 +3,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Edit, Trash2 } from 'lucide-react';
 import { Avatar } from '@/shared/ui/Avatar';
 import { Button } from '@/shared/ui/Button';
+import { ErrorState } from '@/shared/ui/ErrorState';
 import { DEFAULT_PLACEHOLDER, formatCurrency, formatDate } from '@/shared/lib/formatters';
 import { useGetProductById } from '../api/hooks/useGetProductById';
 import { DeleteProductDialog } from '../components/DeleteProductDialog';
-import ProductEntityNotFoundPage from './ProductEntityNotFoundPage';
 
 export default function ProductDetailPage() {
   const navigate = useNavigate();
@@ -14,12 +14,21 @@ export default function ProductDetailPage() {
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const { data: product } = useGetProductById(productId);
 
-  if (!productId) {
-    // lempar error ke boundary global kalau param route kosong
-    throw new Error('Product ID is required');
-  }
   if (!product) {
-    return <ProductEntityNotFoundPage />;
+    return (
+      <ErrorState
+        variant="warning"
+        title="Product not found"
+        message="The product ID exists in route format, but no product data was found."
+        actions={[
+          {
+            label: 'Back to Products',
+            variant: 'primary',
+            onClick: () => navigate('/products', { replace: true }),
+          },
+        ]}
+      />
+    );
   }
 
   const name = product.name ?? DEFAULT_PLACEHOLDER;
@@ -45,8 +54,7 @@ export default function ProductDetailPage() {
             aria-label="Edit product"
             title="Edit product"
             onClick={() => {
-              // replace biar history ga numpuk detail lama
-              void navigate(`/products/edit/${productId}`, { replace: true });
+              void navigate(`/products/edit/${productId}`, { replace: true });  // replace biar history ga numpuk detail lama
             }}
           >
             <Edit className="h-4 w-4" />
