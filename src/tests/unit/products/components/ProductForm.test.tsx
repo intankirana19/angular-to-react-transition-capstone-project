@@ -7,8 +7,7 @@ import { type ProductInputValues } from '@/features/products/types';
 const { useProductFormSubmissionMock } = vi.hoisted(() => ({
   useProductFormSubmissionMock: vi.fn(),
 }));
-// Spy submit dipakai untuk verifikasi payload yang keluar dari UI form.
-const submitProductMock = vi.fn<(data: unknown) => Promise<void>>();
+const submitProductMock = vi.fn<(data: unknown) => Promise<void>>(); // spy submit dipakai untuk verifikasi payload yang keluar dari UI form
 
 // hook asli dimock supaya test fokus ke perilaku UI form, bukan logic mutation/network di hook
 vi.mock('@/features/products/hooks/useProductFormSubmission', () => ({
@@ -21,7 +20,7 @@ describe('ProductForm', () => {
     useProductFormSubmissionMock.mockReturnValue({
       isMutationPending: false, // default: belum loading
       submitError: null, // default: belum ada error submit
-      submitProduct: submitProductMock, // pakai spy submit untuk assertion payload
+      submitProduct: submitProductMock, // pakai spy submit untuk verifikasi payload
     });
   });
 
@@ -52,8 +51,7 @@ describe('ProductForm', () => {
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
-    // waitFor dipakai karena submit async dan assertion menunggu spy call.
-    await waitFor(() => {
+    await waitFor(() => { // waitFor dipakai karena submit async dan verifikasi nunggu spy call
       expect(submitProductMock).toHaveBeenCalledTimes(1); // submit harus kepanggil sekali
     });
 

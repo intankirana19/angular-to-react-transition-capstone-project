@@ -19,7 +19,7 @@ export function useSearchQueryState<QueryKey extends string>({
       return {};
     }
 
-    // SEARCH[6]: query part dibentuk dari key yang dinamis, jadi type assertion dipakai supaya TypeScript tetap bisa infer tipenya dengan benar.
+    // SEARCH[6]: query part dibentuk dari key yang dinamis, jadi type assertion string dipakai supaya tipenya tetap terbaca benar.
     return { [queryKey]: trimmedSearch } as Partial<Record<QueryKey, string>>;
   }, [canSearch, trimmedSearch, queryKey]);
 

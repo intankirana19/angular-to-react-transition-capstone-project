@@ -13,8 +13,7 @@ vi.mock('@/shared/ui/Dialog', () => ({
   DialogBody: (props: { children?: React.ReactNode }) => <div>{props.children}</div>,
 }));
 
-// spy ini buat nyatet ProductForm dipanggil pakai props apa aja
-const productFormSpy = vi.fn();
+const productFormSpy = vi.fn(); // spy ini buat nyatet ProductForm dipanggil pakai props apa aja
 
 // ProductForm asli kita ganti dummy biar test fokus ke logic dialog
 vi.mock('@/features/products/components/ProductForm', () => ({
@@ -24,7 +23,7 @@ vi.mock('@/features/products/components/ProductForm', () => ({
     mode?: 'create' | 'edit';
     onSuccess?: () => void | Promise<void>;
   }) => {
-    productFormSpy(props); // simpan props buat assertion di test
+    productFormSpy(props); // simpan props buat verifikasi di test
     return <div data-testid="product-form-mock" />; // dummy marker biar gampang dicek ada/tidak
   },
 }));
@@ -35,20 +34,16 @@ describe('ProductFormDialog', () => {
   });
 
   it('renders create mode title and form', () => {
-    // misal dialog dibuka dalam mode create
-    render(<ProductFormDialog open onOpenChange={vi.fn()} mode="create" />);
+    render(<ProductFormDialog open onOpenChange={vi.fn()} mode="create" />); // misal dialog dibuka dalam mode create
 
-    // judul desc create dan formnya harus tampil
     expect(screen.getByText('Add Product')).toBeInTheDocument();
     expect(screen.getByText('Fill the form to add a new product.')).toBeInTheDocument();
     expect(screen.getByTestId('product-form-mock')).toBeInTheDocument();
   });
 
   it('shows fallback message when edit mode has no product', () => {
-    // misal mode edit tapi productnya gak ada
-    render(<ProductFormDialog open onOpenChange={vi.fn()} mode="edit" />);
+    render(<ProductFormDialog open onOpenChange={vi.fn()} mode="edit" />); // misal mode edit tapi productnya gak ada
 
-    // harus tampil fallback bukan form
     expect(screen.getByText('Edit Product')).toBeInTheDocument();
     expect(screen.getByText('Product not found.')).toBeInTheDocument();
     expect(screen.queryByTestId('product-form-mock')).not.toBeInTheDocument();
@@ -65,10 +60,8 @@ describe('ProductFormDialog', () => {
       createdAt: '2026-02-01T00:00:00.000Z',
     };
 
-    // misal mode edit dengan data product lengkap
-    render(<ProductFormDialog open onOpenChange={vi.fn()} mode="edit" product={product} />);
+    render(<ProductFormDialog open onOpenChange={vi.fn()} mode="edit" product={product} />); // misal mode edit dengan data product lengkap
 
-    // data hasil mapping harus diterusin ke productform
     expect(productFormSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         productId: 'p-1',
@@ -97,7 +90,6 @@ describe('ProductFormDialog', () => {
 
     render(<ProductFormDialog open onOpenChange={vi.fn()} mode="edit" product={product} />);
 
-    // field undefined harus diubah ke default yang aman buat form
     expect(productFormSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         productId: 'p-2',
@@ -126,17 +118,14 @@ describe('ProductFormDialog', () => {
 
     render(<ProductFormDialog open onOpenChange={onOpenChange} mode="edit" product={product} />);
 
-    // ambil props terakhir yang dikirim ke productform mock
     const formProps = productFormSpy.mock.calls.at(-1)?.[0] as
       | { onSuccess?: () => void | Promise<void> }
-      | undefined;
+      | undefined; // ambil props terakhir yang dikirim ke productform mock
 
     expect(formProps?.onSuccess).toBeTypeOf('function');
 
-    // misal productform sukses submit lalu manggil onsuccess
     await formProps?.onSuccess?.();
 
-    // dialog harus diminta buat nutup
     expect(onOpenChange).toHaveBeenCalledWith(false);
   });
 });

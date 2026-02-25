@@ -3,29 +3,24 @@ import { useProductSearchState } from '@/features/products/hooks/useProductSearc
 
 describe('useProductSearchState', () => {
   it('builds trimmed search query payload and clears state', () => {
-    // awal hook harus kosong dulu
-    const { result } = renderHook(() => useProductSearchState());
+    const { result } = renderHook(() => useProductSearchState()); // awal hook harus kosong dulu
 
     expect(result.current.searchQuery).toBe('');
     expect(result.current.hasSearch).toBe(false);
     expect(result.current.querySearch).toEqual({});
 
-    // misal user ngetik keyword pakai spasi di depan belakang
     act(() => {
       result.current.setSearchQuery('  chair  ');
-    });
+    }); // misal user ngetik keyword pakai spasi di depan belakang
 
-    // value mentah tetap tapi payload query harus udah di-trim
     expect(result.current.searchQuery).toBe('  chair  ');
     expect(result.current.hasSearch).toBe(true);
     expect(result.current.querySearch).toEqual({ search: 'chair' });
 
-    // misal user klik clear search
     act(() => {
       result.current.clearSearch();
-    });
+    }); // misal user klik clear search
 
-    // state dan query harus balik kosong lagi
     expect(result.current.searchQuery).toBe('');
     expect(result.current.hasSearch).toBe(false);
     expect(result.current.querySearch).toEqual({});
@@ -34,12 +29,10 @@ describe('useProductSearchState', () => {
   it('does not create query payload when input is only whitespace', () => {
     const { result } = renderHook(() => useProductSearchState());
 
-    // misal user isi cuma spasi
     act(() => {
       result.current.setSearchQuery('   ');
-    });
+    }); // misal user isi cuma spasi
 
-    // harus dianggap kosong setelah trim
     expect(result.current.searchQuery).toBe('   ');
     expect(result.current.hasSearch).toBe(false);
     expect(result.current.querySearch).toEqual({});
@@ -53,12 +46,10 @@ describe('useProductSearchState', () => {
     });
     expect(result.current.querySearch).toEqual({ search: 'table' });
 
-    // misal user ganti keyword ke yang baru
     act(() => {
       result.current.setSearchQuery('sofa');
-    });
+    }); // misal user ganti keyword ke yang baru
 
-    // payload harus selalu ikut keyword terbaru
     expect(result.current.hasSearch).toBe(true);
     expect(result.current.querySearch).toEqual({ search: 'sofa' });
   });

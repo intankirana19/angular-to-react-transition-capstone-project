@@ -5,8 +5,7 @@ import { type Product } from '@/features/products/types';
 
 describe('useProductMaterialOptions', () => {
   it('keeps active material option even when current products do not contain it', () => {
-    // Guard bug lama: selected material harus tetap kebaca saat dialog reopen walau list kosong.
-    const products: Product[] = [];
+    const products: Product[] = []; // guard bug lama: selected material harus tetap kebaca saat dialog reopen walau list kosong
 
     const { result } = renderHook(() => useProductMaterialOptions(products, 'aluminum'));
 
@@ -17,8 +16,7 @@ describe('useProductMaterialOptions', () => {
   });
 
   it('does not duplicate active material when it already exists in product list', () => {
-    // Kalau material sudah ada di dataset, fallback jangan bikin opsi dobel.
-    const products: Product[] = [
+    const products: Product[] = [ // kalau material sudah ada di dataset, fallback jangan bikin opsi dobel
       {
         id: 'p-1',
         name: 'Chair',
