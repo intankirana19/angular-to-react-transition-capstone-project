@@ -236,7 +236,7 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
      - `material` max 50,
      - `description` max 500.
 
-39. Scope `useProductFormSubmission`:
+20. Scope `useProductFormSubmission`:
    - pilih mutation by mode (`create`/`edit`),
    - submit async,
    - expose `isMutationPending` + `submitError`,
@@ -246,7 +246,7 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
 
 ### E. Product List Query Architecture (Search/Filter/Sort/Infinite)
 
-20. Infinite scroll dijadikan reusable hook `useInfiniteScroll`.
+21. Infinite scroll dijadikan reusable hook `useInfiniteScroll`.
    Flow:
    1. Konsumer (`useProductInfiniteList`) tentukan batch via `page * PAGE_SIZE`.
    2. Konsumer panggil hook dengan `enabled`, `hasMore`, `scrollContainerId`, `threshold`, `debounceMs`, `onLoadMore`.
@@ -259,13 +259,13 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
    Source:
    - https://blog.logrocket.com/react-infinite-scroll/
 
-21. Search dikirim sebagai payload query dari page -> hook -> service untuk meniru request params API.
+22. Search dikirim sebagai payload query dari page -> hook -> service untuk meniru request params API.
    - Search aktif minimal 3 karakter (`minLength: 3`).
    - Alur: input search -> `useProductSearchState` -> merge dengan filter/sort -> `useGetProducts(queryPayload)` -> `getProducts(queryPayload)` -> helper query (`matchesSearch`).
 
-22. Filter (material + created date range) ikut payload flow yang sama (client contract siap backend query params).
+23. Filter (material + created date range) ikut payload flow yang sama (client contract siap backend query params).
 
-23. Sort diproses dari payload (`sortBy`, `sortOrder`) di helper (server-side style).
+24. Sort diproses dari payload (`sortBy`, `sortOrder`) di helper (server-side style).
    - Table-level sorting TanStack dimatikan; source of truth sorting hanya query/service.
    - Alasan utama: infinite scroll butuh urutan global dataset, bukan cuma `visibleProducts`.
    - Problem sebelum disatukan:
@@ -274,11 +274,11 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
      3. susah dipredict/debug karena 2 sumber sorting aktif.
    - Dampak: saat API real support params, mayoritas perubahan cukup di service.
 
-24. Opsi filter `material` diambil dari base products (tanpa payload) agar dropdown tetap lengkap saat filter/search aktif.
+25. Opsi filter `material` diambil dari base products (tanpa payload) agar dropdown tetap lengkap saat filter/search aktif.
    - Jika selected material belum ada di opsi, hook tetap inject value aktif agar tetap terlihat.
    - Catatan: nanti idealnya options datang dari API.
 
-25. State list dipisah per-hook supaya `ProductsListPage` fokus komposisi UI:
+26. State list dipisah per-hook supaya `ProductsListPage` fokus komposisi UI:
    - `useProductSearchState`
    - `useProductFilterState`
    - `useProductFilterDialogState`
@@ -288,38 +288,38 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
 
 ### F. Shared Reusability Decisions
 
-26. Query-state engine dipindah ke `shared/hooks` supaya reusable lintas fitur:
+27. Query-state engine dipindah ke `shared/hooks` supaya reusable lintas fitur:
    - `useSearchQueryState`
    - `useSortQueryState`
    - `useSelectDateRangeFilterState`
    - `useFilterDialogDraftState`
 
-27. Nilai default filter `All` distandarisasi di `FILTER_ALL_VALUE` (`src/shared/constants/filters.ts`).
+28. Nilai default filter `All` distandarisasi di `FILTER_ALL_VALUE` (`src/shared/constants/filters.ts`).
 
-28. Date range type distandarisasi ke `DateRangeValue`; clone helper dipisah ke `cloneDateRange` untuk hindari mutasi tidak sengaja.
+29. Date range type distandarisasi ke `DateRangeValue`; clone helper dipisah ke `cloneDateRange` untuk hindari mutasi tidak sengaja.
 
-29. `DateRangePicker` ditambah `monthsToShow` + adapter `DateRangeValue`.
+30. `DateRangePicker` ditambah `monthsToShow` + adapter `DateRangeValue`.
    - Dipakai `monthsToShow={1}` di filter products untuk dialog compact.
    - UX: compact calendar sizing + auto-apply saat range complete.
 
-30. `DateRangePicker` ditambah `usePortal`.
+31. `DateRangePicker` ditambah `usePortal`.
    - Di products dipakai `usePortal={false}` agar popup tetap nempel di dialog.
 
-31. `SelectTrigger` ditambah `showIcon` untuk custom trigger (hindari icon ganda, API komponen tetap reusable).
+32. `SelectTrigger` ditambah `showIcon` untuk custom trigger (hindari icon ganda, API komponen tetap reusable).
 
-32. Empty-state products dibedakan by context:
+33. Empty-state products dibedakan by context:
    - default: `No products found`
    - saat search/filter aktif: `No products match current filters`
 
-33. Visual header shared `DataTable` dirapikan (typography, border, hover) tanpa ubah behavior sorting handler TanStack.
+34. Visual header shared `DataTable` dirapikan (typography, border, hover) tanpa ubah behavior sorting handler TanStack.
 
 ### G. Testing Architecture and Decisions
 
-34. Vitest pakai globals (`globals: true`) + type support di TS (`vitest/globals`, `@testing-library/jest-dom`) biar gak import API test berulang.
+35. Vitest pakai globals (`globals: true`) + type support di TS (`vitest/globals`, `@testing-library/jest-dom`) biar gak import API test berulang.
    Source:
    - https://vitest.dev/config/#globals
 
-35. Coverage setup ditambah:
+36. Coverage setup ditambah:
    - script `test:ui:coverage` dan `test:coverage`,
    - dependency `@vitest/ui` + `@vitest/coverage-v8`,
    - coverage config: provider `v8`, include `src/**/*.{ts,tsx}`, reporter `text/html/json-summary`.
@@ -327,10 +327,10 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
    - https://vitest.dev/guide/ui
    - https://vitest.dev/guide/coverage
 
-36. Struktur unit test dipindah ke `src/tests/unit` (non-co-located) untuk jaga source folder tetap bersih.
+37. Struktur unit test dipindah ke `src/tests/unit` (non-co-located) untuk jaga source folder tetap bersih.
    - Trade-off: test file lebih jauh dari source file.
 
-37. Fix test `Description` by label:
+38. Fix test `Description` by label:
    - tambah `htmlFor` di `TextareaField`,
    - tambah `id` di textarea `ProductForm`.
    Hasil: aksesibilitas label-field valid + test stabil.
@@ -338,7 +338,7 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
    - https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/label
    - https://testing-library.com/docs/queries/bylabeltext/
 
-38. Unit test `ProductForm` mock `useProductFormSubmission` supaya fokus ke behavior form (validasi, disabled state pending, payload submit), bukan mutation/network.
+39. Unit test `ProductForm` mock `useProductFormSubmission` supaya fokus ke behavior form (validasi, disabled state pending, payload submit), bukan mutation/network.
    Sources:
    - https://testing-library.com/docs/user-event/intro/
    - https://vitest.dev/guide/mocking/modules
@@ -352,13 +352,17 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
    - https://testing-library.com/docs/react-testing-library/api/#renderhook
    - https://react.dev/reference/react/act
 
-46. Ditambah test hook `useProductMaterialOptions` untuk lock bug reopen filter material:
+42. Ditambah test hook `useProductMaterialOptions` untuk lock bug reopen filter material:
    - selected material tetap terlihat walau list kosong/terfilter,
    - fallback option tidak duplikat.
 
+43. Ditambah unit test page `ProductEntityNotFoundPage` untuk memastikan:
+   - pesan error state tampil sesuai copy,
+   - tombol `Back to Products` benar-benar memanggil `navigate('/products', { replace: true })`.
+
 ### H. Responsive and Mobile UX Decisions
 
-42. Responsive shell app (sidebar + header) dirapikan agar mobile/desktop konsisten tanpa duplikasi logic.
+44. Responsive shell app (sidebar + header) dirapikan agar mobile/desktop konsisten tanpa duplikasi logic.
    - reusable `useMediaQuery` dan `useSyncSidebarWithViewport`.
    - store UI ditambah `setSidebarOpen` eksplisit.
    - `MainLayout` handle sync viewport + mobile toggle.
@@ -367,32 +371,32 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
      - mobile default sidebar tertutup,
      - desktop default terbuka dan bisa collapse.
 
-43. Responsive Products List: compact di mobile, lengkap di desktop (toolbar lebih ringkas, trigger icon-friendly, add button adaptif).
+45. Responsive Products List: compact di mobile, lengkap di desktop (toolbar lebih ringkas, trigger icon-friendly, add button adaptif).
 
-44. Presentasi data produk dipisah:
+46. Presentasi data produk dipisah:
    - mobile `md:hidden` card list,
    - desktop `hidden md:block` DataTable.
    `ProductDetailPage` action button juga disesuaikan untuk viewport kecil (icon-first).
 
-45. Flow create/edit/form/delete dirapikan untuk mobile:
+47. Flow create/edit/form/delete dirapikan untuk mobile:
    - cancel/spacing page lebih proporsional,
    - submit button full-width di mobile,
    - delete dialog punya safe horizontal margin.
 
-47. Filter dialog products dirapikan untuk mobile:
+48. Filter dialog products dirapikan untuk mobile:
    - width aman viewport,
    - max-height aman viewport,
    - internal content scrollable,
    - area date picker pakai tinggi stabil.
 
-48. Footer aksi filter disederhanakan:
+49. Footer aksi filter disederhanakan:
    - `Cancel` dihapus (sudah ada close `X`),
    - label utama jadi `Apply`,
    - layout footer horizontal kanan: `Clear` + `Apply`.
 
-### I. Routing Edge Cases (dipindah dari Notes biar gak kepisah)
+### I. Routing Edge Cases
 
-- Invalid/missing `productId` dan entity-not-found dipisahkan:
+50. Invalid/missing `productId` dan entity-not-found dipisahkan:
   - param route tidak valid -> ErrorBoundary,
   - param valid tapi data tidak ada -> `ProductEntityNotFoundPage`.
 - Wildcard `404` untuk `/products/*` ditangani di router module products.
@@ -400,7 +404,6 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
 
 ## License
 MIT
-
 
 
 
