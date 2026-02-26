@@ -1,5 +1,6 @@
 import { apiClient } from '@/shared/lib/axios';
 import { API_ENDPOINTS } from '@/shared/api/endpoints';
+import { AppError } from '@/shared/lib/appError';
 import { applyProductListQuery } from '../../utils/productListQuery';
 import {
   productInputSchema,
@@ -53,13 +54,31 @@ export async function getProducts(query: ProductListQuery = {}): Promise<Product
 }
 
 // Dipakai ProductDetailPage/EditProductPage buat ambil 1 product berdasarkan id
-export async function getProductById(id: string): Promise<Product | null> {
+export async function getProductById(id: string): Promise<Product> {
+  // Validasi input pindah ke service dan semua behavior error konsisten dari satu tempat
+  if (!id.trim()) {
+    throw new AppError({
+      status: 400,
+      title: 'Invalid product ID',
+      message: 'The product ID in the route is empty or invalid.',
+    });
+  }
+
   const products = await getProducts(); // ambil dari source list yang sama biar data tetap sinkron
   const product = products.find((item) => item.id === id);
 
-  return product ?? null;
+  // Kalau item ga ada, lempar 404 style API (bukan return null) biar ErrorBoundary yang handle tampilan
+  if (!product) {
+    throw new AppError({
+      status: 404,
+      title: 'Product not found',
+      message: 'The requested product does not exist or has been removed.',
+    });
+  }
 
-  // kalo ada api get detail by id
+  return product;
+
+  // Nanti kalau API detail sudah ada, cukup ganti isi service ini; hook/page ga perlu ikut diubah
   // const response = await apiClient.get(API_ENDPOINTS.product(id)); // pakai ini saat endpoint detail sudah ada
   // return productSchema.parse(response.data);
 }
@@ -93,11 +112,15 @@ export async function updateProduct(id: string, payload: ProductInputValues): Pr
 
   const input = productInputSchema.parse(payload); // validasi payload update
   const products = await loadProducts();
-  // Cari item existing yang akan dioverwrite datanya
-  const productIndex = products.findIndex((item) => item.id === id); // cari index product target
+  const productIndex = products.findIndex((item) => item.id === id); // cari index product target item existing yang akan dioverwrite datanya
 
+  // mock error update dengan API real: id ga ketemu => 404.
   if (productIndex < 0) {
-    throw new Error('Product not found');
+    throw new AppError({
+      status: 404,
+      title: 'Product not found',
+      message: 'The requested product does not exist or has been removed.',
+    });
   }
 
   const currentProduct = products[productIndex];
@@ -131,8 +154,13 @@ export async function deleteProduct(id: string): Promise<void> {
 
   const nextProducts = products.filter((item) => item.id !== id); // immutable delete by id
 
+  // mock error delete dengan API real: id ga ketemu => 404.
   if (nextProducts.length === products.length) {
-    throw new Error('Product not found');
+    throw new AppError({
+      status: 404,
+      title: 'Product not found',
+      message: 'The requested product does not exist or has been removed.',
+    });
   }
 
   persistProducts(nextProducts); // persist ulang agar list langsung sinkron

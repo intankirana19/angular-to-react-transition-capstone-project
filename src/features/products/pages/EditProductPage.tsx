@@ -1,6 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/shared/ui/Button';
-import { ErrorState } from '@/shared/ui/ErrorState';
 import { ProductForm } from '../components/ProductForm';
 import { useGetProductById } from '../api/hooks/useGetProductById';
 import { type ProductInputValues } from '../types';
@@ -8,24 +7,7 @@ import { type ProductInputValues } from '../types';
 export default function EditProductPage() {
   const navigate = useNavigate();
   const { productId } = useParams<{ productId: string }>();
-  const { data: product } = useGetProductById(productId);
-
-  if (!product) {
-    return (
-      <ErrorState
-        variant="warning"
-        title="Product not found"
-        message="The product ID exists in route format, but no product data was found."
-        actions={[
-          {
-            label: 'Back to Products',
-            variant: 'primary',
-            onClick: () => navigate('/products', { replace: true }),
-          },
-        ]}
-      />
-    );
-  }
+  const { data: product } = useGetProductById(productId); // sama kayak detail page: error route/data ga di-handle lokal, cukup lewat service + ErrorBoundary
 
   const detailPath = `/products/detail/${productId}`;
 

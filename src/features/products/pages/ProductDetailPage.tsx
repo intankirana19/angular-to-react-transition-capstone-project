@@ -3,7 +3,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Edit, Trash2 } from 'lucide-react';
 import { Avatar } from '@/shared/ui/Avatar';
 import { Button } from '@/shared/ui/Button';
-import { ErrorState } from '@/shared/ui/ErrorState';
 import { DEFAULT_PLACEHOLDER, formatCurrency, formatDate } from '@/shared/lib/formatters';
 import { useGetProductById } from '../api/hooks/useGetProductById';
 import { DeleteProductDialog } from '../components/DeleteProductDialog';
@@ -12,24 +11,7 @@ export default function ProductDetailPage() {
   const navigate = useNavigate();
   const { productId } = useParams<{ productId: string }>();
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const { data: product } = useGetProductById(productId);
-
-  if (!product) {
-    return (
-      <ErrorState
-        variant="warning"
-        title="Product not found"
-        message="The product ID exists in route format, but no product data was found."
-        actions={[
-          {
-            label: 'Back to Products',
-            variant: 'primary',
-            onClick: () => navigate('/products', { replace: true }),
-          },
-        ]}
-      />
-    );
-  }
+  const { data: product } = useGetProductById(productId); // page fokus render sukses; kasus 404/400 dilempar service lalu ditangkap ErrorBoundary di MainLayout
 
   const name = product.name ?? DEFAULT_PLACEHOLDER;
   const material = product.material ?? DEFAULT_PLACEHOLDER;
