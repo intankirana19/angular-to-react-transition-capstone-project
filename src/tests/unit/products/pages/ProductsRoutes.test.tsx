@@ -29,7 +29,7 @@ describe('ProductsRoutes error state', () => {
     const user = userEvent.setup();
 
     render(
-      <MemoryRouter initialEntries={['/products/unknown-path']}>
+      <MemoryRouter initialEntries={['/products/unknown-path']}> {/* memoryrouter cocok buat test routing karena riwayat route jalan di memory */}
         <ProductsRoutes />
       </MemoryRouter>
     ); // route invalid harus jatuh ke ErrorState wildcard

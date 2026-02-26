@@ -42,7 +42,7 @@ async function loadProducts(): Promise<Product[]> {
   return products;
 }
 
-// SEARCH[7] + FILTER[13] + SORT[8]: Service list nerima payload query biar kontraknya siap saat API server-side udah ada
+// SEARCH[7] + FILTER[13] + SORT[8]: service list nerima payload query biar aturannya siap saat api server-side udah ada
 export async function getProducts(query: ProductListQuery = {}): Promise<Product[]> {
   const products = await loadProducts(); // ambil dulu source list mentah sebelum masuk proses query
   const queriedProducts = applyProductListQuery(products, query); // SEARCH[8] + FILTER[14] + SORT[9]: sementara diproses lokal biar berasa kayak response API
