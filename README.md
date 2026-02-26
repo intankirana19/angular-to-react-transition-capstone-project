@@ -371,9 +371,16 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
    - https://reactrouter.com/api/declarative-routers/MemoryRouter
    - https://reactrouter.com/start/framework/testing
 
+44. Saat test memanggil callback state secara langsung (bukan lewat `userEvent`), update dibungkus `act(() => { ... })` agar state update sudah ter-flush sebelum assertion.
+   - Contoh: memanggil `openedProps.onOpenChange(false)` di test dialog.
+   - Alasan: React mewajibkan update terkait render/interaksi di test diselesaikan dalam boundary `act` supaya hasil assertion merefleksikan UI akhir.
+   Sources:
+   - https://react.dev/reference/react/act
+   - https://testing-library.com/docs/react-testing-library/api/#act
+
 ### H. Responsive and Mobile UX Decisions
 
-44. Responsive shell app (sidebar + header) dirapikan agar mobile/desktop konsisten tanpa duplikasi logic.
+45. Responsive shell app (sidebar + header) dirapikan agar mobile/desktop konsisten tanpa duplikasi logic.
    - reusable `useMediaQuery` dan `useSyncSidebarWithViewport`.
    - store UI ditambah `setSidebarOpen` eksplisit.
    - `MainLayout` handle sync viewport + mobile toggle.
@@ -382,32 +389,32 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
      - mobile default sidebar tertutup,
      - desktop default terbuka dan bisa collapse.
 
-45. Responsive Products List: compact di mobile, lengkap di desktop (toolbar lebih ringkas, trigger icon-friendly, add button adaptif).
+46. Responsive Products List: compact di mobile, lengkap di desktop (toolbar lebih ringkas, trigger icon-friendly, add button adaptif).
 
-46. Presentasi data produk dipisah:
+47. Presentasi data produk dipisah:
    - mobile `md:hidden` card list,
    - desktop `hidden md:block` DataTable.
    `ProductDetailPage` action button juga disesuaikan untuk viewport kecil (icon-first).
 
-47. Flow create/edit/form/delete dirapikan untuk mobile:
+48. Flow create/edit/form/delete dirapikan untuk mobile:
    - cancel/spacing page lebih proporsional,
    - submit button full-width di mobile,
    - delete dialog punya safe horizontal margin.
 
-48. Filter dialog products dirapikan untuk mobile:
+49. Filter dialog products dirapikan untuk mobile:
    - width aman viewport,
    - max-height aman viewport,
    - internal content scrollable,
    - area date picker pakai tinggi stabil.
 
-49. Footer aksi filter disederhanakan:
+50. Footer aksi filter disederhanakan:
    - `Cancel` dihapus (sudah ada close `X`),
    - label utama jadi `Apply`,
    - layout footer horizontal kanan: `Clear` + `Apply`.
 
 ### I. Routing Edge Cases
 
-50. Routing edge case products ditangani seperti ini:
+51. Routing edge case products ditangani seperti ini:
   - path route tidak valid (termasuk `/products/detail/` tanpa id) -> wildcard route `*` di `ProductsRoutes` dengan `ErrorState`,
   - param route valid tapi data tidak ada / id invalid -> service lempar `AppError` lalu ErrorBoundary di `MainLayout` yang render pesan error.
   Jadi page detail/edit tetap tipis (fokus render data sukses), sementara source of truth error tetap di layer service.
