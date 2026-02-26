@@ -65,9 +65,7 @@ export function MainLayout({ children }: MainLayoutProps) {
           <ErrorBoundary
             key={location.key}
             fullScreen={false}
-            title="Something went wrong"
-            message="Failed to load this page. Try reloading or open another menu."
-            reloadLabel="Retry"
+            reloadLabel="Retry" // title/message ga di-hardcode biar otomatis ikut pesan dari error API/service
             onRetry={async () => {
               await queryClient.resetQueries(); // retry konten aja, reset state error query trus refetch query aktif
             }}

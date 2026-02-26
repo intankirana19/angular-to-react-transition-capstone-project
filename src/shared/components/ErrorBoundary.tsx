@@ -1,5 +1,5 @@
 import { Component, ReactNode } from 'react';
-import { getErrorMessage } from '@/shared/lib/error';
+import { getErrorMessage, getErrorTitle } from '@/shared/lib/error';
 import { ErrorState } from '@/shared/ui/ErrorState';
 
 interface Props {
@@ -10,6 +10,7 @@ interface Props {
   message?: string;
   reloadLabel?: string;
   onRetry?: () => void | Promise<unknown>;
+  resolveReloadLabel?: (error: Error | null) => string; // optional kalau nanti mau label aksi beda per jenis error (misal 401 -> "Go to Login")
 }
 
 interface State {
@@ -40,8 +41,7 @@ export class ErrorBoundary extends Component<Props, State> {
       return;
     }
 
-    // kalau tidak ada baru fallback ke hard refresh.
-    window.location.reload();
+    window.location.reload(); // kalau ga ada custom retry handler, fallback ke hard refresh
   };
 
   render() {
@@ -51,11 +51,11 @@ export class ErrorBoundary extends Component<Props, State> {
           <ErrorState
             fullScreen={this.props.fullScreen ?? true}
             variant="danger"
-            title={this.props.title ?? 'Something went wrong'}
-            message={this.props.message ?? getErrorMessage(this.state.error, 'An unexpected error occurred.')}
+            title={this.props.title ?? getErrorTitle(this.state.error, 'Something went wrong')} // default baca title dari objek error; tetap bisa dioverride jika butuh copy statis
+            message={this.props.message ?? getErrorMessage(this.state.error, 'An unexpected error occurred.')} // message juga ambil dari error biar page ga perlu branch error lokal
             actions={[
               {
-                label: this.props.reloadLabel ?? 'Reload Page',
+                label: this.props.reloadLabel ?? this.props.resolveReloadLabel?.(this.state.error) ?? 'Reload Page',
                 onClick: this.handleRetry,
                 variant: 'primary',
               },
