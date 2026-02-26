@@ -163,9 +163,10 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
 5. Detail produk (mock, karena API real hanya daftar awal):
    - Service `getProductById` tidak call endpoint detail terpisah, tapi ambil dari `getProducts()` lalu `find` by `id`.
    - Tujuannya: source detail = source list yang sudah persist lokal, jadi hasil create/edit langsung kebaca tanpa mismatch.
-   - Kalau API detail sudah tersedia, logic ini diganti request ke endpoint detail.
-   - Hook `useGetProductById` pakai `useSuspenseQuery` key `['products', productId]`.
-   - `ProductDetailPage` buang branch `isLoading/error` manual karena sudah ditangani Suspense + ErrorBoundary.
+   - Jika payload id kosong / data tidak ada, service lempar `AppError` (400/404) biar mock error mirip API real.
+   - Hook `useGetProductById` pakai `useSuspenseQuery` key `['products', productId]` dan sengaja pass-through ke service (tanpa logic error sendiri).
+   - `ProductDetailPage` dan `EditProductPage` fokus render state sukses; loading/error ditangani Suspense + ErrorBoundary.
+   - Kalau API detail sudah tersedia, logic ini tinggal diganti request ke endpoint detail.
 
 6. Tambah produk (mock):
    - Service `createProduct`: validasi `productInputSchema`, generate `id` (`crypto.randomUUID`) + `createdAt`, prepend item baru ke awal list, lalu persist lokal.
@@ -207,13 +208,13 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
    - https://tanstack.com/query/v5/docs/framework/react/guides/suspense
    - https://tanstack.com/query/v5/docs/framework/react/reference/useQuery
 
-12. Error message distandarisasi lewat helper `getErrorMessage` (`Error`, `AxiosError`, payload API) supaya tidak ada silent failure.
+12. Error title/message distandarisasi lewat helper `getErrorTitle` + `getErrorMessage` (`AppError`, `Error`, `AxiosError`, payload API) supaya copy error konsisten dan tidak ada silent failure.
 
 13. `ProductForm` ditambah inline submit error (selain toast), jadi gagal submit tetap terlihat di area form.
 
 14. Error UI di page users/products dirapikan pakai reusable `ErrorState`.
 
-15. `ErrorBoundary` pakai `ErrorState` dan expose props (`fullScreen`, `title`, `message`, `reloadLabel`) biar boundary global dan content bisa beda copy/layout tanpa duplicate JSX.
+15. `ErrorBoundary` pakai `ErrorState`, baca `title/message` dari objek error by default, dan expose props (`fullScreen`, `title`, `message`, `reloadLabel`, `resolveReloadLabel`) biar boundary global dan content bisa beda copy/layout tanpa duplicate JSX.
 
 16. Loading/error handler manual di users/products list/detail dihapus supaya page fokus render state sukses.
 
@@ -356,13 +357,13 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
    - selected material tetap terlihat walau list kosong/terfilter,
    - fallback option tidak duplikat.
 
-43. Pola not-found di feature products disederhanakan dengan render `ErrorState` langsung pada konteks yang butuh:
-   - wildcard route `/products/*`,
-   - entity-not-found di page detail/edit.
+43. Pola error routing/data di feature products disederhanakan:
+   - wildcard route `/products/*` tetap render `ErrorState` di level routes,
+   - entity-not-found/invalid-id untuk detail/edit dilempar dari service (`AppError`) lalu ditampilkan oleh ErrorBoundary di `MainLayout`.
    - test dipisah per unit (bukan digabung):
-     - `src/tests/unit/products/pages/ProductsRoutes.test.tsx`
-     - `src/tests/unit/products/pages/ProductDetailPage.test.tsx`
-     - `src/tests/unit/products/pages/EditProductPage.test.tsx`
+     - `src/tests/unit/products/pages/ProductsRoutes.test.tsx` untuk wildcard route error,
+     - `src/tests/unit/products/pages/ProductDetailPage.test.tsx` untuk happy path detail page,
+     - `src/tests/unit/products/pages/EditProductPage.test.tsx` untuk happy path edit page.
 
 ### H. Responsive and Mobile UX Decisions
 
@@ -402,7 +403,8 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
 
 50. Routing edge case products ditangani seperti ini:
   - path route tidak valid (termasuk `/products/detail/` tanpa id) -> wildcard route `*` di `ProductsRoutes` dengan `ErrorState`,
-  - param route valid tapi data tidak ada -> `ErrorState` langsung di `ProductDetailPage` / `EditProductPage`. Jadi tidak ada component khusus not-found produk; copy dan aksi ditulis eksplisit di masing-masing context agar intent UI lebih jelas supaya mengurangi layer abstraksi yang tidak perlu dan menjaga dependensi page tetap minimal.
+  - param route valid tapi data tidak ada / id invalid -> service lempar `AppError` lalu ErrorBoundary di `MainLayout` yang render pesan error.
+  Jadi page detail/edit tetap tipis (fokus render data sukses), sementara source of truth error tetap di layer service.
 
 
 ## License
