@@ -1,57 +1,47 @@
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import ProductDetailPage from '@/features/products/pages/ProductDetailPage';
 
 const { useGetProductByIdMock } = vi.hoisted(() => ({
   useGetProductByIdMock: vi.fn(),
 }));
-const navigateMock = vi.fn(); // spy navigate untuk verifikasi aksi pada ErrorState
 
-// blok mock router: module asli dipakai, hanya useNavigate yang dioverride
-vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual<typeof import('react-router-dom')>('react-router-dom');
-  return {
-    ...actual,
-    useNavigate: () => navigateMock,
-  };
-});
-
-// hook dimock supaya skenario entity-not-found bisa dipaksa (data undefined)
+// hook dimock biar test fokus ke render halaman detail (tanpa query real)
 vi.mock('@/features/products/api/hooks/useGetProductById', () => ({
   useGetProductById: useGetProductByIdMock,
 }));
 
-// dialog delete dimock supaya test error path tidak ketarik dependency Radix dialog
+// dialog delete dimock supaya test page ini tetap ringan dan terisolasi
 vi.mock('@/features/products/components/DeleteProductDialog', () => ({
   DeleteProductDialog: () => null,
 }));
 
-describe('ProductDetailPage error state', () => {
+describe('ProductDetailPage', () => {
   beforeEach(() => {
     vi.clearAllMocks(); // reset state mock antar test
-    useGetProductByIdMock.mockReturnValue({ data: undefined });
+    useGetProductByIdMock.mockReturnValue({
+      data: {
+        id: 'p-1',
+        name: 'Laptop',
+        price: 2500,
+        avatar: '',
+        material: 'Aluminum',
+        description: 'Test product',
+        createdAt: '2024-01-01T00:00:00.000Z',
+      },
+    });
   });
 
-  it('renders entity-not-found ErrorState and navigates back to products', async () => {
-    const user = userEvent.setup();
-
+  it('renders product detail content when query returns product', () => { // branch not-found sudah pindah ke service + ErrorBoundary
     render(
       <MemoryRouter initialEntries={['/products/detail/p-404']}>
         <Routes>
           <Route path="/products/detail/:productId" element={<ProductDetailPage />} />
         </Routes>
       </MemoryRouter>
-    ); // id valid di route tapi data tidak ditemukan
+    );
 
-    expect(screen.getByRole('alert')).toBeInTheDocument();
-    expect(screen.getByText('Product not found')).toBeInTheDocument();
-    expect(
-      screen.getByText('The product ID exists in route format, but no product data was found.')
-    ).toBeInTheDocument();
-
-    await user.click(screen.getByRole('button', { name: 'Back to Products' })); // saat user click button 'Back to Products' harus kembali ke list
-
-    expect(navigateMock).toHaveBeenCalledWith('/products', { replace: true });
+    expect(screen.getByText('Laptop')).toBeInTheDocument();
+    expect(screen.getByText('Product details')).toBeInTheDocument();
   });
 });
