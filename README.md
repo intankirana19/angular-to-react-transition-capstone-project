@@ -112,6 +112,7 @@ src/
 - `src/features/products/utils/productListQuery.ts`
 - `src/features/products/hooks/useProductInfiniteList.ts`
 - `src/shared/hooks/useInfiniteScroll.ts`
+- `src/tests/unit/products/services/productsService.test.ts`
 
 
 ## Environment Variables
@@ -264,7 +265,7 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
    - Search aktif minimal 3 karakter (`minLength: 3`).
    - Alur: input search -> `useProductSearchState` -> merge dengan filter/sort -> `useGetProducts(queryPayload)` -> `getProducts(queryPayload)` -> helper query (`matchesSearch`).
 
-23. Filter (material + created date range) ikut payload flow yang sama (client contract siap backend query params).
+23. Filter (material + created date range) ikut payload flow yang sama (biar nanti gampang sambung ke query params real dari backend).
 
 24. Sort diproses dari payload (`sortBy`, `sortOrder`) di helper (server-side style).
    - Table-level sorting TanStack dimatikan; source of truth sorting hanya query/service.
@@ -360,10 +361,15 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
 43. Pola error routing/data di feature products disederhanakan:
    - wildcard route `/products/*` tetap render `ErrorState` di level routes,
    - entity-not-found/invalid-id untuk detail/edit dilempar dari service (`AppError`) lalu ditampilkan oleh ErrorBoundary di `MainLayout`.
+   - test routing pakai `MemoryRouter` karena stack history dijalankan di memory jadi aman dan stabil untuk unit test tanpa browser history nyata
    - test dipisah per unit (bukan digabung):
      - `src/tests/unit/products/pages/ProductsRoutes.test.tsx` untuk wildcard route error,
-     - `src/tests/unit/products/pages/ProductDetailPage.test.tsx` untuk happy path detail page,
-     - `src/tests/unit/products/pages/EditProductPage.test.tsx` untuk happy path edit page.
+     - `src/tests/unit/products/pages/ProductDetailPage.test.tsx` untuk happy path + fallback ErrorBoundary detail page,
+     - `src/tests/unit/products/pages/EditProductPage.test.tsx` untuk happy path + fallback ErrorBoundary edit page,
+     - `src/tests/unit/products/services/productsService.test.ts` untuk skenario negatif service (`AppError` 400/404).
+   Sources:
+   - https://reactrouter.com/api/declarative-routers/MemoryRouter
+   - https://reactrouter.com/start/framework/testing
 
 ### H. Responsive and Mobile UX Decisions
 
