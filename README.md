@@ -329,8 +329,12 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
    - https://vitest.dev/guide/ui
    - https://vitest.dev/guide/coverage
 
-37. Struktur unit test dipindah ke `src/tests/unit` (non-co-located) untuk jaga source folder tetap bersih.
-   - Trade-off: test file lebih jauh dari source file.
+37. Unit test disimpan di `src/tests/unit` agar level testing tetap eksplisit dan tidak tercampur dengan source feature.
+   - Struktur saat ini dikelompokkan per feature dan tipe kode (contoh: `src/tests/unit/products/components/*.test.tsx`, `src/tests/unit/products/hooks/*.test.ts`).
+   - Trade-off: file test sedikit lebih jauh dari source, tetapi review flow jadi lebih mudah dipindai.
+   Sources:
+   - https://www.yockyard.com/post/co-locate-unit-tests/
+   - https://dev.to/el_mahfoudbouatim_b502a2/react-best-practices-for-scalable-frontends-part-1-folder-structure-and-organization-4ik7
 
 38. Fix test `Description` by label:
    - tambah `htmlFor` di `TextareaField`,
