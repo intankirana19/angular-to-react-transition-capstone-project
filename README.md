@@ -13,7 +13,7 @@ The implementation task in this submission is focused on the **Product Managemen
 - Search, filter, and sort using a typed query payload
 - Infinite scroll for progressive list rendering
 - Product detail page by dynamic route param (`:productId`)
-- Create and edit forms using React Hook Form + Zod
+- Create and edit forms using React Hook Form + Zod (using reusable product form component & available in both page & dialog components for variation)
 - Delete flow with confirmation dialog
 - React Query cache invalidation after mutations
 - Global toast feedback and inline form error feedback
@@ -62,9 +62,9 @@ pnpm test:coverage    # vitest run --coverage
 ## Product Routes
 
 - `/products` - list page
-- `/products/new` - create page
+- `/products/new` - create page (using reusable product form component)
 - `/products/detail/:productId` - detail page
-- `/products/edit/:productId` - edit page
+- `/products/edit/:productId` - edit page (using reusable product form component, dialog for product list & page for product detail)
 
 ## Requirement Alignment (Summary)
 
@@ -101,19 +101,6 @@ src/
 |-- app/                      # routes, layouts, app store
 `-- tests/unit/products/      # product-focused unit tests
 ```
-
-## Key Product Files
-
-- `src/features/products/pages/ProductsListPage.tsx`
-- `src/features/products/pages/ProductDetailPage.tsx`
-- `src/features/products/pages/CreateProductPage.tsx`
-- `src/features/products/pages/EditProductPage.tsx`
-- `src/features/products/api/services/productsService.ts`
-- `src/features/products/utils/productListQuery.ts`
-- `src/features/products/hooks/useProductInfiniteList.ts`
-- `src/shared/hooks/useInfiniteScroll.ts`
-- `src/tests/unit/products/services/productsService.test.ts`
-
 
 ## Environment Variables
 
