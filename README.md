@@ -304,7 +304,7 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
 
 ### G. Testing Architecture and Decisions
 
-35. Vitest pakai globals (`globals: true`) + type support di TS (`vitest/globals`, `@testing-library/jest-dom`) biar gak import API test berulang.
+35. Vitest pakai globals (`globals: true`) + type support di TS (`vitest/globals`, `@testing-library/jest-dom`) biar tidak import API test berulang.
    Source:
    - https://vitest.dev/config/#globals
 
@@ -323,33 +323,15 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
    - https://www.yockyard.com/post/co-locate-unit-tests/
    - https://dev.to/el_mahfoudbouatim_b502a2/react-best-practices-for-scalable-frontends-part-1-folder-structure-and-organization-4ik7
 
-38. Fix test `Description` by label:
-   - tambah `htmlFor` di `TextareaField`,
-   - tambah `id` di textarea `ProductForm`.
-   Hasil: aksesibilitas label-field valid + test stabil.
+38. Fixing komponen form karena failed test `Description` by label di `src/tests/unit/products/components/ProductForm.test.tsx`:
+   - test yang ditarget: query `screen.getByLabelText('Description')` (contoh di skenario `submits valid values` dan `disables form controls while mutation is pending`),
+   - root cause: label `Description` belum terhubung ke textarea,
+   - fixing: tambah `htmlFor` di `TextareaField` dan tambah `id` di textarea `ProductForm` supaya aksesibilitas label-field valid + test stabil.
    Sources:
    - https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/label
    - https://testing-library.com/docs/queries/bylabeltext/
 
-39. Unit test `ProductForm` mock `useProductFormSubmission` supaya fokus ke behavior form (validasi, disabled state pending, payload submit), bukan mutation/network.
-   Sources:
-   - https://testing-library.com/docs/user-event/intro/
-   - https://vitest.dev/guide/mocking/modules
-   - https://vitest.dev/api/vi#vi-hoisted
-
-40. Unit test `ProductFormDialog` mock `ProductForm` dummy untuk isolasi logic dialog.
-   - cek props mapping `initialValues`, title/description per mode, fallback saat product kosong, dan `onSuccess` menutup dialog.
-
-41. Unit test `useProductSearchState` pakai `renderHook` + `act` untuk verifikasi trim input, payload `querySearch`, flag `hasSearch`, dan reset via `clearSearch`.
-   Sources:
-   - https://testing-library.com/docs/react-testing-library/api/#renderhook
-   - https://react.dev/reference/react/act
-
-42. Ditambah test hook `useProductMaterialOptions` untuk lock bug reopen filter material:
-   - selected material tetap terlihat walau list kosong/terfilter,
-   - fallback option tidak duplikat.
-
-43. Pola error routing/data di feature products disederhanakan:
+39. Pola error routing/data di feature products disederhanakan:
    - wildcard route `/products/*` tetap render `ErrorState` di level routes,
    - entity-not-found/invalid-id untuk detail/edit dilempar dari service (`AppError`) lalu ditampilkan oleh ErrorBoundary di `MainLayout`.
    - test routing pakai `MemoryRouter` karena stack history dijalankan di memory jadi aman dan stabil untuk unit test tanpa browser history nyata
@@ -362,16 +344,68 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
    - https://reactrouter.com/api/declarative-routers/MemoryRouter
    - https://reactrouter.com/start/framework/testing
 
-44. Saat test memanggil callback state secara langsung (bukan lewat `userEvent`), update dibungkus `act(() => { ... })` agar state update sudah ter-flush sebelum assertion.
-   - Contoh: memanggil `openedProps.onOpenChange(false)` di test dialog.
-   - Alasan: React mewajibkan update terkait render/interaksi di test diselesaikan dalam boundary `act` supaya hasil assertion merefleksikan UI akhir.
+40. `vi.hoisted` (Vitest): menyiapkan reference mock lebih dulu sebelum `vi.mock` dievaluasi.
+   - Dipakai di hampir semua test products yang memakai `vi.mock`, karena reference spy harus sudah tersedia saat factory mock dievaluasi.
+   Sources:
+   - https://vitest.dev/api/vi#vi-hoisted
+
+41. `vi.fn` (Vitest): membuat spy/mock function untuk merekam call dan argumen.
+   - Dipakai di semua test products yang butuh spy/callback mock, karena hampir semua skenario verifikasi call memakai function mock.
+   Sources:
+   - https://vitest.dev/api/mock
+
+42. `vi.mock` (Vitest): mock module supaya unit test fokus ke unit yang diuji (isolasi dependency).
+   - Dipakai di hampir semua test products, karena isolasi dependency lintas component/page/hook dilakukan lewat module mocking.
+   Sources:
+   - https://vitest.dev/guide/mocking/modules
+
+43. `vi.clearAllMocks` (Vitest): reset riwayat call/instance mock antar test agar test independen.
+   - Dipakai di `beforeEach` pada test yang memakai mock lintas skenario.
+   Sources:
+   - https://vitest.dev/api/vi#vi-clearallmocks
+
+44. `vi.importActual` (Vitest): ambil implementasi module asli, lalu override sebagian export saat partial mock.
+   - Utama dipakai saat mock `react-router-dom` di test routing/page.
+   - File: `ProductsRoutes.test.tsx`, `ProductsListPage.test.tsx`, `ProductDetailPage.test.tsx`, `EditProductPage.test.tsx`, `CreateProductPage.test.tsx`, `ProductFormPage.test.tsx`.
+   Sources:
+   - https://vitest.dev/api/vi#vi-importactual
+
+45. `mockResolvedValue` (Vitest Mock API): set hasil Promise resolve untuk async dependency (mis. mutation).
+   - Dipakai di test async form/hook/dialog, misalnya `ProductForm.test.tsx`, `DeleteProductDialog.test.tsx`, `useProductFormSubmission.test.ts`.
+   Sources:
+   - https://vitest.dev/api/mock#mockresolvedvalue
+
+46. `mockRestore` (Vitest Mock API): mengembalikan method yang di-`spyOn` ke implementasi asli setelah test.
+   - Dipakai setelah spy `window.history.length` atau `console.error`.
+   - File: `CreateProductPage.test.tsx`, `ProductFormPage.test.tsx`, `ProductDetailPage.test.tsx`, `EditProductPage.test.tsx`.
+   Sources:
+   - https://vitest.dev/api/mock#mockrestore
+
+47. `render` (React Testing Library): render komponen React ke DOM virtual untuk verifikasi perilaku UI.
+   - Dipakai di semua test component/page products.
+   Sources:
+   - https://testing-library.com/docs/react-testing-library/api/#render
+
+48. `renderHook` (React Testing Library): render hook secara langsung tanpa komponen wrapper khusus.
+   - Dipakai di `useProductSearchState.test.ts`, `useProductMaterialOptions.test.ts`, `useProductFormSubmission.test.ts`.
+   Sources:
+   - https://testing-library.com/docs/react-testing-library/api/#renderhook
+
+49. `act` (React): memastikan update state/effect selesai di-flush sebelum assertion.
+   - Dipakai di test hook state update (`useProductSearchState.test.ts`, `useProductFormSubmission.test.ts`) dan callback state manual di `ProductDetailPage.test.tsx`.
    Sources:
    - https://react.dev/reference/react/act
    - https://testing-library.com/docs/react-testing-library/api/#act
 
+50. `toThrow` (Vitest/Jest matcher): validasi sebuah aksi tidak melempar error pada skenario tertentu.
+   - Dipakai di `ProductsTable.test.tsx` (assert `.not.toThrow()`).
+   Sources:
+   - https://vitest.dev/api/expect#tothrowerror
+
+
 ### H. Responsive and Mobile UX Decisions
 
-45. Responsive shell app (sidebar + header) dirapikan agar mobile/desktop konsisten tanpa duplikasi logic.
+51. Responsive shell app (sidebar + header) dirapikan agar mobile/desktop konsisten tanpa duplikasi logic.
    - reusable `useMediaQuery` dan `useSyncSidebarWithViewport`.
    - store UI ditambah `setSidebarOpen` eksplisit.
    - `MainLayout` handle sync viewport + mobile toggle.
@@ -380,32 +414,32 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
      - mobile default sidebar tertutup,
      - desktop default terbuka dan bisa collapse.
 
-46. Responsive Products List: compact di mobile, lengkap di desktop (toolbar lebih ringkas, trigger icon-friendly, add button adaptif).
+52. Responsive Products List: compact di mobile, lengkap di desktop (toolbar lebih ringkas, trigger icon-friendly, add button adaptif).
 
-47. Presentasi data produk dipisah:
+53. Presentasi data produk dipisah:
    - mobile `md:hidden` card list,
    - desktop `hidden md:block` DataTable.
    `ProductDetailPage` action button juga disesuaikan untuk viewport kecil (icon-first).
 
-48. Flow create/edit/form/delete dirapikan untuk mobile:
+54. Flow create/edit/form/delete dirapikan untuk mobile:
    - cancel/spacing page lebih proporsional,
    - submit button full-width di mobile,
    - delete dialog punya safe horizontal margin.
 
-49. Filter dialog products dirapikan untuk mobile:
+55. Filter dialog products dirapikan untuk mobile:
    - width aman viewport,
    - max-height aman viewport,
    - internal content scrollable,
    - area date picker pakai tinggi stabil.
 
-50. Footer aksi filter disederhanakan:
+56. Footer aksi filter disederhanakan:
    - `Cancel` dihapus (sudah ada close `X`),
    - label utama jadi `Apply`,
    - layout footer horizontal kanan: `Clear` + `Apply`.
 
 ### I. Routing Edge Cases
 
-51. Routing edge case products ditangani seperti ini:
+57. Routing edge case products ditangani seperti ini:
   - path route tidak valid (termasuk `/products/detail/` tanpa id) -> wildcard route `*` di `ProductsRoutes` dengan `ErrorState`,
   - param route valid tapi data tidak ada / id invalid -> service lempar `AppError` lalu ErrorBoundary di `MainLayout` yang render pesan error.
   Jadi page detail/edit tetap tipis (fokus render data sukses), sementara source of truth error tetap di layer service.
