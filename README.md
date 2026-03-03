@@ -402,10 +402,29 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
    Sources:
    - https://vitest.dev/api/expect#tothrowerror
 
+51. `vi.useFakeTimers` (Vitest): ganti timer native (`setTimeout`/`setInterval`) dengan timer virtual.
+   - Dipakai saat unit test perlu kontrol delay async tanpa menunggu waktu nyata (contoh: `productsService.test.ts` karena ada `delay(5000)` di service).
+   Source:
+   - https://vitest.dev/api/vi#vi-usefaketimers
+
+52. `vi.setSystemTime` (Vitest): mengunci waktu sistem versi fake timer agar nilai berbasis waktu (`new Date()`) konsisten.
+   - Dipakai untuk assertion field waktu seperti `createdAt` supaya hasil test deterministik.
+   Source:
+   - https://vitest.dev/api/vi#vi-setsystemtime
+
+53. `vi.advanceTimersByTimeAsync` (Vitest): memajukan fake timer sejumlah ms dan menunggu job async terkait timer selesai.
+   - Dipakai untuk "melewati" `await delay(...)` di service sebelum assertion.
+   Source:
+   - https://vitest.dev/api/vi#vi-advancetimersbytimeasync
+
+54. `vi.useRealTimers` (Vitest): mengembalikan timer native setelah test selesai.
+   - Wajib dipanggil di `afterEach` jika test memakai fake timer agar test file lain tidak ikut memakai clock virtual.
+   Source:
+   - https://vitest.dev/api/vi#vi-userealtimers
 
 ### H. Responsive and Mobile UX Decisions
 
-51. Responsive shell app (sidebar + header) dirapikan agar mobile/desktop konsisten tanpa duplikasi logic.
+55. Responsive shell app (sidebar + header) dirapikan agar mobile/desktop konsisten tanpa duplikasi logic.
    - reusable `useMediaQuery` dan `useSyncSidebarWithViewport`.
    - store UI ditambah `setSidebarOpen` eksplisit.
    - `MainLayout` handle sync viewport + mobile toggle.
@@ -414,32 +433,32 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
      - mobile default sidebar tertutup,
      - desktop default terbuka dan bisa collapse.
 
-52. Responsive Products List: compact di mobile, lengkap di desktop (toolbar lebih ringkas, trigger icon-friendly, add button adaptif).
+56. Responsive Products List: compact di mobile, lengkap di desktop (toolbar lebih ringkas, trigger icon-friendly, add button adaptif).
 
-53. Presentasi data produk dipisah:
+57. Presentasi data produk dipisah:
    - mobile `md:hidden` card list,
    - desktop `hidden md:block` DataTable.
    `ProductDetailPage` action button juga disesuaikan untuk viewport kecil (icon-first).
 
-54. Flow create/edit/form/delete dirapikan untuk mobile:
+58. Flow create/edit/form/delete dirapikan untuk mobile:
    - cancel/spacing page lebih proporsional,
    - submit button full-width di mobile,
    - delete dialog punya safe horizontal margin.
 
-55. Filter dialog products dirapikan untuk mobile:
+59. Filter dialog products dirapikan untuk mobile:
    - width aman viewport,
    - max-height aman viewport,
    - internal content scrollable,
    - area date picker pakai tinggi stabil.
 
-56. Footer aksi filter disederhanakan:
+60. Footer aksi filter disederhanakan:
    - `Cancel` dihapus (sudah ada close `X`),
    - label utama jadi `Apply`,
    - layout footer horizontal kanan: `Clear` + `Apply`.
 
 ### I. Routing Edge Cases
 
-57. Routing edge case products ditangani seperti ini:
+61. Routing edge case products ditangani seperti ini:
   - path route tidak valid (termasuk `/products/detail/` tanpa id) -> wildcard route `*` di `ProductsRoutes` dengan `ErrorState`,
   - param route valid tapi data tidak ada / id invalid -> service lempar `AppError` lalu ErrorBoundary di `MainLayout` yang render pesan error.
   Jadi page detail/edit tetap tipis (fokus render data sukses), sementara source of truth error tetap di layer service.
