@@ -10,10 +10,6 @@ beforeEach(() => {
   localStorage.clear(); // reset storage global biar ga perlu diulang di tiap describe
 });
 
-afterEach(() => {
-  vi.restoreAllMocks(); // reset spy mock global biar ga perlu diulang di tiap describe
-});
-
 describe('productsService getProductById negative cases', () => {
   it('throws AppError 400 when id is empty/invalid', async () => {
     // aturan service payload id kosong dianggap request tidak valid 400 bukan return null

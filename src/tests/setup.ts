@@ -5,10 +5,11 @@ import * as matchers from '@testing-library/jest-dom/matchers'; // ambil semua m
 expect.extend(matchers); // daftarin matcher jest-dom ke expect global
 
 beforeEach(() => {
-  vi.clearAllMocks(); // reset call history mock antar test biar test independen tanpa perlu diulang di tiap file
-  localStorage.clear(); // reset storage global antar test biar state tidak bocor
+  localStorage.clear(); // reset storage biar state antar test tidak bocor
 });
 
 afterEach(() => {
-  cleanup(); // jalanin cleanup tiap selesai test biar dom dan state ga kebawa ke test lain
+  vi.clearAllMocks(); // reset history mock vi.fn antar test
+  vi.restoreAllMocks(); // balikin spyOn ke implementasi asli
+  cleanup(); // beresin dom setelah tiap test
 });
