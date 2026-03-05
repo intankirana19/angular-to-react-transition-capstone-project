@@ -561,9 +561,35 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
    Source:
    - https://vitest.dev/api/vi#vi-userealtimers
 
+69. `vi.restoreAllMocks` (Vitest): mengembalikan semua `spyOn` ke implementasi aslinya setelah test.
+   - Dipakai global di `src/tests/setup.ts` pada `afterEach` agar spy tidak bocor ke test berikutnya.
+   Source:
+   - https://vitest.dev/api/vi#vi-restoreallmocks
+
+70. `vi.spyOn` (Vitest): membuat spy pada method/properti asli untuk verifikasi call atau override sementara.
+   - Dipakai di test products untuk kasus `window.history.length`, `console.error`, `crypto.randomUUID`, dan `apiClient.get`.
+   Source:
+   - https://vitest.dev/api/vi#vi-spyon
+
+71. `userEvent.setup` (Testing Library): simulasi interaksi user yang lebih realistis dibanding trigger event mentah.
+   - Dipakai luas di test pages/components products untuk klik, ketik, dan flow submit form.
+   Sources:
+   - https://testing-library.com/docs/user-event/intro
+   - https://testing-library.com/docs/user-event/setup
+
+72. `waitFor` (React Testing Library): menunggu assertion async sampai kondisi terpenuhi.
+   - Dipakai saat verifikasi efek async mutation/callback setelah aksi user.
+   Source:
+   - https://testing-library.com/docs/dom-testing-library/api-async/#waitfor
+
+73. `fireEvent` (React Testing Library): trigger event level rendah untuk skenario edge/guard tertentu.
+   - Dipakai di test products saat butuh event langsung (contoh keyboard edge case atau guard branch).
+   Source:
+   - https://testing-library.com/docs/dom-testing-library/api-events/#fireevent
+
 ### I. Responsive and Mobile UX Decisions
 
-69. Responsive shell app (sidebar + header) dirapikan agar mobile/desktop konsisten tanpa duplikasi logic.
+74. Responsive shell app (sidebar + header) dirapikan agar mobile/desktop konsisten tanpa duplikasi logic.
    - reusable `useMediaQuery` dan `useSyncSidebarWithViewport`.
    - store UI ditambah `setSidebarOpen` eksplisit.
    - `MainLayout` handle sync viewport + mobile toggle.
@@ -572,32 +598,32 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
      - mobile default sidebar tertutup,
      - desktop default terbuka dan bisa collapse.
 
-70. Responsive Products List: compact di mobile, lengkap di desktop (toolbar lebih ringkas, trigger icon-friendly, add button adaptif).
+75. Responsive Products List: compact di mobile, lengkap di desktop (toolbar lebih ringkas, trigger icon-friendly, add button adaptif).
 
-71. Presentasi data produk dipisah:
+76. Presentasi data produk dipisah:
    - mobile `md:hidden` card list,
    - desktop `hidden md:block` DataTable.
    `ProductDetailPage` action button juga disesuaikan untuk viewport kecil (icon-first).
 
-72. Flow create/edit/form/delete dirapikan untuk mobile:
+77. Flow create/edit/form/delete dirapikan untuk mobile:
    - cancel/spacing page lebih proporsional,
    - submit button full-width di mobile,
    - delete dialog punya safe horizontal margin.
 
-73. Filter dialog products dirapikan untuk mobile:
+78. Filter dialog products dirapikan untuk mobile:
    - width aman viewport,
    - max-height aman viewport,
    - internal content scrollable,
    - area date picker pakai tinggi stabil.
 
-74. Footer aksi filter disederhanakan:
+79. Footer aksi filter disederhanakan:
    - `Cancel` dihapus (sudah ada close `X`),
    - label utama jadi `Apply`,
    - layout footer horizontal kanan: `Clear` + `Apply`.
 
 ### J. Routing Edge Cases
 
-75. Routing edge case products ditangani seperti ini:
+80. Routing edge case products ditangani seperti ini:
   - path route tidak valid (termasuk `/products/detail/` tanpa id) -> wildcard route `*` di `ProductsRoutes` dengan `ErrorState`,
   - param route valid tapi data tidak ada / id invalid -> service lempar `AppError` lalu ErrorBoundary di `MainLayout` yang render pesan error.
   Jadi page detail/edit tetap tipis (fokus render data sukses), sementara source of truth error tetap di layer service.
