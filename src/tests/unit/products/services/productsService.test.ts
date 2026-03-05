@@ -1,12 +1,20 @@
-import { createProduct, getProductById, getProducts } from '@/features/products/api/services/productsService';
+import {
+  createProduct,
+  getProductById,
+  getProducts,
+} from '@/features/products/api/services/productsService';
 import { apiClient } from '@/shared/lib/axios';
 import { API_ENDPOINTS } from '@/shared/api/endpoints';
 
-describe('productsService getProductById negative cases', () => {
-  beforeEach(() => {
-    localStorage.clear(); // reset storage biar tiap test punya kondisi awal yang bersih
-  });
+beforeEach(() => {
+  localStorage.clear(); // reset storage global biar ga perlu diulang di tiap describe
+});
 
+afterEach(() => {
+  vi.restoreAllMocks(); // reset spy mock global biar ga perlu diulang di tiap describe
+});
+
+describe('productsService getProductById negative cases', () => {
   it('throws AppError 400 when id is empty/invalid', async () => {
     // aturan service payload id kosong dianggap request tidak valid 400 bukan return null
     await expect(getProductById('   ')).rejects.toMatchObject({
@@ -42,17 +50,16 @@ describe('productsService getProductById negative cases', () => {
       message: 'The requested product does not exist or has been removed.',
     });
   });
+
 });
 
 describe('productsService createProduct', () => {
   beforeEach(() => {
-    localStorage.clear(); // reset state storage antar test
     vi.useFakeTimers(); // aktifkan fake timer supaya test tidak benar-benar menunggu delay 5 detik di service
     vi.setSystemTime(new Date('2026-03-03T10:00:00.000Z')); // kunci waktu "now" agar createdAt jadi deterministik dan assertion stabil
   });
 
   afterEach(() => {
-    vi.restoreAllMocks(); // kembalikan semua spy/mock ke implementasi asli agar tidak bocor ke test lain
     vi.useRealTimers(); // wajib restore timer asli setelah pakai fake timer supaya file test lain tidak ikut terpengaruh
   });
 
@@ -124,14 +131,6 @@ describe('productsService createProduct', () => {
 });
 
 describe('productsService loadProducts fallback', () => {
-  beforeEach(() => {
-    localStorage.clear(); // reset storage biar branch fallback bisa dikontrol
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks(); // bersihin spy api client antar test
-  });
-
   it('falls back to api seed and persists products when localStorage is invalid', async () => {
     localStorage.setItem('mock:products', JSON.stringify({ invalid: true })); // paksa safeParse gagal agar masuk fallback API
 

@@ -23,10 +23,6 @@ vi.mock('@/shared/components/data-table', () => ({
 }));
 
 describe('ProductsTable', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   it('renders cards and handles all mobile actions', () => {
     // data ini sengaja campur nilai lengkap dan kosong biar semua fallback ikut kena
     const products: Product[] = [

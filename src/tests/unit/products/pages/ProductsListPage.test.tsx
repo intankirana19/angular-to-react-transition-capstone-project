@@ -210,8 +210,6 @@ vi.mock('@/shared/ui/SimpleSelect', () => ({
 
 describe('ProductsListPage simple', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     // reset state dasar biar tiap test mulai dari kondisi netral
     testState.listedProducts = []
     testState.allProducts = []

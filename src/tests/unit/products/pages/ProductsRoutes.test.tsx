@@ -21,10 +21,6 @@ vi.mock('@/features/products/pages/ProductDetailPage', () => ({ default: () => n
 vi.mock('@/features/products/pages/EditProductPage', () => ({ default: () => null }));
 
 describe('ProductsRoutes error state', () => {
-  beforeEach(() => {
-    vi.clearAllMocks(); // reset history call antar test
-  });
-
   it('renders wildcard route ErrorState and navigates back to products', async () => {
     const user = userEvent.setup();
 

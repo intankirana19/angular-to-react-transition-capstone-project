@@ -88,9 +88,6 @@ const sampleProduct: Product = {
 
 describe('DeleteProductDialog', () => {
   beforeEach(() => {
-    // Reset semua call history + implementation supaya tiap test benar-benar independen.
-    vi.clearAllMocks();
-
     // Baseline default: mutation tidak pending dan mutate berhasil resolve.
     useDeleteProductMock.mockReturnValue({
       isPending: false,

@@ -29,10 +29,6 @@ vi.mock('@/features/products/components/ProductForm', () => ({
 }));
 
 describe('ProductFormDialog', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   it('renders create mode title and form', () => {
     render(<ProductFormDialog open onOpenChange={vi.fn()} mode="create" />); // misal dialog dibuka dalam mode create
 

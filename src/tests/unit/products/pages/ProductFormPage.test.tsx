@@ -55,8 +55,6 @@ describe('ProductFormPage', () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks(); // reset call history + implementation mock supaya antar test tidak saling bocor state
-
     useParamsMock.mockReturnValue({}); // default state mode create (tanpa productid) dan data query kosong
     useGetProductByIdMock.mockReturnValue({ data: undefined }); // default state query produk kosong
   });

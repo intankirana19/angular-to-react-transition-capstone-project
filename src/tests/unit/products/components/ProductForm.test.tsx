@@ -16,7 +16,6 @@ vi.mock('@/features/products/hooks/useProductFormSubmission', () => ({
 
 describe('ProductForm', () => {
   beforeEach(() => {
-    vi.clearAllMocks(); // reset call/mock implementation tiap test antar test tidak saling bocor call history/implementation.
     useProductFormSubmissionMock.mockReturnValue({
       isMutationPending: false, // default: belum loading
       submitError: null, // default: belum ada error submit

@@ -53,8 +53,6 @@ describe('useProductFormSubmission', () => {
   }; // data form contoh buat dipakai ulang di semua skenario submit
 
   beforeEach(() => {
-    vi.clearAllMocks(); // reset semua history dan implementation mock biar tiap test independen
-
     useCreateProductMock.mockReturnValue({
       isPending: false, // default create mutation tidak loading
       mutateAsync: createMutateAsyncMock, // spy create mutation untuk verifikasi payload create

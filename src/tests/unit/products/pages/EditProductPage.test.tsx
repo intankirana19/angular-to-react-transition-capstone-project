@@ -56,7 +56,6 @@ describe('EditProductPage', () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks(); // reset call history dan implementasi mock
     useGetProductByIdMock.mockReturnValue({
       data: {
         id: 'p-1',

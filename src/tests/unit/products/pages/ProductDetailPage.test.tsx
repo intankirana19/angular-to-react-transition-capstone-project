@@ -35,7 +35,6 @@ vi.mock('@/features/products/components/DeleteProductDialog', () => ({
 
 describe('ProductDetailPage', () => {
   beforeEach(() => {
-    vi.clearAllMocks(); // reset state mock antar test
     useGetProductByIdMock.mockReturnValue({
       data: {
         id: 'p-1',

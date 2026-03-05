@@ -26,10 +26,6 @@ vi.mock('@/features/products/components/ProductForm', () => ({
 }));
 
 describe('CreateProductPage', () => {
-  beforeEach(() => {
-    vi.clearAllMocks(); // reset seluruh call history mock agar tiap test independen
-  });
-
   it('renders create page title and wires ProductForm in create mode', async () => {
     const user = userEvent.setup();
 
