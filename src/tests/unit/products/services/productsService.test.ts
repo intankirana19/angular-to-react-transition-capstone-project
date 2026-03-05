@@ -1,4 +1,6 @@
-import { createProduct, getProductById } from '@/features/products/api/services/productsService';
+import { createProduct, getProductById, getProducts } from '@/features/products/api/services/productsService';
+import { apiClient } from '@/shared/lib/axios';
+import { API_ENDPOINTS } from '@/shared/api/endpoints';
 
 describe('productsService getProductById negative cases', () => {
   beforeEach(() => {
@@ -118,5 +120,48 @@ describe('productsService createProduct', () => {
 
     await vi.advanceTimersByTimeAsync(5000); // tetap perlu majukan clock karena validasi payload dieksekusi setelah await delay() di service
     await assertion;
+  });
+});
+
+describe('productsService loadProducts fallback', () => {
+  beforeEach(() => {
+    localStorage.clear(); // reset storage biar branch fallback bisa dikontrol
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks(); // bersihin spy api client antar test
+  });
+
+  it('falls back to api seed and persists products when localStorage is invalid', async () => {
+    localStorage.setItem('mock:products', JSON.stringify({ invalid: true })); // paksa safeParse gagal agar masuk fallback API
+
+    const apiSeed = [
+      {
+        id: 'seed-1',
+        name: 'Seed Product',
+        price: 120,
+        avatar: '',
+        material: 'Metal',
+        description: 'From API seed',
+        createdAt: '2026-03-01T00:00:00.000Z',
+      },
+    ];
+
+    const getSpy = vi.spyOn(apiClient, 'get').mockResolvedValue({
+      data: apiSeed,
+      status: 200,
+      statusText: 'OK',
+      headers: {},
+      config: {},
+    });
+
+    const products = await getProducts();
+
+    expect(getSpy).toHaveBeenCalledWith(API_ENDPOINTS.products);
+    expect(products).toEqual(apiSeed);
+
+    const storedRaw = localStorage.getItem('mock:products');
+    expect(storedRaw).not.toBeNull();
+    expect(JSON.parse(storedRaw ?? '[]')).toEqual(apiSeed);
   });
 });
