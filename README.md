@@ -456,13 +456,20 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
    - https://vitest.dev/guide/coverage
 
 51. Unit test disimpan di `src/tests/unit` agar level testing tetap eksplisit dan tidak tercampur dengan source feature.
-   - Struktur saat ini dikelompokkan per feature dan tipe kode (contoh: `src/tests/unit/products/components/*.test.tsx`, `src/tests/unit/products/hooks/*.test.ts`).
    - Trade-off: file test sedikit lebih jauh dari source, tetapi review flow jadi lebih mudah dipindai.
    Sources:
    - https://www.yockyard.com/post/co-locate-unit-tests/
    - https://dev.to/el_mahfoudbouatim_b502a2/react-best-practices-for-scalable-frontends-part-1-folder-structure-and-organization-4ik7
 
-52. Fixing komponen form karena failed test `Description` by label di `src/tests/unit/products/components/ProductForm.test.tsx`:
+52. Struktur saat ini dikelompokkan per feature dan tipe kode (contoh: `src/tests/unit/products/components/*.test.tsx`, `src/tests/unit/products/hooks/*.test.ts`). 
+   - Dipisah per unit (bukan 1 flow besar) karena saat test komponen, dependency seperti hook biasanya dimock agar test fokus ke kontrak UI komponen itu sendiri (render, interaction, wiring props/callback) tanpa ikut gagal karena detail logic dependency. 
+   - Hook/service yang dimock di test komponen tetap punya file test sendiri untuk menguji logic internalnya (state transition, transform data, error handling) supaya kegagalan lebih cepat dilokalisasi sumbernya, mengurangi flaky test, mempercepat feedback, dan bikin maintenance lebih mudah dibanding menumpuk semua validasi dalam 1 integration flow panjang.
+   Sources:
+   - https://martinfowler.com/articles/practical-test-pyramid.html
+   - https://testing-library.com/docs/guiding-principles
+   - https://vitest.dev/guide/mocking/modules
+
+53. Fixing komponen form karena failed test `Description` by label di `src/tests/unit/products/components/ProductForm.test.tsx`:
    - test yang ditarget: query `screen.getByLabelText('Description')` (contoh di skenario `submits valid values` dan `disables form controls while mutation is pending`),
    - root cause: label `Description` belum terhubung ke textarea,
    - fixing: tambah `htmlFor` di `TextareaField` dan tambah `id` di textarea `ProductForm` supaya aksesibilitas label-field valid + test stabil.
@@ -470,7 +477,7 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
    - https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/label
    - https://testing-library.com/docs/queries/bylabeltext/
 
-53. Pola error routing/data di feature products disederhanakan:
+54. Pola error routing/data di feature products disederhanakan:
    - wildcard route `/products/*` tetap render `ErrorState` di level routes,
    - entity-not-found/invalid-id untuk detail/edit dilempar dari service (`AppError`) lalu ditampilkan oleh ErrorBoundary di `MainLayout`.
    - test routing pakai `MemoryRouter` karena stack history dijalankan di memory jadi aman dan stabil untuk unit test tanpa browser history nyata
@@ -483,113 +490,113 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
    - https://reactrouter.com/api/declarative-routers/MemoryRouter
    - https://reactrouter.com/start/framework/testing
 
-54. `vi.hoisted` (Vitest): menyiapkan reference mock lebih dulu sebelum `vi.mock` dievaluasi.
+55. `vi.hoisted` (Vitest): menyiapkan reference mock lebih dulu sebelum `vi.mock` dievaluasi.
    - Dipakai di hampir semua test products yang memakai `vi.mock`, karena reference spy harus sudah tersedia saat factory mock dievaluasi.
    Sources:
    - https://vitest.dev/api/vi#vi-hoisted
 
-55. `vi.fn` (Vitest): membuat spy/mock function untuk merekam call dan argumen.
+56. `vi.fn` (Vitest): membuat spy/mock function untuk merekam call dan argumen.
    - Dipakai di semua test products yang butuh spy/callback mock, karena hampir semua skenario verifikasi call memakai function mock.
    Sources:
    - https://vitest.dev/api/mock
 
-56. `vi.mock` (Vitest): mock module supaya unit test fokus ke unit yang diuji (isolasi dependency).
+57. `vi.mock` (Vitest): mock module supaya unit test fokus ke unit yang diuji (isolasi dependency).
    - Dipakai di hampir semua test products, karena isolasi dependency lintas component/page/hook dilakukan lewat module mocking.
    Sources:
    - https://vitest.dev/guide/mocking/modules
 
-57. `vi.clearAllMocks` (Vitest): reset riwayat call/instance mock antar test agar test independen.
+58. `vi.clearAllMocks` (Vitest): reset riwayat call/instance mock antar test agar test independen.
    - Dipakai di `beforeEach` pada test yang memakai mock lintas skenario.
    Sources:
    - https://vitest.dev/api/vi#vi-clearallmocks
 
-58. `vi.importActual` (Vitest): ambil implementasi module asli, lalu override sebagian export saat partial mock.
+59. `vi.importActual` (Vitest): ambil implementasi module asli, lalu override sebagian export saat partial mock.
    - Utama dipakai saat mock `react-router-dom` di test routing/page.
    - File: `ProductsRoutes.test.tsx`, `ProductsListPage.test.tsx`, `ProductDetailPage.test.tsx`, `EditProductPage.test.tsx`, `CreateProductPage.test.tsx`, `ProductFormPage.test.tsx`.
    Sources:
    - https://vitest.dev/api/vi#vi-importactual
 
-59. `mockResolvedValue` (Vitest Mock API): set hasil Promise resolve untuk async dependency (mis. mutation).
+60. `mockResolvedValue` (Vitest Mock API): set hasil Promise resolve untuk async dependency (mis. mutation).
    - Dipakai di test async form/hook/dialog, misalnya `ProductForm.test.tsx`, `DeleteProductDialog.test.tsx`, `useProductFormSubmission.test.ts`.
    Sources:
    - https://vitest.dev/api/mock#mockresolvedvalue
 
-60. `mockRestore` (Vitest Mock API): mengembalikan method yang di-`spyOn` ke implementasi asli setelah test.
+61. `mockRestore` (Vitest Mock API): mengembalikan method yang di-`spyOn` ke implementasi asli setelah test.
    - Dipakai setelah spy `window.history.length` atau `console.error`.
    - File: `CreateProductPage.test.tsx`, `ProductFormPage.test.tsx`, `ProductDetailPage.test.tsx`, `EditProductPage.test.tsx`.
    Sources:
    - https://vitest.dev/api/mock#mockrestore
 
-61. `render` (React Testing Library): render komponen React ke DOM virtual untuk verifikasi perilaku UI.
+62. `render` (React Testing Library): render komponen React ke DOM virtual untuk verifikasi perilaku UI.
    - Dipakai di semua test component/page products.
    Sources:
    - https://testing-library.com/docs/react-testing-library/api/#render
 
-62. `renderHook` (React Testing Library): render hook secara langsung tanpa komponen wrapper khusus.
+63. `renderHook` (React Testing Library): render hook secara langsung tanpa komponen wrapper khusus. `result.current` adalah API hasil `renderHook` (testing utility), dipakai untuk baca nilai return hook terbaru; ini bukan API hook runtime React di aplikasi production.
    - Dipakai di `useProductSearchState.test.ts`, `useProductMaterialOptions.test.ts`, `useProductFormSubmission.test.ts`.
    Sources:
    - https://testing-library.com/docs/react-testing-library/api/#renderhook
 
-63. `act` (React): memastikan update state/effect selesai di-flush sebelum assertion.
+64. `act` (React): memastikan update state/effect selesai di-flush sebelum assertion.
    - Dipakai di test hook state update (`useProductSearchState.test.ts`, `useProductFormSubmission.test.ts`) dan callback state manual di `ProductDetailPage.test.tsx`.
    Sources:
    - https://react.dev/reference/react/act
    - https://testing-library.com/docs/react-testing-library/api/#act
 
-64. `toThrow` (Vitest/Jest matcher): validasi sebuah aksi tidak melempar error pada skenario tertentu.
+65. `toThrow` (Vitest/Jest matcher): validasi sebuah aksi tidak melempar error pada skenario tertentu.
    - Dipakai di `ProductsTable.test.tsx` (assert `.not.toThrow()`).
    Sources:
    - https://vitest.dev/api/expect#tothrowerror
 
-65. `vi.useFakeTimers` (Vitest): ganti timer native (`setTimeout`/`setInterval`) dengan timer virtual.
+66. `vi.useFakeTimers` (Vitest): ganti timer native (`setTimeout`/`setInterval`) dengan timer virtual.
    - Dipakai saat unit test perlu kontrol delay async tanpa menunggu waktu nyata (contoh: `productsService.test.ts` karena ada `delay(5000)` di service).
    Source:
    - https://vitest.dev/api/vi#vi-usefaketimers
 
-66. `vi.setSystemTime` (Vitest): mengunci waktu sistem versi fake timer agar nilai berbasis waktu (`new Date()`) konsisten.
+67. `vi.setSystemTime` (Vitest): mengunci waktu sistem versi fake timer agar nilai berbasis waktu (`new Date()`) konsisten.
    - Dipakai untuk assertion field waktu seperti `createdAt` supaya hasil test deterministik.
    Source:
    - https://vitest.dev/api/vi#vi-setsystemtime
 
-67. `vi.advanceTimersByTimeAsync` (Vitest): memajukan fake timer sejumlah ms dan menunggu job async terkait timer selesai.
+68. `vi.advanceTimersByTimeAsync` (Vitest): memajukan fake timer sejumlah ms dan menunggu job async terkait timer selesai.
    - Dipakai untuk "melewati" `await delay(...)` di service sebelum assertion.
    Source:
    - https://vitest.dev/api/vi#vi-advancetimersbytimeasync
 
-68. `vi.useRealTimers` (Vitest): mengembalikan timer native setelah test selesai.
+69. `vi.useRealTimers` (Vitest): mengembalikan timer native setelah test selesai.
    - Wajib dipanggil di `afterEach` jika test memakai fake timer agar test file lain tidak ikut memakai clock virtual.
    Source:
    - https://vitest.dev/api/vi#vi-userealtimers
 
-69. `vi.restoreAllMocks` (Vitest): mengembalikan semua `spyOn` ke implementasi aslinya setelah test.
+70. `vi.restoreAllMocks` (Vitest): mengembalikan semua `spyOn` ke implementasi aslinya setelah test.
    - Dipakai global di `src/tests/setup.ts` pada `afterEach` agar spy tidak bocor ke test berikutnya.
    Source:
    - https://vitest.dev/api/vi#vi-restoreallmocks
 
-70. `vi.spyOn` (Vitest): membuat spy pada method/properti asli untuk verifikasi call atau override sementara.
+71. `vi.spyOn` (Vitest): membuat spy pada method/properti asli untuk verifikasi call atau override sementara.
    - Dipakai di test products untuk kasus `window.history.length`, `console.error`, `crypto.randomUUID`, dan `apiClient.get`.
    Source:
    - https://vitest.dev/api/vi#vi-spyon
 
-71. `userEvent.setup` (Testing Library): simulasi interaksi user yang lebih realistis dibanding trigger event mentah.
+72. `userEvent.setup` (Testing Library): simulasi interaksi user yang lebih realistis dibanding trigger event mentah.
    - Dipakai luas di test pages/components products untuk klik, ketik, dan flow submit form.
    Sources:
    - https://testing-library.com/docs/user-event/intro
    - https://testing-library.com/docs/user-event/setup
 
-72. `waitFor` (React Testing Library): menunggu assertion async sampai kondisi terpenuhi.
+73. `waitFor` (React Testing Library): menunggu assertion async sampai kondisi terpenuhi.
    - Dipakai saat verifikasi efek async mutation/callback setelah aksi user.
    Source:
    - https://testing-library.com/docs/dom-testing-library/api-async/#waitfor
 
-73. `fireEvent` (React Testing Library): trigger event level rendah untuk skenario edge/guard tertentu.
+74. `fireEvent` (React Testing Library): trigger event level rendah untuk skenario edge/guard tertentu.
    - Dipakai di test products saat butuh event langsung (contoh keyboard edge case atau guard branch).
    Source:
    - https://testing-library.com/docs/dom-testing-library/api-events/#fireevent
 
 ### I. Responsive and Mobile UX Decisions
 
-74. Responsive shell app (sidebar + header) dirapikan agar mobile/desktop konsisten tanpa duplikasi logic.
+75. Responsive shell app (sidebar + header) dirapikan agar mobile/desktop konsisten tanpa duplikasi logic.
    - reusable `useMediaQuery` dan `useSyncSidebarWithViewport`.
    - store UI ditambah `setSidebarOpen` eksplisit.
    - `MainLayout` handle sync viewport + mobile toggle.
@@ -598,32 +605,32 @@ If `VITE_API_BASE_URL` is not set in production, Axios falls back to `/api` (`sr
      - mobile default sidebar tertutup,
      - desktop default terbuka dan bisa collapse.
 
-75. Responsive Products List: compact di mobile, lengkap di desktop (toolbar lebih ringkas, trigger icon-friendly, add button adaptif).
+76. Responsive Products List: compact di mobile, lengkap di desktop (toolbar lebih ringkas, trigger icon-friendly, add button adaptif).
 
-76. Presentasi data produk dipisah:
+77. Presentasi data produk dipisah:
    - mobile `md:hidden` card list,
    - desktop `hidden md:block` DataTable.
    `ProductDetailPage` action button juga disesuaikan untuk viewport kecil (icon-first).
 
-77. Flow create/edit/form/delete dirapikan untuk mobile:
+78. Flow create/edit/form/delete dirapikan untuk mobile:
    - cancel/spacing page lebih proporsional,
    - submit button full-width di mobile,
    - delete dialog punya safe horizontal margin.
 
-78. Filter dialog products dirapikan untuk mobile:
+79. Filter dialog products dirapikan untuk mobile:
    - width aman viewport,
    - max-height aman viewport,
    - internal content scrollable,
    - area date picker pakai tinggi stabil.
 
-79. Footer aksi filter disederhanakan:
+80. Footer aksi filter disederhanakan:
    - `Cancel` dihapus (sudah ada close `X`),
    - label utama jadi `Apply`,
    - layout footer horizontal kanan: `Clear` + `Apply`.
 
 ### J. Routing Edge Cases
 
-80. Routing edge case products ditangani seperti ini:
+81. Routing edge case products ditangani seperti ini:
   - path route tidak valid (termasuk `/products/detail/` tanpa id) -> wildcard route `*` di `ProductsRoutes` dengan `ErrorState`,
   - param route valid tapi data tidak ada / id invalid -> service lempar `AppError` lalu ErrorBoundary di `MainLayout` yang render pesan error.
   Jadi page detail/edit tetap tipis (fokus render data sukses), sementara source of truth error tetap di layer service.
