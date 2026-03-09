@@ -3,7 +3,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Edit, Trash2 } from 'lucide-react';
 import { Avatar } from '@/shared/ui/Avatar';
 import { Button } from '@/shared/ui/Button';
-import { DEFAULT_PLACEHOLDER, formatCurrency, formatDate } from '@/shared/lib/formatters';
+import { DEFAULT_PLACEHOLDER } from '@/shared/constants/format';
+import { formatCurrency } from '@/shared/lib/formatCurrency';
+import { formatDate } from '@/shared/lib/formatDate';
 import { useGetProductById } from '../api/hooks/useGetProductById';
 import { DeleteProductDialog } from '../components/DeleteProductDialog';
 

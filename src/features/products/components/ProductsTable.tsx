@@ -1,7 +1,9 @@
 import { useMemo } from 'react';
 import { DataTable, type ColumnDef } from '@/shared/components/data-table';
 import { Avatar } from '@/shared/ui/Avatar';
-import { DEFAULT_PLACEHOLDER, formatCurrency, formatDate } from '@/shared/lib/formatters';
+import { DEFAULT_PLACEHOLDER } from '@/shared/constants/format';
+import { formatCurrency } from '@/shared/lib/formatCurrency';
+import { formatDate } from '@/shared/lib/formatDate';
 import { Edit, Trash2 } from 'lucide-react';
 import { type Product } from '../types';
 
