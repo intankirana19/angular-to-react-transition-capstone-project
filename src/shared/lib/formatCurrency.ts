@@ -21,9 +21,14 @@ export function formatCurrency(
     return placeholder;
   }
 
-  return new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency,
-    maximumFractionDigits,
-  }).format(value);
+  try {
+    return new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency,
+      maximumFractionDigits,
+    }).format(value);
+  } catch {
+    // fallback kalau opsi Intl invalid dari caller
+    return placeholder;
+  }
 }

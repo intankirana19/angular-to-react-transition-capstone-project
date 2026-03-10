@@ -120,4 +120,13 @@ describe('formatDate', () => {
       })
     ).toBe(expected);
   });
+
+  it('returns placeholder when intl date options are invalid', () => {
+    // invalid timezone bikin Intl melempar error jadi helper harus fallback aman
+    expect(
+      formatDate('2026-03-09T23:30:00.000Z', {
+        formatOptions: { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'Mars/Olympus' },
+      })
+    ).toBe(DEFAULT_PLACEHOLDER);
+  });
 });

@@ -22,5 +22,10 @@ export function formatDate(
   const date = value instanceof Date ? value : new Date(value);
   if (Number.isNaN(date.getTime())) return placeholder;
 
-  return new Intl.DateTimeFormat(locale, formatOptions).format(date);
+  try {
+    return new Intl.DateTimeFormat(locale, formatOptions).format(date);
+  } catch {
+    // fallback kalau opsi Intl invalid dari caller
+    return placeholder;
+  }
 }

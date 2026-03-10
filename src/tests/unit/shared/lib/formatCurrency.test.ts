@@ -74,4 +74,9 @@ describe('formatCurrency', () => {
 
     expect(formatCurrency(largeValue)).toBe(expected);
   });
+
+  it('returns placeholder when intl currency option is invalid', () => {
+    // invalid currency code bikin Intl melempar error jadi helper harus fallback aman
+    expect(formatCurrency(100, { currency: 'US' })).toBe(DEFAULT_PLACEHOLDER);
+  });
 });
