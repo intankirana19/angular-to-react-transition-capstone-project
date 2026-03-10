@@ -56,6 +56,29 @@ describe('formatDate', () => {
     expect(formatDate(timestamp)).toBe(expected);
   });
 
+  it('treats zero timestamp as valid date input', () => {
+    // regression guard: angka 0 dulu sempat salah dianggap empty
+    const expected = new Intl.DateTimeFormat('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: '2-digit',
+    }).format(new Date(0));
+
+    expect(formatDate(0)).toBe(expected);
+  });
+
+  it('formats Date object created from epoch zero', () => {
+    // pastikan object Date epoch tetap masuk branch valid date
+    const epochDate = new Date(0);
+    const expected = new Intl.DateTimeFormat('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: '2-digit',
+    }).format(epochDate);
+
+    expect(formatDate(epochDate)).toBe(expected);
+  });
+
   it('formats iso date consistently when timezone is specified', () => {
     // set timezone eksplisit biar output stabil lintas mesin developer/ci
     const iso = '2026-03-09T23:30:00.000Z';
