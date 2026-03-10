@@ -42,6 +42,16 @@ describe('formatCurrency', () => {
     expect(formatCurrency(undefined, { placeholder: 'n/a' })).toBe('n/a');
   });
 
+  it('returns placeholder for positive infinity', () => {
+    // infinity bukan nominal valid jadi harus fallback ke placeholder
+    expect(formatCurrency(Number.POSITIVE_INFINITY)).toBe(DEFAULT_PLACEHOLDER);
+  });
+
+  it('returns placeholder for negative infinity', () => {
+    // negative infinity juga harus dianggap invalid sama seperti infinity biasa
+    expect(formatCurrency(Number.NEGATIVE_INFINITY)).toBe(DEFAULT_PLACEHOLDER);
+  });
+
   it('formats negative value correctly', () => {
     // penting buat kasus diskon/refund supaya angka minus tetap kebaca valid
     const expected = new Intl.NumberFormat('en-US', {

@@ -16,7 +16,8 @@ export function formatCurrency(
     placeholder = DEFAULT_PLACEHOLDER,
   }: PriceFormatOptions = {}
 ) {
-  if (value === null || value === undefined || Number.isNaN(value)) {
+  // nilai non-finite (NaN/Infinity) dianggap invalid supaya ui gak menampilkan angka semu
+  if (value === null || value === undefined || !Number.isFinite(value)) {
     return placeholder;
   }
 
