@@ -41,4 +41,27 @@ describe('formatCurrency', () => {
     // caller boleh override placeholder sesuai kebutuhan tampilan
     expect(formatCurrency(undefined, { placeholder: 'n/a' })).toBe('n/a');
   });
+
+  it('formats negative value correctly', () => {
+    // penting buat kasus diskon/refund supaya angka minus tetap kebaca valid
+    const expected = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 2,
+    }).format(-99.99);
+
+    expect(formatCurrency(-99.99)).toBe(expected);
+  });
+
+  it('formats very large value without fallback placeholder', () => {
+    // jaga helper tetap aman buat nominal besar dan tidak false-invalid
+    const largeValue = 9_999_999_999.99;
+    const expected = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 2,
+    }).format(largeValue);
+
+    expect(formatCurrency(largeValue)).toBe(expected);
+  });
 });
