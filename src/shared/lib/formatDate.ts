@@ -16,6 +16,8 @@ export function formatDate(
 ) {
   // 0 itu timestamp valid jadi jangan dianggap kosong
   if (value === null || value === undefined || value === '') return placeholder;
+  // string whitespace dianggap empty input supaya hasil konsisten ke placeholder
+  if (typeof value === 'string' && value.trim() === '') return placeholder;
 
   const date = value instanceof Date ? value : new Date(value);
   if (Number.isNaN(date.getTime())) return placeholder;

@@ -36,6 +36,8 @@ describe('formatDate', () => {
     expect(formatDate(undefined)).toBe(DEFAULT_PLACEHOLDER);
     expect(formatDate(null)).toBe(DEFAULT_PLACEHOLDER);
     expect(formatDate('')).toBe(DEFAULT_PLACEHOLDER);
+    // whitespace-only input juga dianggap kosong
+    expect(formatDate('   ')).toBe(DEFAULT_PLACEHOLDER);
     expect(formatDate('not-a-date')).toBe(DEFAULT_PLACEHOLDER);
   });
 
