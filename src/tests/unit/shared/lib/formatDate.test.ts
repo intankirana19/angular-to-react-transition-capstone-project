@@ -43,4 +43,56 @@ describe('formatDate', () => {
     // override placeholder juga harus berlaku di formatter tanggal
     expect(formatDate('invalid', { placeholder: 'n/a' })).toBe('n/a');
   });
+
+  it('formats timestamp number input correctly', () => {
+    // support input angka unix timestamp ms dari API atau cache lokal
+    const timestamp = Date.UTC(2026, 2, 9, 12, 0, 0);
+    const expected = new Intl.DateTimeFormat('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: '2-digit',
+    }).format(new Date(timestamp));
+
+    expect(formatDate(timestamp)).toBe(expected);
+  });
+
+  it('formats iso date consistently when timezone is specified', () => {
+    // set timezone eksplisit biar output stabil lintas mesin developer/ci
+    const iso = '2026-03-09T23:30:00.000Z';
+    const expected = new Intl.DateTimeFormat('en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      timeZone: 'UTC',
+    }).format(new Date(iso));
+
+    expect(
+      formatDate(iso, {
+        formatOptions: { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'UTC' },
+      })
+    ).toBe(expected);
+  });
+
+  it('supports custom locale plus timezone together', () => {
+    // cek kombinasi locale + timezone tetap diteruskan semua ke Intl formatter
+    const iso = '2026-03-09T23:30:00.000Z';
+    const expected = new Intl.DateTimeFormat('id-ID', {
+      year: 'numeric',
+      month: 'long',
+      day: '2-digit',
+      timeZone: 'Asia/Jakarta',
+    }).format(new Date(iso));
+
+    expect(
+      formatDate(iso, {
+        locale: 'id-ID',
+        formatOptions: {
+          year: 'numeric',
+          month: 'long',
+          day: '2-digit',
+          timeZone: 'Asia/Jakarta',
+        },
+      })
+    ).toBe(expected);
+  });
 });
