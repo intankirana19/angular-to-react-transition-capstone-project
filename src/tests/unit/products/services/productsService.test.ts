@@ -65,6 +65,49 @@ describe('productsService getProductById negative cases', () => {
 
 });
 
+describe('productsService getProductById success case', () => {
+  it('returns the matching product from the shared list source', async () => {
+    localStorage.setItem(
+      'mock:products',
+      JSON.stringify([
+        {
+          id: 'p-1',
+          name: 'Laptop',
+          price: 1000,
+          avatar: '',
+          material: 'Aluminum',
+          description: 'First product',
+          createdAt: '2024-01-01T00:00:00.000Z',
+        },
+        {
+          id: 'p-2',
+          name: 'Chair',
+          price: 150,
+          avatar: '',
+          material: 'Wood',
+          description: 'Second product',
+          createdAt: '2024-02-01T00:00:00.000Z',
+        },
+      ])
+    ); // seed dua item biar jelas service memang ambil item yang sesuai id target
+
+    const getSpy = vi.spyOn(apiClient, 'get');
+
+    const product = await getProductById('p-2');
+
+    expect(product).toMatchObject({
+      id: 'p-2',
+      name: 'Chair',
+      price: 150,
+      avatar: '',
+      material: 'Wood',
+      description: 'Second product',
+      createdAt: '2024-02-01T00:00:00.000Z',
+    });
+    expect(getSpy).not.toHaveBeenCalled(); // localStorage valid harus cukup tanpa fallback ke api seed
+  });
+});
+
 describe('productsService createProduct', () => {
   useMockServiceClock('2026-03-03T10:00:00.000Z');
 
