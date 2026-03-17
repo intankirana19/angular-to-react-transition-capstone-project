@@ -1,11 +1,26 @@
 import {
   createProduct,
+  deleteProduct,
   getProductById,
   getProducts,
   updateProduct,
 } from '@/features/products/api/services/productsService';
 import { apiClient } from '@/shared/lib/axios';
 import { API_ENDPOINTS } from '@/shared/api/endpoints';
+
+function useMockServiceClock(now?: string) {
+  beforeEach(() => {
+    vi.useFakeTimers(); // semua service mock ini pakai delay 5 detik jadi fake timer dipusatkan di helper
+
+    if (now) {
+      vi.setSystemTime(new Date(now)); // kalau test perlu waktu deterministik tinggal kirim tanggalnya di sini
+    }
+  });
+
+  afterEach(() => {
+    vi.useRealTimers(); // timer asli selalu dibalikin dari satu tempat
+  });
+}
 
 beforeEach(() => {
   localStorage.clear(); // reset storage global biar ga perlu diulang di tiap describe
@@ -51,14 +66,7 @@ describe('productsService getProductById negative cases', () => {
 });
 
 describe('productsService createProduct', () => {
-  beforeEach(() => {
-    vi.useFakeTimers(); // aktifkan fake timer supaya test tidak benar-benar menunggu delay 5 detik di service
-    vi.setSystemTime(new Date('2026-03-03T10:00:00.000Z')); // kunci waktu "now" agar createdAt jadi deterministik dan assertion stabil
-  });
-
-  afterEach(() => {
-    vi.useRealTimers(); // wajib restore timer asli setelah pakai fake timer supaya file test lain tidak ikut terpengaruh
-  });
+  useMockServiceClock('2026-03-03T10:00:00.000Z');
 
   it('creates product with generated id and createdAt, then persists as first item', async () => {
     localStorage.setItem(
@@ -163,14 +171,7 @@ describe('productsService loadProducts fallback', () => {
 });
 
 describe('productsService updateProduct', () => {
-  beforeEach(() => {
-    vi.useFakeTimers(); // fake timer dipakai biar update ga nunggu delay 5 detik beneran
-    vi.setSystemTime(new Date('2026-03-04T12:00:00.000Z')); // waktu dikunci buat jaga test tetap deterministik kalau fallback createdAt kepakai
-  });
-
-  afterEach(() => {
-    vi.useRealTimers(); // balikin timer asli setelah test selesai
-  });
+  useMockServiceClock('2026-03-04T12:00:00.000Z');
 
   it('updates existing product and keeps id plus original createdAt', async () => {
     localStorage.setItem(
@@ -267,6 +268,78 @@ describe('productsService updateProduct', () => {
     });
 
     await vi.advanceTimersByTimeAsync(5000); // validasi id target dilakukan setelah delay mock selesai
+    await assertion;
+  });
+});
+
+describe('productsService deleteProduct', () => {
+  useMockServiceClock();
+
+  it('removes the target product and keeps the other items', async () => {
+    localStorage.setItem(
+      'mock:products',
+      JSON.stringify([
+        {
+          id: 'p-1',
+          name: 'First Product',
+          price: 100,
+          avatar: '',
+          material: 'Wood',
+          description: 'First',
+          createdAt: '2026-01-01T00:00:00.000Z',
+        },
+        {
+          id: 'p-2',
+          name: 'Second Product',
+          price: 150,
+          avatar: '',
+          material: 'Metal',
+          description: 'Second',
+          createdAt: '2026-02-01T00:00:00.000Z',
+        },
+      ])
+    ); // seed dua item biar kelihatan hanya target delete yang hilang
+
+    const promise = deleteProduct('p-1');
+
+    await vi.advanceTimersByTimeAsync(5000); // lewatkan delay mock delete
+    await promise;
+
+    const storedRaw = localStorage.getItem('mock:products');
+    expect(storedRaw).not.toBeNull();
+
+    const stored = JSON.parse(storedRaw ?? '[]') as Array<{ id: string; name: string }>;
+    expect(stored).toHaveLength(1);
+    expect(stored[0]).toMatchObject({
+      id: 'p-2',
+      name: 'Second Product',
+    });
+  });
+
+  it('throws AppError 404 when delete target does not exist', async () => {
+    localStorage.setItem(
+      'mock:products',
+      JSON.stringify([
+        {
+          id: 'p-1',
+          name: 'Existing Product',
+          price: 100,
+          avatar: '',
+          material: 'Wood',
+          description: 'Existing',
+          createdAt: '2026-01-01T00:00:00.000Z',
+        },
+      ])
+    ); // seed satu item supaya jelas error ini memang karena id delete tidak ketemu
+
+    const assertion = expect(deleteProduct('p-404')).rejects.toMatchObject({
+      name: 'AppError',
+      status: 404,
+      title: 'Product not found',
+      message: 'The requested product does not exist or has been removed.',
+    });
+
+    await vi.advanceTimersByTimeAsync(5000); // validasi id target delete dilakukan setelah delay mock selesai
     await assertion;
   });
 });
