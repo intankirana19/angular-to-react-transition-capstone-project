@@ -213,6 +213,57 @@ describe('productsService loadProducts fallback', () => {
   });
 });
 
+describe('productsService getProducts query behavior', () => {
+  it('applies search material date filter and sort from valid localStorage data', async () => {
+    localStorage.setItem(
+      'mock:products',
+      JSON.stringify([
+        {
+          id: 'p-1',
+          name: 'Desk Lamp',
+          price: 80,
+          avatar: '',
+          material: 'Metal',
+          description: 'Compact lamp',
+          createdAt: '2026-03-01T10:00:00.000Z',
+        },
+        {
+          id: 'p-2',
+          name: 'Desk Shelf',
+          price: 140,
+          avatar: '',
+          material: 'Wood',
+          description: 'Wood shelf',
+          createdAt: '2026-03-02T10:00:00.000Z',
+        },
+        {
+          id: 'p-3',
+          name: 'Desk Tray',
+          price: 120,
+          avatar: '',
+          material: 'Wood',
+          description: 'Tray organizer',
+          createdAt: '2026-03-03T10:00:00.000Z',
+        },
+      ])
+    ); // seed data diatur biar search filter date dan sort bisa diuji sekaligus
+
+    const getSpy = vi.spyOn(apiClient, 'get');
+
+    const products = await getProducts({
+      search: 'desk',
+      material: 'wood',
+      createdFrom: '2026-03-01T00:00:00.000Z',
+      createdTo: '2026-03-03T00:00:00.000Z',
+      sortBy: 'price',
+      sortOrder: 'asc',
+    });
+
+    expect(products.map((product) => product.id)).toEqual(['p-3', 'p-2']);
+    expect(getSpy).not.toHaveBeenCalled(); // storage valid harus cukup tanpa fallback seed api
+  });
+});
+
 describe('productsService updateProduct', () => {
   useMockServiceClock('2026-03-04T12:00:00.000Z');
 
