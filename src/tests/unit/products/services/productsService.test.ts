@@ -2,6 +2,7 @@ import {
   createProduct,
   getProductById,
   getProducts,
+  updateProduct,
 } from '@/features/products/api/services/productsService';
 import { apiClient } from '@/shared/lib/axios';
 import { API_ENDPOINTS } from '@/shared/api/endpoints';
@@ -158,5 +159,114 @@ describe('productsService loadProducts fallback', () => {
     const storedRaw = localStorage.getItem('mock:products');
     expect(storedRaw).not.toBeNull();
     expect(JSON.parse(storedRaw ?? '[]')).toEqual(apiSeed);
+  });
+});
+
+describe('productsService updateProduct', () => {
+  beforeEach(() => {
+    vi.useFakeTimers(); // fake timer dipakai biar update ga nunggu delay 5 detik beneran
+    vi.setSystemTime(new Date('2026-03-04T12:00:00.000Z')); // waktu dikunci buat jaga test tetap deterministik kalau fallback createdAt kepakai
+  });
+
+  afterEach(() => {
+    vi.useRealTimers(); // balikin timer asli setelah test selesai
+  });
+
+  it('updates existing product and keeps id plus original createdAt', async () => {
+    localStorage.setItem(
+      'mock:products',
+      JSON.stringify([
+        {
+          id: 'p-1',
+          name: 'Old Name',
+          price: 100,
+          avatar: '',
+          material: 'Wood',
+          description: 'Old description',
+          createdAt: '2026-01-01T00:00:00.000Z',
+        },
+        {
+          id: 'p-2',
+          name: 'Second Product',
+          price: 150,
+          avatar: '',
+          material: 'Metal',
+          description: 'Second',
+          createdAt: '2026-02-01T00:00:00.000Z',
+        },
+      ])
+    ); // seed dua item biar kelihatan update hanya kena target yang benar
+
+    const promise = updateProduct('p-1', {
+      name: 'Updated Name',
+      price: 250,
+      avatar: '',
+      material: 'Steel',
+      description: 'Updated description',
+    });
+
+    await vi.advanceTimersByTimeAsync(5000); // lewatkan delay mock update
+    const updated = await promise;
+
+    expect(updated).toMatchObject({
+      id: 'p-1',
+      name: 'Updated Name',
+      price: 250,
+      avatar: '',
+      material: 'Steel',
+      description: 'Updated description',
+      createdAt: '2026-01-01T00:00:00.000Z',
+    }); // id dan createdAt lama harus tetap dipertahankan saat edit
+
+    const storedRaw = localStorage.getItem('mock:products');
+    expect(storedRaw).not.toBeNull();
+
+    const stored = JSON.parse(storedRaw ?? '[]') as Array<{ id: string; name: string; createdAt: string }>;
+    expect(stored).toHaveLength(2);
+    expect(stored[0]).toMatchObject({
+      id: 'p-1',
+      name: 'Updated Name',
+      createdAt: '2026-01-01T00:00:00.000Z',
+    });
+    expect(stored[1]).toMatchObject({
+      id: 'p-2',
+      name: 'Second Product',
+      createdAt: '2026-02-01T00:00:00.000Z',
+    });
+  });
+
+  it('throws AppError 404 when update target does not exist', async () => {
+    localStorage.setItem(
+      'mock:products',
+      JSON.stringify([
+        {
+          id: 'p-1',
+          name: 'Existing Product',
+          price: 100,
+          avatar: '',
+          material: 'Wood',
+          description: 'Existing',
+          createdAt: '2026-01-01T00:00:00.000Z',
+        },
+      ])
+    ); // seed satu item supaya jelas error ini memang karena id update tidak ketemu
+
+    const assertion = expect(
+      updateProduct('p-404', {
+        name: 'Updated Name',
+        price: 250,
+        avatar: '',
+        material: 'Steel',
+        description: 'Updated description',
+      })
+    ).rejects.toMatchObject({
+      name: 'AppError',
+      status: 404,
+      title: 'Product not found',
+      message: 'The requested product does not exist or has been removed.',
+    });
+
+    await vi.advanceTimersByTimeAsync(5000); // validasi id target dilakukan setelah delay mock selesai
+    await assertion;
   });
 });
