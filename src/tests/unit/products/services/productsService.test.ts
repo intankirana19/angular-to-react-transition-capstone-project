@@ -179,6 +179,33 @@ describe('productsService createProduct', () => {
 });
 
 describe('productsService loadProducts fallback', () => {
+  it('falls back to api seed when localStorage is empty', async () => {
+    const apiSeed = [
+      {
+        id: 'seed-1',
+        name: 'Seed Product',
+        price: 120,
+        avatar: '',
+        material: 'Metal',
+        description: 'From API seed',
+        createdAt: '2026-03-01T00:00:00.000Z',
+      },
+    ];
+
+    const getSpy = vi.spyOn(apiClient, 'get').mockResolvedValue({
+      data: apiSeed,
+      status: 200,
+      statusText: 'OK',
+      headers: {},
+      config: {},
+    });
+
+    const products = await getProducts();
+
+    expect(getSpy).toHaveBeenCalledWith(API_ENDPOINTS.products);
+    expect(products).toEqual(apiSeed);
+  });
+
   it('falls back to api seed and persists products when localStorage is invalid', async () => {
     localStorage.setItem('mock:products', JSON.stringify({ invalid: true })); // paksa safeParse gagal agar masuk fallback API
 
@@ -328,6 +355,35 @@ describe('productsService updateProduct', () => {
       name: 'Second Product',
       createdAt: '2026-02-01T00:00:00.000Z',
     });
+  });
+
+  it('uses current time when existing product has no createdAt', async () => {
+    localStorage.setItem(
+      'mock:products',
+      JSON.stringify([
+        {
+          id: 'p-1',
+          name: 'Old Name',
+          price: 100,
+          avatar: '',
+          material: 'Wood',
+          description: 'Old description',
+        },
+      ])
+    ); // seed tanpa createdAt buat nutup fallback timestamp saat update
+
+    const promise = updateProduct('p-1', {
+      name: 'Updated Name',
+      price: 250,
+      avatar: '',
+      material: 'Steel',
+      description: 'Updated description',
+    });
+
+    await vi.advanceTimersByTimeAsync(5000);
+    const updated = await promise;
+
+    expect(updated.createdAt).toBe('2026-03-04T12:00:05.000Z');
   });
 
   it('throws AppError 404 when update target does not exist', async () => {
